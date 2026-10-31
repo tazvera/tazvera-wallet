@@ -63,7 +63,7 @@ Notes:
 | TZT faucet | `0x02b9e35cd82E5c781097D2188B4334c2485438bC` |
 | Airdrop | `0x623A0E7628f281236D1d81ca1aceeCedcC30443e` |
 
-The contracts are not verified on the explorer yet. Help with that is welcome too.
+The TZT token and faucet contracts are verified on the Shardeum Explorer ✓ (MIT license).
 
 ## How to help
 
