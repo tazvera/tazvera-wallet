@@ -486,6 +486,14 @@ function stepsHTML(stage,amtTxt,toName,hash){var n=N();var steps=[[t("st1"),1],[
  '<div style="margin-top:14px">'+(hash?'<a class="btnw" href="'+n.exp+'/tx/'+esc(hash)+'" target="_blank" rel="noopener" style="text-decoration:none;color:var(--tx);margin:0 0 10px">'+esc(t("view"))+' ↗</a>':'')+(stage==="wait"?'':'<button class="btn" id="dOk">'+esc(t("doneB"))+'</button>')+'</div>'}
 /* rpc fallback */
 var RPCB={"https://data-seed-prebsc-1-s1.bnbchain.org:8545":["https://bsc-testnet-rpc.publicnode.com"],"https://ethereum-sepolia-rpc.publicnode.com":["https://sepolia.drpc.org"]};
+
+/* ---------- phone Back button ---------- */
+var H={page:false,sheet:false,ign:0,pop:false};var PARENT={chk:"set",helpc:"set"};
+function hPush(){try{history.pushState({tz:Date.now()},"")}catch(e){}}
+function hBack(){H.ign++;try{history.back()}catch(e){H.ign--}}
+window.addEventListener("popstate",function(){if(H.ign>0){H.ign--;return}
+ if(H.sheet){if(SLOCK){hPush();return}H.sheet=false;H.pop=true;closeSheet();H.pop=false;return}
+ if(H.page){H.page=false;var p=PARENT[S.tab]||"home";H.pop=true;if(S.tab==="send")readSend();S.tab=p;if(p!=="home"){H.page=true;hPush()}render();window.scrollTo(0,0);H.pop=false}});
 /* ---------- EXPLORE ---------- */
 async function loadMk(){if(S.mk&&Date.now()-(S.mkt||0)<60000)return;S.mkt=Date.now();try{var r=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,tether&vs_currencies=inr&include_24hr_change=true");S.mk=await r.json()}catch(e){S.mk={}}if(S.tab==="exp")render()}
 function expHTML(){var tl=[["bell","alarm","tAlarm"],["conv","conv","tConv"],["book","book","tBook"],["split","split","tSplit"],["pl","pl","tPl"],["drop","nfee","tFee"]];var mk=S.mk||{};var q=(S.q||"").trim().toLowerCase();
@@ -512,14 +520,14 @@ function soonHTML(){return homeHTML()}
 
 function render(){var h;if(!S.addr){$("app").innerHTML=welHTML();return}
  var m={home:homeHTML,act:actHTML,recv:recvHTML,send:sendHTML,exp:expHTML,set:setHTML,req:reqHTML,chk:chkHTML,helpc:helpHTML}[S.tab]||homeHTML;h=m();
- var an=S.tab!==S._lt;S._lt=S.tab;var y=window.scrollY;$("app").innerHTML='<div class="scr on'+(an?" anim":"")+'">'+h+'</div>'+((S.tab==="recv"||S.tab==="send"||S.tab==="req"||S.tab==="chk"||S.tab==="helpc")?"":nav());if(!an)window.scrollTo(0,y);
+ var an=S.tab!==S._lt;if(an&&!H.pop){if(S.tab!=="home"&&!H.page){H.page=true;hPush()}else if(S.tab==="home"&&H.page){H.page=false;hBack()}}S._lt=S.tab;var y=window.scrollY;$("app").innerHTML='<div class="scr on'+(an?" anim":"")+'">'+h+'</div>'+((S.tab==="recv"||S.tab==="send"||S.tab==="req"||S.tab==="chk"||S.tab==="helpc")?"":nav());if(!an)window.scrollTo(0,y);
  if(S.tab==="req"){drawReqQR();var ra=$("rAmt");ra.oninput=function(){REQ.amt=ra.value.replace(/,/g,"");clearTimeout(ra._t);ra._t=setTimeout(drawReqQR,250)}}
  if(S.tab==="recv"){try{new QRCode($("qrbox"),{text:S.addr,width:212,height:212,colorDark:"#0B1D3A",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})}catch(e){}}
  if(S.tab==="send"){var a=$("sTo"),b=$("sAmt");a.oninput=function(){S.snd.to=a.value.trim();S.snd.err="";$("sErr").textContent="";clearTimeout(S._ef);S._ef=setTimeout(estFee,600)};function fit(){b.style.width=Math.min(9,Math.max(1,(b.value||"0").length))+0.6+"ch"}fit();b.oninput=function(){fit();readSend();clearTimeout(S._ef);S._ef=setTimeout(estFee,600);S.snd.err="";$("sErr").textContent=feeHigh()?t("feeHi"):"";$("sErr").style.color=feeHigh()?"#B45309":"";$("sInr").textContent=amtInr()}}
  if(S.tab==="helpc"){var hq=$("hq");if(hq)hq.oninput=function(){S.hq=hq.value;var pos=hq.selectionStart;render();var h2=$("hq");if(h2){h2.focus();try{h2.setSelectionRange(pos,pos)}catch(e){}}}}
  if(S.tab==="exp"){loadMk();var xq=$("xq");if(xq){xq.oninput=function(){S.q=xq.value;var pos=xq.selectionStart;render();var n2=$("xq");if(n2){n2.focus();try{n2.setSelectionRange(pos,pos)}catch(e){}}}}}}
-var SLOCK=false;function sheet(h,lock){SLOCK=!!lock;$("sheet").innerHTML=h;$("sheet").classList.add("on");$("sbg").classList.add("on")}
-function closeSheet(){SLOCK=false;stopCam();$("sheet").classList.remove("on");$("sbg").classList.remove("on")}
+var SLOCK=false;function sheet(h,lock){SLOCK=!!lock;if(!H.sheet){H.sheet=true;hPush()}$("sheet").innerHTML=h;$("sheet").classList.add("on");$("sbg").classList.add("on")}
+function closeSheet(){SLOCK=false;stopCam();if(H.sheet&&!H.pop){H.sheet=false;hBack()}$("sheet").classList.remove("on");$("sbg").classList.remove("on")}
 function netSheet(){var h='<div class="grab"></div><div class="sht">'+esc(t("netT"))+'</div><div class="grp">'+esc(t("testN"))+'</div>';
  function opt(k,n){return '<button class="opt" data-pick="'+k+'"><span class="ci"><img src="'+netLogo(k)+'" alt=""></span><div class="m"><b>'+esc(n.name)+'</b><small>'+esc(n.sym)+'</small></div>'+(S.net===k?'<span class="tick">'+ic("check",20,2.4)+'</span>':"")+'</button>'}
  Object.keys(NETS).forEach(function(k){if(!NETS[k].beta)h+=opt(k,NETS[k])});if(beta()||S.mode==="mm"){h+='<div class="grp">'+esc(t("realN"))+'</div>'+opt("shardeum",NETS.shardeum)}sheet(h)}
