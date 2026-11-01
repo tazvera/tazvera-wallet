@@ -55,6 +55,16 @@ Notes:
 - The `api/` functions only run on Vercel (or with `vercel dev`). Without them, the app still works, but the SHM price and the free TZT faucet may not load.
 - Use a **new test wallet** while developing. Never use a wallet that holds real money.
 
+## Official token: Tazvera (TZV) on Shardeum Mainnet (chain ID 8118)
+
+| Name | Address |
+|------|---------|
+| **Tazvera (TZV)** | `0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73` |
+
+- Fixed supply: **1,000,000,000 TZV**, created once. No owner, no minting, no fees, no blacklist.
+- Source code verified on the Shardeum Explorer ✓ (MIT license). Source: [`contracts/Tazvera.sol`](contracts/Tazvera.sol)
+- **There is no sale or presale.** Only this address is the real TZV; any other "Tazvera" coin is fake.
+
 ## Contracts (Shardeum Testnet, chain ID 8119)
 
 | Name | Address |
