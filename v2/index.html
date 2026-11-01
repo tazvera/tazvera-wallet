@@ -149,7 +149,8 @@ async function load(){var n=N();if(!S.addr)return;try{var h=await rpc(n.rpc,"eth
  try{await loadCustoms()}catch(e){}
  if(n.sym==="SHM"&&S.inr==null){try{var pr=await fetch("/api/price");if(pr.ok){var pj=await pr.json();if(pj.inr>0)S.inr=pj.inr;else if(pj.usd>0)S.inr=pj.usd*88}}catch(e){}}
  if(S.tab==="home"||S.tab==="recv")render();if(S.tab==="send")estFee()}
-function txs(){var a=ls("txs",[]);return Array.isArray(a)?a:[]}
+function txsAll(){var a=ls("txs",[]);return Array.isArray(a)?a:[]}
+function txs(){var syms=tokens().map(function(k){return k.sym});return txsAll().filter(function(x){return x.net?x.net===S.net:syms.indexOf(x.symbol)>=0})}
 function isIn(x){var ty=String(x.type||"");return /in|receiv|faucet|get|claim/i.test(ty)&&!/out|sent|send/i.test(ty)}
 function rowTx(x){var i=isIn(x),d=new Date(x.time||Date.now()),tm=d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});var faucet=/faucet|get|claim/i.test(String(x.type||""));
  return '<div class="it '+(i?"in":"out")+'"><span class="ci">'+ic(faucet?"drop":(i?"dn":"up"),20)+'</span><div class="m"><b>'+esc(i?t("received"):t("sent"))+'</b><small>'+esc(tm)+(x.hash?' · '+esc(sh(x.hash)):"")+'</small></div><div class="r"><b>'+(i?"+":"−")+esc(fmt(parseFloat(x.amt),4))+' '+esc(x.symbol||"")+'</b></div></div>'}
@@ -222,24 +223,24 @@ function openConfirm(){readSend();var e=validate();S.snd.err=e;var el=$("sErr");
  $("cGo").onclick=function(){if(this.disabled)return;go(amtTxt)}}
 async function go(amtTxt){if(S.mode==="inapp"){var need=raw("tz_pinsend","1")!=="0"||!CPW.unlocked();if(need){pinPad(amtTxt,function(){doSend(amtTxt)})}else doSend(amtTxt)}else doSend(amtTxt)}
 function pinPad(amtTxt,ok){var pin="";function dots(){return '<div class="dots">'+[0,1,2,3,4,5].map(function(i){return '<i'+(i<pin.length?' class="f"':'')+'></i>'}).join("")+'</div>'}
- function draw(msg,bad){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("pinT"))+'</div><div class="ps'+(bad?" e":"")+'">'+esc(msg||t("pinS").replace("%a",amtTxt))+'</div>'+dots()+'</div><div class="kp">'+"123456789".split("").map(function(d){return '<button class="k" data-k="'+d+'">'+d+'</button>'}).join("")+'<span class="k t"></span><button class="k" data-k="0">0</button><button class="k t" data-k="del" aria-label="delete">'+ic("del",26)+'</button></div>');
-  [].forEach.call(document.querySelectorAll("#sheet [data-k]"),function(b){b.onclick=async function(){var k=b.getAttribute("data-k");if(k==="del"){pin=pin.slice(0,-1);draw()}else if(pin.length<6){pin+=k;draw();if(pin.length===6){var p=pin;sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>');try{await CPW.unlock(p);ok()}catch(e){pin="";draw(t("pinBad"),true)}}}}})}
+ function draw(msg,bad){sheet('<div class="grab"></div><button class="ib" id="pX" style="position:absolute;right:16px;top:14px" aria-label="close">'+ic("x",18)+'</button><div class="pinw"><div class="pt">'+esc(t("pinT"))+'</div><div class="ps'+(bad?" e":"")+'">'+esc(msg||t("pinS").replace("%a",amtTxt))+'</div>'+dots()+'</div><div class="kp">'+"123456789".split("").map(function(d){return '<button class="k" data-k="'+d+'">'+d+'</button>'}).join("")+'<span class="k t"></span><button class="k" data-k="0">0</button><button class="k t" data-k="del" aria-label="delete">'+ic("del",26)+'</button></div>',true);var px=$("pX");if(px)px.onclick=closeSheet;
+  [].forEach.call(document.querySelectorAll("#sheet [data-k]"),function(b){b.onclick=async function(){var k=b.getAttribute("data-k");if(k==="del"){pin=pin.slice(0,-1);draw()}else if(pin.length<6){pin+=k;draw();if(pin.length===6){var p=pin;sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>',true);try{await CPW.unlock(p);ok()}catch(e){pin="";draw(t("pinBad"),true)}}}}})}
  draw()}
 function toHex(v){return "0x"+BigInt(v).toString(16)}
-async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=window.ethereum;sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>');
+async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=window.ethereum;sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>',true);
  try{var wei=ethers.parseUnits(String(S.snd.amt),k.dec||18);
   if(S.mode==="mm"){var acc=await prov.request({method:"eth_requestAccounts"});if(!acc||acc[0].toLowerCase()!==S.addr.toLowerCase())S.addr=acc[0];
    try{await prov.request({method:"wallet_switchEthereumChain",params:[{chainId:n.chainId}]})}catch(e){if(e&&(e.code===4902||e.code===-32603))await prov.request({method:"wallet_addEthereumChain",params:[{chainId:n.chainId,chainName:n.name,nativeCurrency:{name:n.sym,symbol:n.sym,decimals:18},rpcUrls:[n.rpc],blockExplorerUrls:[n.exp]}]});else throw e}}
   else{await prov.request({method:"wallet_switchEthereumChain",params:[{chainId:n.chainId}]})}
   var tx=k.id==="native"?{from:S.addr,to:to,value:toHex(wei)}:{from:S.addr,to:k.addr,value:"0x0",data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+BigInt(wei).toString(16).padStart(64,"0")};
   var hash=await prov.request({method:"eth_sendTransaction",params:[tx]});
-  var list=txs();list.unshift({type:"out",amt:String(S.snd.amt),symbol:k.sym,hash:hash||"",time:Date.now()});lss("txs",list.slice(0,300));
+  var list=txsAll();list.unshift({type:"out",amt:String(S.snd.amt),symbol:k.sym,hash:hash||"",time:Date.now(),net:S.net});lss("txs",list.slice(0,300));
   var sl=sentList();if(sl.indexOf(to.toLowerCase())<0){sl.unshift(to.toLowerCase());rawSet("tz_sent_to",JSON.stringify(sl.slice(0,500)))}
   if(raw("tz_pinsend","1")!=="0"&&S.mode==="inapp"){try{CPW.lock()}catch(e){}}
-  sheet('<div class="grab"></div><div class="done"><div class="ok2">'+ic("check",38,2.6)+'</div><h3>'+esc(t("doneT"))+'</h3><p>'+esc(t("doneP").replace("%a",amtTxt))+'</p>'+(hash?'<a href="'+n.exp+'/tx/'+esc(hash)+'" target="_blank" rel="noopener">'+esc(t("view"))+' ↗</a>':"")+'<div style="margin-top:18px"><button class="btn" id="dOk">'+esc(t("doneB"))+'</button></div></div>');
+  sheet('<div class="grab"></div><div class="done"><div class="ok2">'+ic("check",38,2.6)+'</div><h3>'+esc(t("doneT"))+'</h3><p>'+esc(t("doneP").replace("%a",amtTxt))+'</p>'+(hash?'<a href="'+n.exp+'/tx/'+esc(hash)+'" target="_blank" rel="noopener">'+esc(t("view"))+' ↗</a>':"")+'<div style="margin-top:18px"><button class="btn" id="dOk">'+esc(t("doneB"))+'</button></div></div>',true);
   $("dOk").onclick=function(){closeSheet();S.snd={tok:"native",to:"",amt:"",fee:null,err:""};S.tab="home";render();load()};setTimeout(load,4000)}
  catch(e){var m=(e&&(e.shortMessage||e.message))||String(e);if(/insufficient funds/i.test(m))m=t("eFee").replace("%s",n.sym).replace("%f","?").replace("%s",n.sym);if(/user (rejected|denied)/i.test(m))m="Cancelled";
-  sheet('<div class="grab"></div><div class="done"><div class="ok2" style="background:var(--redSoft);color:var(--red)">'+ic("x",34,2.4)+'</div><h3>'+esc(t("failT"))+'</h3><p>'+esc(m).slice(0,180)+'</p><div style="margin-top:18px"><button class="btnw" id="dOk">'+esc(t("doneB"))+'</button></div></div>');$("dOk").onclick=closeSheet}}
+  sheet('<div class="grab"></div><div class="done"><div class="ok2" style="background:var(--redSoft);color:var(--red)">'+ic("x",34,2.4)+'</div><h3>'+esc(t("failT"))+'</h3><p>'+esc(m).slice(0,180)+'</p><div style="margin-top:18px"><button class="btnw" id="dOk">'+esc(t("doneB"))+'</button></div></div>',true);$("dOk").onclick=closeSheet}}
 /* ---------- SCAN ---------- */
 var camStream=null;
 async function scan(){sheet('<div class="grab"></div><div class="sht">'+esc(t("scanT"))+'</div><div class="cam"><video id="cv" playsinline muted></video></div><div class="note2" id="cMsg">'+esc(t("scanS"))+'</div>');
@@ -316,15 +317,15 @@ function render(){var h;if(!S.addr){$("app").innerHTML=welHTML();return}
  if(S.tab==="recv"){try{new QRCode($("qrbox"),{text:S.addr,width:212,height:212,colorDark:"#0B1D3A",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})}catch(e){}}
  if(S.tab==="send"){var a=$("sTo"),b=$("sAmt");a.oninput=function(){S.snd.to=a.value.trim();S.snd.err="";$("sErr").textContent=""};b.oninput=function(){S.snd.amt=b.value.replace(/,/g,"");S.snd.err="";$("sErr").textContent="";$("sInr").textContent=amtInr()}}
  if(S.tab==="exp")loadMk()}
-function sheet(h){$("sheet").innerHTML=h;$("sheet").classList.add("on");$("sbg").classList.add("on")}
-function closeSheet(){stopCam();$("sheet").classList.remove("on");$("sbg").classList.remove("on")}
+var SLOCK=false;function sheet(h,lock){SLOCK=!!lock;$("sheet").innerHTML=h;$("sheet").classList.add("on");$("sbg").classList.add("on")}
+function closeSheet(){SLOCK=false;stopCam();$("sheet").classList.remove("on");$("sbg").classList.remove("on")}
 function netSheet(){var h='<div class="grab"></div><div class="sht">'+esc(t("netT"))+'</div><div class="grp">'+esc(t("testN"))+'</div>';
  function opt(k,n){return '<button class="opt" data-pick="'+k+'"><span class="ci"><img src="'+netLogo(k)+'" alt=""></span><div class="m"><b>'+esc(n.name)+'</b><small>'+esc(n.sym)+'</small></div>'+(S.net===k?'<span class="tick">'+ic("check",20,2.4)+'</span>':"")+'</button>'}
  Object.keys(NETS).forEach(function(k){if(!NETS[k].beta)h+=opt(k,NETS[k])});if(beta()||S.mode==="mm"){h+='<div class="grp">'+esc(t("realN"))+'</div>'+opt("shardeum",NETS.shardeum)}sheet(h)}
 function tokSheet(){var h='<div class="grab"></div><div class="sht">'+esc(t("coin"))+'</div>'+tokens().map(function(k){return '<button class="opt" data-tok="'+k.id+'"><span class="ci">'+(k.img?'<img src="'+k.img+'" alt="">':'<b>'+esc(k.sym.slice(0,1))+'</b>')+'</span><div class="m"><b>'+esc(k.name)+'</b><small>'+esc(fmt(k.bal,4)+" "+k.sym)+'</small></div>'+(S.snd.tok===k.id?'<span class="tick">'+ic("check",20,2.4)+'</span>':"")+'</button>'}).join("");sheet(h)}
 function choose(title,opts,cur,cb){sheet('<div class="grab"></div><div class="sht">'+esc(title)+'</div>'+opts.map(function(o){return '<button class="opt" data-ch="'+o[0]+'"><div class="m"><b>'+esc(o[1])+'</b></div>'+(cur===o[0]?'<span class="tick">'+ic("check",20,2.4)+'</span>':"")+'</button>'}).join(""));[].forEach.call(document.querySelectorAll("#sheet [data-ch]"),function(b){b.onclick=function(){cb(b.getAttribute("data-ch"));closeSheet();render()}})}
 document.addEventListener("click",function(e){var el=e.target.closest("[data-rtok],[data-rshare],[data-wnew],[data-wimp],[data-wmm],[data-tab],[data-go],[data-net],[data-pick],[data-copy],[data-share],[data-hide],[data-flt],[data-scan],[data-paste],[data-pickc],[data-max],[data-cont],[data-tokpick],[data-tok],[data-pinsw],[data-t12],[data-lock],[data-lang],[data-thm],#sbg");if(!el)return;var d=el.dataset;
- if(el.id==="sbg")return closeSheet();
+ if(el.id==="sbg"){if(SLOCK)return;return closeSheet()}
  if(d.rtok){REQ.tok=d.rtok;render();return}
  if(d.rshare){var k=tokens().find(function(x){return x.id===REQ.tok})||tokens()[0];var msg=t("reqMsg").replace("%a",(REQ.amt?REQ.amt+" ":"")+k.sym+" ("+N().name+")")+" "+S.addr;if(navigator.share)navigator.share({text:msg}).catch(function(){});else{try{navigator.clipboard.writeText(msg);toast(t("copied"))}catch(_){}}return}
  if(d.wnew){createFlow();return}
