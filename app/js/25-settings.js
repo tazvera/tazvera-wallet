@@ -1,0 +1,13 @@
+/* Tazvera wallet · 25-settings.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+"use strict";
+/* ---------- SETTINGS ---------- */
+function setHTML(){var th=raw("tz_theme","");var thL=th==="dark"?t("dark"):th==="light"?t("light"):t("auto");var c=checks(),n=c.filter(function(x){return x.ok}).length;
+ function r(icn,label,right,attr){return '<button class="srow" '+attr+'><span class="si">'+ic(icn,19)+'</span><b>'+esc(label)+'</b>'+right+'</button>'}
+ var chev=ic("right",18),nw=S.mode==="inapp"?wList().length:0;
+ return '<div class="h1">'+esc(t("set"))+'</div><button class="wc" '+(S.mode==="inapp"?'data-wsheet="1"':'data-copy="1"')+'><img src="'+LOGO+'" alt=""><div style="flex:1"><b>'+esc(wName())+'</b><small>'+esc(sh(S.addr))+(S.mode==="mm"?" · "+esc(t("mmOnly")):(nw>1?" · "+nw+" "+esc(t("wallets")).toLowerCase():""))+'</small></div>'+ic(S.mode==="inapp"?"right":"copy",18)+'</button>'+
+ '<div class="day">'+esc(t("sec"))+'</div><div class="card">'+r("shield",t("chkT"),'<em style="color:'+(n===c.length?'var(--green)':'#B45309')+';font-weight:600">'+n+'/'+c.length+'</em>'+chev,'data-tab="chk"')+(S.mode==="inapp"?r("lock",t("pinFp"),chev,'data-pinsheet="1"')+r("key",t("words12"),chev,'data-words="1"'):'')+'</div>'+
+ '<div class="day">'+esc(t("pref"))+'</div><div class="card">'+r("globe",t("network"),'<em>'+esc(N().name)+'</em>'+chev,'data-net="1"')+r("lang",t("lang"),'<em>'+(S.lang==="hi"?"हिंदी":"English")+'</em>'+chev,'data-lang="1"')+r("moon",t("theme"),'<em>'+esc(thL)+'</em>'+chev,'data-thm="1"')+r("bell",t("notif"),'<span class="sw'+(notifOn()?" on":"")+'"></span>','data-notif="1"')+'</div>'+
+ '<div class="day">'+esc(t("dataHelp"))+'</div><div class="card">'+r("dl",t("bkupT"),chev,'data-bk="1"')+r("help",t("helpC"),chev,'data-tab="helpc"')+r("info",t("aboutT"),'<em>v7</em>'+chev,'data-about="1"')+'</div>'+
+ '<div class="ver">Tazvera · Version 7 (Design 2.0)</div>'}
+function t12(){sheet('<div class="grab"></div><div class="sht">'+esc(t("t12T"))+'</div><div class="note2" style="text-align:left">'+esc(t("t12P"))+'</div><textarea class="w12" id="w12" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea><div class="err" id="w12r" style="margin:8px 2px 0"></div><div style="margin-top:10px"><button class="btn" id="w12b">'+esc(t("check"))+'</button></div>');
+ $("w12b").onclick=function(){var ta=$("w12"),r=$("w12r"),ph=ta.value.trim().toLowerCase().replace(/\s+/g," ");ta.value="";try{var a=ethers.Wallet.fromPhrase(ph).address;if(a.toLowerCase()===S.addr.toLowerCase()){r.style.color="var(--green)";r.textContent=t("t12ok");lss("backup_ok",1)}else{r.style.color="var(--red)";r.textContent=t("t12no")}}catch(e){r.style.color="var(--red)";r.textContent=t("t12bad")}}}

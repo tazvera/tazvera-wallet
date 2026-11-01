@@ -23,21 +23,24 @@ Your keys stay on your phone, locked by your PIN. No MetaMask needed. Built in t
 
 ## Project structure
 
-| Path | What it is |
-|------|------------|
-| `index.html` | The app page (installable web app) |
-| `script.js` | App logic and UI. It grew in small "build" layers appended at the end, so it is long; careful refactoring is welcome |
-| `style.css` | Base styles |
-| `wallet.js` | In-app wallet: key encryption with the PIN, signing, test-network switching. Real-money networks are blocked here on purpose |
-| `ethers.min.js`, `qrcode.min.js`, `jsqr.js` | Libraries (ethers v6, QR create, QR scan) |
-| `logos.js` | Coin logos |
-| `api/price.js` | Serverless function: SHM price from exchanges (KuCoin, MEXC, Gate) |
-| `api/airdrop.js` | Serverless function: TZT faucet that pays the fee for the user |
-| `web/` | The tazvera.com website (separate deployment) |
-| `manifest.webmanifest`, `icon-192.png`, `icon-512.png` | Web app manifest and icons |
-| `deploy-note.txt` | Small file used to trigger a redeploy |
+The app (Version 7, "Design 2.0") is plain HTML, CSS and JavaScript. No framework and no build step.
 
-Hosting: [Vercel](https://vercel.com). The app and the website are two Vercel projects deployed from this repository (the website uses `web/` as its root directory).
+| Path | What it is |
+|------|-----------|
+| `index.html` | App page. Loads the files below in order |
+| `app/css/app.css` | All styles (light and dark mode) |
+| `app/css/fonts.css` | Poppins font, embedded |
+| `app/js/00-config.js` | Networks, storage helpers, icons |
+| `app/js/01-i18n.js` | All texts in English and Hindi. **Add a new language here** |
+| `app/js/02-core.js` | Balances, history, home, activity, receive |
+| `app/js/10-send.js` … `13-lock-onboarding.js` | Send + Shield, QR scan, request, lock screen, new wallet |
+| `app/js/20-…` … `25-…` | Faucet and security, tools, wallets, help center, backup, Back button, Explore, Settings |
+| `app/js/30-render-boot.js` | Screen switching and app start |
+| `wallet.js` | In-app wallet: keys are encrypted with the PIN and stay on the phone |
+| `api/` | Vercel serverless functions: SHM price, TZT faucet |
+| `contracts/` | Solidity source of the TZV token |
+| `classic/` | The previous app (Version 6), kept for a short time |
+| `web/` | Website (tazvera.com) |
 
 ## Run it on your computer
 
