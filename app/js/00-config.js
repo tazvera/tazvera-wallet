@@ -1,6 +1,6 @@
 /* Tazvera wallet · 00-config.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
-var SHMLOGO="app/img/shm.png",LOGO="icon-192.png";
+var SHMLOGO="app/img/shm.png",LOGO="icon-192.png",TZVLOGO="brand/tzv/tzv-logo-128.png";
 var CG={BTC:"https://assets.coingecko.com/coins/images/1/small/bitcoin.png",ETH:"https://assets.coingecko.com/coins/images/279/small/ethereum.png",BNB:"https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png",USDT:"https://assets.coingecko.com/coins/images/325/small/Tether.png"};
 function netLogo(k){return k==="bsc-testnet"?CG.BNB:k==="sepolia"?CG.ETH:SHMLOGO}
 var NETS={"shardeum-testnet":{name:"Shardeum Testnet",chainId:"0x1fb7",dec:8119,sym:"SHM",rpc:"https://api-mezame.shardeum.org",exp:"https://explorer-mezame.shardeum.org",test:true,tzt:"0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0"},
