@@ -38,7 +38,7 @@ The app (Version 7, "Design 2.0") is plain HTML, CSS and JavaScript. No framewor
 | `app/js/30-render-boot.js` | Screen switching and app start |
 | `wallet.js` | In-app wallet: keys are encrypted with the PIN and stay on the phone |
 | `api/` | Vercel serverless functions: SHM price, TZT faucet |
-| `contracts/` | Solidity source of the TZV token |
+| `contracts/` | Solidity source of the TZV token and the TZV lock |
 | `classic/` | The previous app (Version 6), kept for a short time |
 | `web/` | Website (tazvera.com) |
 
@@ -67,6 +67,16 @@ Notes:
 - Fixed supply: **1,000,000,000 TZV**, created once. No owner, no minting, no fees, no blacklist.
 - Source code verified on the Shardeum Explorer ✓ (MIT license). Source: [`contracts/Tazvera.sol`](contracts/Tazvera.sol)
 - **There is no sale or presale.** Only this address is the real TZV; any other "Tazvera" coin is fake.
+
+### Locked TZV (450,000,000 TZV, 45% of supply)
+
+TZV for the founder, treasury and liquidity sits in three verified lock contracts ([`contracts/TazveraLock.sol`](contracts/TazveraLock.sol)). No one, including the team, can take TZV out before the dates below. The beneficiary and dates can never be changed.
+
+| Lock | Amount | Rule | Address |
+|------|--------|------|---------|
+| Founder | 150,000,000 TZV | Fully locked until 2 Nov 2027, then unlocks evenly until 1 Nov 2030 | [`0xCA3a…eb08`](https://explorer.shardeum.org/address/0xCA3a736464F6E0D5Ab5d9675FE26B878e6A0eb08) |
+| Treasury | 150,000,000 TZV | Fully locked until 1 May 2027, then unlocks evenly until 30 Apr 2030 | [`0x9f1D…3C6B`](https://explorer.shardeum.org/address/0x9f1Da8bc7083E73F1CE93ea14AFe7f22Bbaf3C6B) |
+| Liquidity | 150,000,000 TZV | Locked until 31 Jan 2027 (for a future DEX pool) | [`0x4Cb4…b790`](https://explorer.shardeum.org/address/0x4Cb4a91694B0CDdE83fe68EC34376f3AC1F1b790) |
 
 ## Contracts (Shardeum Testnet, chain ID 8119)
 
