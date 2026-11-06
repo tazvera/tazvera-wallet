@@ -13,7 +13,9 @@ var AI_SVG='<svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="h
 /* same test as the server: 12+ plain words in a row, or 64 hex characters */
 function aiSecret(s){if(/(?:0x)?[0-9a-fA-F]{64}/.test(s))return true;var w=s.toLowerCase().replace(/[^a-z\s]/g," ").split(/\s+/).filter(Boolean),run=0;for(var i=0;i<w.length;i++){if(/^[a-z]{3,8}$/.test(w[i])){run++;if(run>=12)return true}else run=0}return false}
 function aiCheck(cb){if(AI.on!==null)return cb(AI.on);fetch("/api/ai",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){AI.on=!!(j&&j.enabled);cb(AI.on)}).catch(function(){cb(false)})}
-function aiFab(){var f=document.getElementById("aiFab"),show=!!document.querySelector("#app .nav")&&AI.on!==false;
+var AI_FLOAT=false; /* the bot opens from the Helper button in the Home header; set true to also show a floating button */
+function aiOpen(){if(AI.on===false)helpSheet();else aiSheet()}
+function aiFab(){if(!AI_FLOAT)return;var f=document.getElementById("aiFab"),show=!!document.querySelector("#app .nav")&&AI.on!==false;
  if(!f){if(!show)return;f=document.createElement("button");f.id="aiFab";f.type="button";f.setAttribute("aria-label",AI_T.name);f.title=AI_T.name;f.innerHTML=AI_SVG;
   f.style.cssText="position:fixed;right:14px;bottom:calc(100px + env(safe-area-inset-bottom,0px));width:40px;height:40px;padding:0;border:0;background:none;z-index:30;cursor:pointer;-webkit-tap-highlight-color:transparent";
   f.onclick=aiSheet;document.body.appendChild(f);aiCheck(function(on){if(!on)f.style.display="none"})}
@@ -37,4 +39,5 @@ function aiSheet(){var chips=AI_T.q.map(function(q,i){return '<button data-aiq="
  AI.msgs.length?AI.msgs.forEach(function(m){aiAdd(m.role,m.text)}):aiAdd("model",AI_T.hi);
  var go=document.getElementById("aiGo"),inp=document.getElementById("aiIn");go.onclick=function(){aiAsk(inp.value)};inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();aiAsk(inp.value)}};
  [].forEach.call(document.querySelectorAll("#sheet [data-aiq]"),function(b){b.onclick=function(){aiAsk(AI_T.q[+b.getAttribute("data-aiq")])}})}
+aiCheck(function(){});
 (function(){var a=document.getElementById("app");if(!a||!window.MutationObserver)return;var t=null;new MutationObserver(function(){clearTimeout(t);t=setTimeout(aiFab,60)}).observe(a,{childList:true});setTimeout(aiFab,400)})();
