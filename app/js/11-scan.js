@@ -10,6 +10,6 @@ async function scan(){sheet('<div class="grab"></div><div class="sht">'+esc(t("s
 function stopCam(){if(camStream){camStream.getTracks().forEach(function(tr){tr.stop()});camStream=null}}
 
 function parseQR(s){s=String(s||"").trim();var m;
- if((m=s.match(/^ethereum:(0x[0-9a-fA-F]{40})(?:@\d+)?\/transfer\?(.*)$/i))){var q=new URLSearchParams(m[2]);var to=q.get("address");if(!/^0x[0-9a-fA-F]{40}$/.test(to||""))return null;var n=N(),tok=(n.tzt&&m[1].toLowerCase()===n.tzt.toLowerCase())?"tzt":"native";var u=q.get("uint256");return{to:to,tok:tok,amt:u?String(Number(BigInt(u.split(/e/i)[0]))/1e18):""}}
+ if((m=s.match(/^ethereum:(0x[0-9a-fA-F]{40})(?:@\d+)?\/transfer\?(.*)$/i))){var q=new URLSearchParams(m[2]);var to=q.get("address");if(!/^0x[0-9a-fA-F]{40}$/.test(to||""))return null;var n=N(),tok=(n.tzt&&m[1].toLowerCase()===n.tzt.toLowerCase())?"tzt":(n.tzv&&m[1].toLowerCase()===n.tzv.toLowerCase())?"tzv":null;if(!tok)return null;var u=q.get("uint256");return{to:to,tok:tok,amt:u?String(Number(BigInt(u.split(/e/i)[0]))/1e18):""}}
  if((m=s.match(/^ethereum:(0x[0-9a-fA-F]{40})(?:@\d+)?(?:\?(.*))?$/i))){var q2=new URLSearchParams(m[2]||"");var v=q2.get("value");var amt="";try{if(v)amt=String(Number(BigInt(Math.round(Number(v)).toLocaleString("fullwide",{useGrouping:false})))/1e18)}catch(e){}return{to:m[1],tok:"native",amt:amt}}
  if((m=s.match(/0x[0-9a-fA-F]{40}/)))return{to:m[0],tok:"",amt:""};return null}

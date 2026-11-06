@@ -54,8 +54,13 @@ function actHTML(){var all=txs().filter(function(x){return S.flt==="all"||(S.flt
  all.forEach(function(x){var d=new Date(x.time||0).toDateString();var k=d===td?t("today"):d===yd?t("yday"):new Date(x.time||0).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});if(!groups[k]){groups[k]=[];order.push(k)}groups[k].push(x)});
  return '<div class="h1">'+esc(t("act"))+'<button class="ib" data-csv="1" aria-label="'+esc(t("csv"))+'" title="'+esc(t("csv"))+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg></button></div><div class="flt">'+[["all","allF"],["in","rF"],["out","sF"]].map(function(f){return '<button class="f1'+(S.flt===f[0]?" on":"")+'" data-flt="'+f[0]+'">'+esc(t(f[1]))+'</button>'}).join("")+'</div>'+
  (order.length?order.map(function(k){return '<div class="day">'+esc(k)+'</div><div class="card">'+groups[k].map(rowTx).join("")+'</div>'}).join(""):'<div class="card" style="margin-top:14px"><div class="empty">'+esc(t("none"))+'</div></div>')}
-function recvHTML(){var n=N(),a=S.addr;return '<div class="tb"><button class="ib" data-tab="home" aria-label="back">'+ic("back",20)+'</button><b>'+esc(t("recv"))+'</b></div>'+
- '<div class="qrc"><span class="netp"><img src="'+netLogo(S.net)+'" alt="">'+esc(n.sym+" · "+n.name)+'</span><div class="qr"><div id="qrbox"></div><img class="l" src="'+LOGO+'" alt=""></div>'+
+var RCV={tok:"native"};
+function rcvK(){var a=tokens();return a.find(function(x){return x.id===RCV.tok})||a[0]}
+/* Native coin: plain address (every wallet reads it). Token: standard ethereum: transfer link, which Tazvera's scanner reads too. */
+function rcvURI(){var k=rcvK(),n=N();return k.id==="native"?S.addr:"ethereum:"+k.addr+"@"+n.dec+"/transfer?address="+S.addr}
+function recvHTML(){var n=N(),a=S.addr,k=rcvK();return '<div class="tb"><button class="ib" data-tab="home" aria-label="back">'+ic("back",20)+'</button><b>'+esc(t("recv"))+'</b></div>'+
+ '<div class="chips">'+tokens().map(function(x){return '<button class="chip2" data-rcvtok="'+x.id+'" aria-pressed="'+(x.id===k.id)+'" style="'+(x.id===k.id?'border-color:var(--green);color:var(--green)':'')+'"><img src="'+x.img+'" alt="" style="width:24px;height:24px;border-radius:50%">'+esc(x.sym)+'</button>'}).join("")+'</div>'+
+ '<div class="qrc"><span class="netp"><img src="'+k.img+'" alt="">'+esc(k.sym+" · "+n.name)+'</span><div class="qr"><div id="qrbox"></div><img class="l" src="'+LOGO+'" alt=""></div>'+
  '<div class="ad"><em>'+esc(a.slice(0,6))+'</em>'+esc(a.slice(6,-4))+'<em>'+esc(a.slice(-4))+'</em></div></div>'+
  '<div class="two"><button class="b2 g" data-copy="1">'+ic("copy",19)+esc(t("copy"))+'</button><button class="b2 w" data-share="1">'+ic("share",19)+esc(t("share"))+'</button></div>'+
- '<div class="tip">'+ic("info",18)+'<span>'+esc(t("tip").replace("%s",n.sym).replace("%n",n.name))+'</span></div>'}
+ '<div class="tip">'+ic("info",18)+'<span>'+esc(t("tip").replace("%s",k.sym).replace("%n",n.name))+'</span></div>'}
