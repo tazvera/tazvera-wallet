@@ -11,8 +11,8 @@ function render(){var h;if(!S.addr){$("app").innerHTML=welHTML();return}
  if(S.tab==="send"){var a=$("sTo"),b=$("sAmt");a.oninput=function(){S.snd.to=a.value.trim();S.snd.err="";$("sErr").textContent="";clearTimeout(S._ef);S._ef=setTimeout(estFee,600)};function fit(){b.style.width=Math.min(9,Math.max(1,(b.value||"0").length))+0.6+"ch"}fit();b.oninput=function(){fit();readSend();clearTimeout(S._ef);S._ef=setTimeout(estFee,600);S.snd.err="";$("sErr").textContent=feeHigh()?t("feeHi"):"";$("sErr").style.color=feeHigh()?"#B45309":"";$("sInr").textContent=amtInr()}}
  if(S.tab==="helpc"){var hq=$("hq");if(hq)hq.oninput=function(){S.hq=hq.value;var pos=hq.selectionStart;render();var h2=$("hq");if(h2){h2.focus();try{h2.setSelectionRange(pos,pos)}catch(e){}}}}
  if(S.tab==="exp"){loadMk();var xq=$("xq");if(xq){xq.oninput=function(){S.q=xq.value;var pos=xq.selectionStart;render();var n2=$("xq");if(n2){n2.focus();try{n2.setSelectionRange(pos,pos)}catch(e){}}}}}}
-var SLOCK=false;function sheet(h,lock){SLOCK=!!lock;if(!H.sheet){H.sheet=true;hPush()}$("sheet").innerHTML=h;$("sheet").classList.add("on");$("sbg").classList.add("on")}
-function closeSheet(){SLOCK=false;stopCam();if(H.sheet&&!H.pop){H.sheet=false;hBack()}$("sheet").classList.remove("on");$("sbg").classList.remove("on")}
+var SLOCK=false;function sheet(h,lock){SLOCK=!!lock;if(!H.sheet){H.sheet=true;hPush()}if(!lock&&h.indexOf("data-sx")<0)h='<button class="ib shx" data-sx="1" aria-label="back">'+ic("back",20)+'</button>'+h;$("sheet").innerHTML=h;$("sheet").scrollTop=0;document.body.classList.add("noscroll");$("sheet").classList.add("on");$("sbg").classList.add("on")}
+function closeSheet(){SLOCK=false;stopCam();if(H.sheet&&!H.pop){H.sheet=false;hBack()}$("sheet").classList.remove("on");$("sbg").classList.remove("on");document.body.classList.remove("noscroll")}
 function netSheet(){var h='<div class="grab"></div><div class="sht">'+esc(t("netT"))+'</div><div class="grp">'+esc(t("testN"))+'</div>';
  function opt(k,n){return '<button class="opt" data-pick="'+k+'"><span class="ci"><img src="'+netLogo(k)+'" alt=""></span><div class="m"><b>'+esc(n.name)+'</b><small>'+esc(n.sym)+'</small></div>'+(S.net===k?'<span class="tick">'+ic("check",20,2.4)+'</span>':"")+'</button>'}
  Object.keys(NETS).forEach(function(k){if(!NETS[k].beta)h+=opt(k,NETS[k])});if(beta()||S.mode==="mm"){h+='<div class="grp">'+esc(t("realN"))+'</div>'+opt("shardeum",NETS.shardeum)}sheet(h)}
@@ -79,7 +79,7 @@ async function boot(){theme();var eth=window.ethereum;
  if(S.mode==="mm"&&NETS[ls("v2net","")]){S.net=ls("v2net","shardeum-testnet")}
  try{if(S.addr){var cb=ls("v2_bal_"+S.net+"_"+S.addr.toLowerCase(),null);if(cb&&cb.bal!=null)S.bal=cb.bal}}catch(e){}
  try{if(S.mode==="inapp")wList()}catch(e){}
- var unl=false;try{unl=sessionStorage.getItem("v2_unl")==="1"&&CPW.unlocked()}catch(e){}
+ var unl=false;try{unl=sessionStorage.getItem("v2_unl")==="1"&&(CPW.unlocked()||Number(sessionStorage.getItem("v2_act")||0)>Date.now()-amin()*60000)}catch(e){}
  if(S.mode==="inapp"&&!unl){lockScreen();setInterval(function(){if(CPW.unlocked())load()},30000);return}
  render();load();setInterval(load,30000);setInterval(function(){if(alarms().length){S.mkt=0;loadMk().then(function(){fetch("/api/price").then(function(r){return r.json()}).then(function(pj){if(pj&&pj.inr>0)S.inr=pj.inr;checkAlarms()}).catch(checkAlarms)})}},60000)}
 window.addEventListener("pageshow",function(){theme()});

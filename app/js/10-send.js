@@ -48,8 +48,8 @@ function openConfirm(){readSend();var e=validate();S.snd.err=e;var el=$("sErr");
  '<div class="camt">'+esc(bigTxt)+'</div><div class="camtr">'+esc(subTxt)+'</div>'+(feeHigh()?'<div class="note2" style="color:#B45309;font-weight:600">'+esc(t("feeHi"))+'</div>':'')+''+
  '<div class="kv"><div><span>'+esc(t("from"))+'</span><b>'+esc(wName()+" · "+sh(S.addr))+'</b></div><div><span>'+esc(t("to"))+'</span><b class="who2">'+(nm?'<span class="av" style="background:linear-gradient(135deg,'+COLORS[0]+')">'+esc(nm.slice(0,1).toUpperCase())+'</span>'+esc(nm):esc(t("newAddr")))+'</b></div><div><span>'+esc(t("network"))+'</span><b>'+esc(n.name)+'</b></div><div><span>'+esc(t("fee"))+'</span><b>'+esc(feeTxt())+'</b></div></div>'+
  '<div class="addr"><em>'+esc(to.slice(0,6))+'</em>'+esc(to.slice(6,-4))+'<em>'+esc(to.slice(-4))+'</em></div>'+card+
- '<div style="margin-top:14px"><button class="btn" id="cGo"'+(sd.lvl==="bad"?" disabled":"")+'>'+ic("lock",20)+esc(t("sendX").replace("%a",amtTxt))+'</button></div><div class="note2">'+esc(S.mode==="inapp"?t("pinNext"):t("mmNext"))+'</div>';
- sheet(h);var tk=$("cTick");if(tk)tk.onchange=function(){$("cGo").disabled=!tk.checked};
+ bigBox(a,k)+'<div style="margin-top:14px"><button class="btn" id="cGo"'+(sd.lvl==="bad"||isBig(a,k)?" disabled":"")+'>'+ic("lock",20)+esc(t("sendX").replace("%a",amtTxt))+'</button></div><div class="note2">'+esc(S.mode==="inapp"?t("pinNext"):t("mmNext"))+'</div>';
+ sheet(h);var tk=$("cTick"),bt=$("cBig");function upd(){$("cGo").disabled=(tk&&!tk.checked)||(bt&&!bt.checked)}if(tk)tk.onchange=upd;if(bt)bt.onchange=upd;
  $("cGo").onclick=function(){if(this.disabled)return;go(amtTxt)}}
 async function go(amtTxt){if(S.mode==="inapp"){var need=raw("tz_pinsend","1")!=="0"||!CPW.unlocked();if(need){pinPad(amtTxt,function(){doSend(amtTxt)})}else doSend(amtTxt)}else doSend(amtTxt)}
 function pinPad(amtTxt,ok){if(BIO.full()){BIO.unlock().then(ok).catch(function(){pinPad2(amtTxt,ok)});return}pinPad2(amtTxt,ok)}
