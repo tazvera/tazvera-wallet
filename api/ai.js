@@ -11,13 +11,13 @@
 
    Environment variables:
      GEMINI_API_KEY   required (GEMINI_AI_KEY is accepted too)
-     GEMINI_MODEL     optional, default "gemini-flash-latest" */
+     GEMINI_MODEL     optional, tried first; default "gemini-2.5-flash-lite", then lighter/other models if busy */
 
-const DEFAULT_MODEL = "gemini-flash-latest";
-const FALLBACK_MODEL = "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash-lite"; /* light and fast; others are tried if it is busy */
 /* Google switched off the old gemini-1.x models (they answer 404), so a leftover GEMINI_MODEL=gemini-1.5-flash is ignored. */
 const ENV_MODEL = process.env.GEMINI_MODEL || "";
 const MODEL = /^[a-z0-9.\-]{3,60}$/.test(ENV_MODEL) && !/^gemini-1\./.test(ENV_MODEL) ? ENV_MODEL : DEFAULT_MODEL;
+const MODEL_FIRST = MODEL;
 if (ENV_MODEL && MODEL !== ENV_MODEL) console.warn("[ai] GEMINI_MODEL '" + ENV_MODEL.slice(0, 60) + "' is not usable, using " + DEFAULT_MODEL);
 const MAX_MSGS = 8, MAX_LEN = 500; /* short history keeps answers fast */
 
@@ -81,39 +81,42 @@ module.exports = async function handler(req, res) {
 
   const appLang = b && b.lang === "hi" ? "Hindi" : "English";
   const sysText = SYSTEM + "\nApp language of this user: " + appLang + ".";
-  /* Try fast settings first (no "thinking"), then plain settings, then a second model name. Each try has its own time limit. */
-  const tries = [
-    { model: MODEL, thinking: true },
-    { model: MODEL, thinking: false },
-    { model: FALLBACK_MODEL, thinking: true }
-  ];
+  /* Google sometimes says a model is "busy" (503) or is slow. So we try several models, the lighter and faster ones first,
+     each with a short time limit, and skip any model that is busy, missing or slow. */
+  const models = [];
+  [MODEL_FIRST, "gemini-2.5-flash-lite", "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-flash-latest"].forEach(function (m) { if (m && models.indexOf(m) < 0) models.push(m); });
   const started = Date.now();
-  for (const tr of tries) {
-    if (Date.now() - started > 20000) break;
-    const ac = new AbortController(), tm = setTimeout(function () { ac.abort(); }, 11000);
-    try {
-      const gen = { maxOutputTokens: 500, temperature: 0.3 };
-      if (tr.thinking) gen.thinkingConfig = { thinkingBudget: 0 };
-      const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + tr.model + ":generateContent", {
-        method: "POST", signal: ac.signal,
-        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-        body: JSON.stringify({ systemInstruction: { parts: [{ text: sysText }] }, contents: contents, generationConfig: gen })
-      });
-      if (!r.ok) {
-        let why = "";
-        try { const raw = await r.text(); let em = null; try { em = JSON.parse(raw).error; } catch (e) { /* not JSON */ } why = (em && em.message ? String(em.status || "") + " | " + String(em.message) : raw).replace(/\s+/g, " ").slice(0, 220); } catch (e) { /* ignore */ }
-        console.error("[ai] ERR " + r.status + " :: " + why + " :: model=" + tr.model + " thinkingOff=" + tr.thinking);
-        if (r.status === 400 || r.status === 404) continue; /* try the next setting */
-        return send(res, r.status === 429 ? 429 : 502, { error: r.status === 429 ? "slow_down" : "upstream" });
-      }
-      const j = await r.json();
-      const parts = j && j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts;
-      const text = Array.isArray(parts) ? parts.map(function (p) { return typeof p.text === "string" && !p.thought ? p.text : ""; }).join("").trim() : "";
-      if (!text) { console.error("[ai] empty reply, finishReason=" + String(j && j.candidates && j.candidates[0] && j.candidates[0].finishReason || "none") + " model=" + tr.model); continue; }
-      return send(res, 200, { text: text.slice(0, 2000) });
-    } catch (e) {
-      console.error("[ai] request failed: " + String(e && e.message || e).slice(0, 200) + " :: model=" + tr.model + " after " + (Date.now() - started) + "ms");
-    } finally { clearTimeout(tm); }
+  for (const model of models) {
+    for (const thinkingOff of [true, false]) {
+      if (Date.now() - started > 24000) return send(res, 502, { error: "upstream" });
+      const ac = new AbortController(), tm = setTimeout(function () { ac.abort(); }, 8000);
+      let next = "model";
+      try {
+        const gen = { maxOutputTokens: 500, temperature: 0.3 };
+        if (thinkingOff) gen.thinkingConfig = { thinkingBudget: 0 };
+        const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent", {
+          method: "POST", signal: ac.signal,
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          body: JSON.stringify({ systemInstruction: { parts: [{ text: sysText }] }, contents: contents, generationConfig: gen })
+        });
+        if (!r.ok) {
+          let why = "";
+          try { const raw = await r.text(); let em = null; try { em = JSON.parse(raw).error; } catch (e) { /* not JSON */ } why = (em && em.message ? String(em.status || "") + " | " + String(em.message) : raw).replace(/\s+/g, " ").slice(0, 160); } catch (e) { /* ignore */ }
+          console.error("[ai] ERR " + r.status + " :: " + why + " :: model=" + model + " thinkingOff=" + thinkingOff);
+          if (r.status === 400 && thinkingOff) next = "setting"; /* this model may not accept the thinking setting: same model, plain */
+          else if (r.status === 401 || r.status === 403) return send(res, 503, { error: "not_configured" }); /* key problem: no point trying more */
+        } else {
+          const j = await r.json();
+          const parts = j && j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts;
+          const text = Array.isArray(parts) ? parts.map(function (p) { return typeof p.text === "string" && !p.thought ? p.text : ""; }).join("").trim() : "";
+          if (text) return send(res, 200, { text: text.slice(0, 2000) });
+          console.error("[ai] empty reply, finishReason=" + String(j && j.candidates && j.candidates[0] && j.candidates[0].finishReason || "none") + " model=" + model);
+        }
+      } catch (e) {
+        console.error("[ai] request failed: " + String(e && e.message || e).slice(0, 120) + " :: model=" + model + " after " + (Date.now() - started) + "ms");
+      } finally { clearTimeout(tm); }
+      if (next === "model") break; /* go to the next model */
+    }
   }
   return send(res, 502, { error: "upstream" });
 };
