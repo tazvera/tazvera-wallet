@@ -1,0 +1,30 @@
+name: Slither
+on:
+  push:
+    branches: [main]
+    paths: ["contracts/**"]
+  schedule:
+    - cron: "41 4 1 * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  slither:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: crytic/slither-action@v0.4.0
+        id: slither
+        with:
+          target: contracts/
+          solc-version: 0.8.34
+          fail-on: high
+          sarif: results.sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: ${{ steps.slither.outputs.sarif }}
+          category: slither
