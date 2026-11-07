@@ -90,8 +90,15 @@ module.exports = async function handler(req, res) {
     });
     if (!r.ok) {
       /* Only the server log gets Google's reason (never the key or the user's text); the user sees a plain error. */
-      let why = ""; try { why = (await r.text()).replace(/\s+/g, " ").slice(0, 300); } catch (e) { /* ignore */ }
-      console.error("[ai] Gemini HTTP " + r.status + " model=" + MODEL + " " + why);
+      let why = "";
+      try {
+        const raw = await r.text();
+        let em = null; try { em = JSON.parse(raw).error; } catch (e) { /* not JSON */ }
+        why = em && em.message ? String(em.status || "") + " | " + String(em.message) : raw;
+        why = why.replace(/\s+/g, " ").slice(0, 220);
+      } catch (e) { /* ignore */ }
+      /* short, readable: status first, then Google's own reason */
+      console.error("[ai] ERR " + r.status + " :: " + why + " :: model=" + MODEL);
       return send(res, 502, { error: "upstream" });
     }
     const j = await r.json();
