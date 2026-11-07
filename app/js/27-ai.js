@@ -23,15 +23,46 @@ function aiSecret(s){if(/(?:0x)?[0-9a-fA-F]{64}/.test(s))return true;var w=s.toL
 /* ---- Marathi voice (api/tts.js). Female is the default; the choice is remembered on this phone only. ---- */
 function aiGender(){return "FEMALE"}
 function aiSetGender(g){try{localStorage.setItem("tz_aivoice",g)}catch(e){}[].forEach.call(document.querySelectorAll("#sheet [data-aig]"),function(b){var on=b.getAttribute("data-aig")===g;b.style.borderColor=on?"var(--green)":"transparent";b.style.color=on?"var(--green)":"var(--tx)";b.setAttribute("aria-pressed",on)})}
-function aiStop(){if(AI.aud){try{AI.aud.pause()}catch(e){}AI.aud=null}[].forEach.call(document.querySelectorAll("#aiLog [data-aispk]"),function(b){b.textContent=AI_T.listen})}
-function aiSpeak(btn,text){if(AI.aud&&btn.getAttribute("data-on")==="1"){aiStop();btn.setAttribute("data-on","0");return}aiStop();btn.setAttribute("data-on","0");btn.textContent="…";
- fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:text,gender:aiGender()})}).then(function(r){return r.json().then(function(j){return{s:r.status,j:j}})}).then(function(x){
-  if(x.s!==200||!x.j||typeof x.j.audio!=="string"){btn.textContent=AI_T.eVoice;setTimeout(function(){btn.textContent=AI_T.listen},2500);return}
+/* text that sounds right: no links, no markdown, long addresses shortened */
+function aiSay(t){return String(t||"").replace(/https?:\/\/\S+/g," ").replace(/0x[0-9a-fA-F]{40}/g,function(m){return m.slice(0,6)+" … "+m.slice(-4)}).replace(/[*_`#>~|]/g," ").replace(/\s+/g," ").trim().slice(0,900)}
+/* language of a text, for any language in the world: script first; Hindi vs Marathi by common words;
+   Latin letters: English if it looks English, otherwise the language this phone is set to (French, Swahili, Portuguese…) */
+function aiLangOf(t){var nav=String((navigator.languages&&navigator.languages[0])||navigator.language||"en-IN");
+ var sc=[["bn-IN",/[\u0980-\u09FF]/g],["pa-IN",/[\u0A00-\u0A7F]/g],["gu-IN",/[\u0A80-\u0AFF]/g],["or-IN",/[\u0B00-\u0B7F]/g],["ta-IN",/[\u0B80-\u0BFF]/g],["te-IN",/[\u0C00-\u0C7F]/g],["kn-IN",/[\u0C80-\u0CFF]/g],["ml-IN",/[\u0D00-\u0D7F]/g],
+  ["ar",/[\u0600-\u06FF]/g],["ur",/[\u0750-\u077F]/g],["he",/[\u0590-\u05FF]/g],["ru",/[\u0400-\u04FF]/g],["el",/[\u0370-\u03FF]/g],["th",/[\u0E00-\u0E7F]/g],["am",/[\u1200-\u137F]/g],["ko",/[\uAC00-\uD7AF]/g],["ja",/[\u3040-\u30FF]/g],["zh",/[\u4E00-\u9FFF]/g]];
+ var dev=(t.match(/[\u0900-\u097F]/g)||[]).length,lat=(t.match(/[A-Za-z]/g)||[]).length,best=null,bn=0;sc.forEach(function(x){var n=(t.match(x[1])||[]).length;if(n>bn){bn=n;best=x[0]}});
+ if(bn>dev&&bn>lat/3&&bn>0){if(best.length===2&&nav.toLowerCase().indexOf(best)===0)return nav;return best}
+ if(dev>0&&dev>=lat/2){var mr=(t.match(/(^|[\s,.;:!?।(])(आहे|आहेत|नाही|आणि|तुम्ही|तुमचा|तुमची|तुमचे|मला|करा|कसे|काय|मी|असेल)(?=$|[\s,.;:!?।)])/g)||[]).length,hi=(t.match(/(^|[\s,.;:!?।(])(है|हैं|नहीं|और|आप|आपका|आपकी|करें|में|कृपया|मैं|क्या|यह|कैसे)(?=$|[\s,.;:!?।)])/g)||[]).length;return hi>mr?"hi-IN":"mr-IN"}
+ var w=t.toLowerCase().match(/[a-z']+/g)||[],en=0;w.forEach(function(x){if(/^(the|is|are|and|you|your|to|of|a|an|in|it|for|can|not|with|this|that|on|or|be|do|how|what|never|send|wallet|from|will|if)$/.test(x))en++});
+ var L5={fr:/^(le|la|les|des|est|et|vous|pour|avec|une|pas|votre|dans)$/,es:/^(el|los|las|es|y|para|con|usted|una|no|su|puede)$/,pt:/^(os|as|é|para|com|você|não|uma|seu|sua|pode)$/,sw:/^(na|ya|kwa|ni|wa|kwenye|unaweza|pesa|hii|yako)$/,de:/^(der|die|das|und|ist|sie|mit|nicht|ein|eine|ihr)$/,id:/^(dan|yang|untuk|dengan|anda|ini|tidak|bisa|dari)$/},bestL=null,bestN=0;
+ for(var k in L5){var c=0;w.forEach(function(x){if(L5[k].test(x))c++});if(c>bestN){bestN=c;bestL=k}}
+ if(bestL&&bestN>=2&&bestN>en){return nav.toLowerCase().indexOf(bestL)===0?nav:bestL}
+ if(!w.length||en>=2||en/w.length>=0.08)return nav.toLowerCase().indexOf("en")===0?nav:"en-IN";
+ return nav}
+/* Google voice is used only for English and Indian languages; every other language uses the phone's own voice */
+function aiServerLang(l){return /^(en|hi|mr|bn|gu|pa|ta|te|kn|ml|or)(-|$)/i.test(l)}
+/* the phone's own voice (free, no key): used when the Google voice is off or fails */
+function aiLocal(btn,text){var ss=window.speechSynthesis;if(!ss||!window.SpeechSynthesisUtterance){btn.textContent=AI_T.eVoice;setTimeout(function(){btn.textContent=AI_T.listen},2500);return}
+ try{ss.cancel()}catch(e){}var say=aiSay(text),lang=aiLangOf(say),vs=ss.getVoices()||[];
+ function find(l){var base=l.split("-")[0];return vs.filter(function(v){return v.lang&&v.lang.replace("_","-").toLowerCase()===l.toLowerCase()})[0]||vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(base)===0})[0]||null}
+ var voice=find(lang);if(!voice&&lang==="mr-IN"){voice=find("hi-IN");}var useLang=voice?voice.lang:lang;/* no matching voice: the phone picks its own for this language */
+ var parts=say.match(/[^।.!?]+[।.!?]?/g)||[say],chunks=[],cur="";parts.forEach(function(p){if((cur+p).length>180&&cur){chunks.push(cur);cur=p}else cur+=p});if(cur.trim())chunks.push(cur);
+ btn.setAttribute("data-on","1");btn.setAttribute("data-local","1");btn.textContent=AI_T.stopb;
+ chunks.forEach(function(c,i){var u=new SpeechSynthesisUtterance(c.trim());u.lang=useLang;if(voice)u.voice=voice;u.rate=.95;
+  if(i===chunks.length-1){u.onend=function(){btn.setAttribute("data-on","0");btn.removeAttribute("data-local");btn.textContent=AI_T.listen}}
+  u.onerror=function(){btn.setAttribute("data-on","0");btn.removeAttribute("data-local");btn.textContent=AI_T.listen};ss.speak(u)})}
+function aiStop(){if(AI.aud){try{AI.aud.pause()}catch(e){}AI.aud=null}try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}[].forEach.call(document.querySelectorAll("#aiLog [data-aispk]"),function(b){b.textContent=AI_T.listen;b.setAttribute("data-on","0");b.removeAttribute("data-local")})}
+function aiSpeak(btn,text){if(btn.getAttribute("data-on")==="1"){aiStop();return}aiStop();
+ if(!AI.tts||!aiServerLang(aiLangOf(aiSay(text)))){aiLocal(btn,text);return}
+ btn.textContent="…";
+ fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:aiSay(text),gender:aiGender()})}).then(function(r){return r.json().then(function(j){return{s:r.status,j:j}})}).then(function(x){
+  if(x.s!==200||!x.j||typeof x.j.audio!=="string"){aiLocal(btn,text);return}
   var a=new Audio("data:audio/mpeg;base64,"+x.j.audio);AI.aud=a;btn.setAttribute("data-on","1");btn.textContent=AI_T.stopb;
   a.onended=function(){if(AI.aud===a)AI.aud=null;btn.setAttribute("data-on","0");btn.textContent=AI_T.listen};a.ontimeupdate=function(){if(!document.getElementById("aiLog")){a.pause();AI.aud=null}};
-  var pr=a.play();if(pr&&pr.catch)pr.catch(function(){btn.setAttribute("data-on","0");btn.textContent=AI_T.listen})}).catch(function(){btn.textContent=AI_T.listen})}
-function aiBtn(d,text){if(!AI.tts||!d)return;var b=document.createElement("button");b.type="button";b.setAttribute("data-aispk","1");b.textContent=AI_T.listen;
- b.style.cssText="display:block;margin-top:6px;padding:4px 10px;border-radius:12px;background:var(--soft);color:var(--green);font-size:12.5px;font-weight:600";b.onclick=function(){aiSpeak(b,text)};d.appendChild(b)}
+  var pr=a.play();if(pr&&pr.catch)pr.catch(function(){AI.aud=null;aiLocal(btn,text)})}).catch(function(){aiLocal(btn,text)})}
+function aiBtn(d,text){if((!AI.tts&&!window.speechSynthesis)||!d)return;var b=document.createElement("button");b.type="button";b.setAttribute("data-aispk","1");b.textContent=AI_T.listen;
+ b.style.cssText="display:block;margin-top:6px;padding:4px 10px;border-radius:12px;background:var(--soft);color:var(--tx);font-size:12.5px;font-weight:600";b.onclick=function(){aiSpeak(b,text)};d.appendChild(b)}
+try{if(window.speechSynthesis){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){}}}catch(e){}
 function aiCheck(cb){if(AI.on!==null)return cb(AI.on);fetch("/api/ai",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){AI.on=!!(j&&j.enabled);cb(AI.on)}).catch(function(){cb(false)})}
 var AI_FLOAT=false; /* the bot opens from the Helper button in the Home header; set true to also show a floating button */
 function aiOpen(){if(AI.on===false)helpSheet();else aiSheet()}
