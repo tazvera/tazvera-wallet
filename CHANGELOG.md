@@ -3,6 +3,20 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8 · November 2026
+
+- Verified badges on official coins; "not verified" warning on tokens you add yourself
+- Tap any coin on Home for its own page: balance, contract, history (TZV page shows the 3 locks)
+- News & alerts bell on Home (news comes from announcements.json, no app update needed)
+- Network health chip on the balance card
+- Security card on Home, "your wallet is ready" card for new wallets
+- Extra check before sending a big amount
+- "Before you start" safety screen when creating a wallet
+- Back button on every sheet; asks "Leave Tazvera?" before closing the app
+- Refresh no longer asks for the PIN inside the auto-lock time (sending still asks)
+- Cleaner look: navy main buttons, see-through bottom bar with Home and Explore; Settings and News on the Home header; Activity in Home actions and Settings
+- AI assistant: answers in the user's own language, faster replies, no voice-gender buttons
+
 ## v6 · Build 95
 - Hidden "Mainnet beta" switch for testing Shardeum Mainnet with very small amounts (tap the Build line in About 7 times)
 - Real-money mode: red "REAL MONEY" bar, extra confirm checkbox before sending, warning for larger amounts
