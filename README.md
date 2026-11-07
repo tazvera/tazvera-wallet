@@ -1,5 +1,11 @@
 # Tazvera Wallet
 
+[![CodeQL](https://github.com/tazvera/tazvera-wallet/actions/workflows/codeql.yml/badge.svg)](https://github.com/tazvera/tazvera-wallet/actions/workflows/codeql.yml)
+[![Slither](https://github.com/tazvera/tazvera-wallet/actions/workflows/slither.yml/badge.svg)](https://github.com/tazvera/tazvera-wallet/actions/workflows/slither.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/tazvera/tazvera-wallet/badge)](https://scorecard.dev/viewer/?uri=github.com/tazvera/tazvera-wallet)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+
 **A simple, self-custody crypto wallet for everyday payments, in Hindi and English.**
 
 Your keys stay on your phone, locked by your PIN. No MetaMask needed. Built in the open by a solo founder from India.
@@ -104,7 +110,9 @@ Please keep in mind:
 
 ## Security
 
-Found a security problem? Please **do not** open a public Issue. Email **contact@tazvera.com** with the details.
+Found a security problem? Please **do not** open a public Issue. Email **contact@tazvera.com** with the details. Valid reports can be rewarded in TZV. See [SECURITY.md](SECURITY.md).
+
+The code and contracts are checked automatically on every change (CodeQL, Slither, Dependabot, OpenSSF Scorecard). These are automatic scans, not a professional audit.
 
 The Tazvera team will **never** ask for your 12 words, PIN, passwords or money. Anyone who does is a scammer.
 
