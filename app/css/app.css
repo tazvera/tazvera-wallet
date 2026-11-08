@@ -330,3 +330,14 @@ html[data-theme=dark] .warn3{background:#2A2110;color:#FCD34D}
 .rtag{display:inline-flex;margin-left:6px;padding:2px 8px;border-radius:9px;background:var(--redSoft,rgba(220,38,38,.12));color:var(--red,#DC2626);font-size:11px;font-weight:700;vertical-align:1px}
 
 html[data-theme=dark] .secc .sf{color:#FCD34D}
+
+/* ---- bottom bar with a raised Scan button, assistant in the corner ---- */
+.nav.n3{grid-template-columns:repeat(3,1fr)!important;max-width:300px!important;min-width:270px;align-items:center}
+.nvs{display:flex;flex-direction:column;align-items:center;gap:4px;transform:translateY(-18px);color:var(--tx);background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nvs span{width:62px;height:62px;border-radius:50%;background:var(--tx);color:var(--bg);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 26px rgba(11,29,58,.32),0 0 0 5px var(--bg);transition:transform .15s}
+.nvs:active span{transform:scale(.94)}
+.nvs b{font-size:11px;font-weight:700;line-height:1}
+.aifab{position:fixed;right:max(16px,calc(50% - 204px));bottom:calc(104px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:50%;background:var(--card);border:1px solid var(--line);box-shadow:0 10px 26px rgba(11,29,58,.18);display:flex;align-items:center;justify-content:center;z-index:30;padding:0;cursor:pointer;transition:transform .15s}
+.aifab:active{transform:scale(.94)}.aifab svg{width:38px;height:38px}
+html[data-theme=dark] .aifab{box-shadow:0 10px 26px rgba(0,0,0,.5)}html[data-theme=dark] .nvs span{box-shadow:0 12px 26px rgba(0,0,0,.5),0 0 0 5px var(--bg)}
+#app{padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}

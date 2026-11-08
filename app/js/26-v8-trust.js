@@ -166,3 +166,7 @@ document.addEventListener("visibilitychange",function(){if(!document.hidden)retu
 new MutationObserver(function(){[].forEach.call(document.querySelectorAll("#qrbox img:not([alt]),#qrbox canvas:not([aria-label])"),function(e){if(e.tagName==="IMG")e.alt=t("qrAlt");else{e.setAttribute("role","img");e.setAttribute("aria-label",t("qrAlt"))}})}).observe(document.body,{childList:true,subtree:true});
 /* open even without internet: a small offline helper (always fetches the newest files when online) */
 if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}
+
+/* ----- bottom bar: Home · Scan · Explore, and the assistant in the corner ----- */
+Object.assign(L.en,{navScan:"Scan",navLearn:"Learn",aiFab:"Tazvera Assistant"});
+Object.assign(L.hi,{navScan:"स्कैन",navLearn:"सीखें",aiFab:"Tazvera सहायक"});
