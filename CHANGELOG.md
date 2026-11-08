@@ -3,6 +3,12 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.3 · November 2026
+
+- New: encrypted wallet backup file (Settings → Backup & restore). All wallets locked with a separate backup password (standard Ethereum keystore); restore on a new phone from the welcome screen
+- Bottom bar: Home · Learn · Explore; Scan stays at the top; the assistant sits in the bottom-right corner
+- Fix: Shardeum Mainnet sending now works for everyone (the wallet engine still expected the old hidden switch)
+
 ## Version 8.2 · November 2026
 
 - QR codes from other wallets read correctly ("1e18", "2.5e18" amounts, exact decimals); no more freeze

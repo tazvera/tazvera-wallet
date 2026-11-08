@@ -1,11 +1,11 @@
-/* Tazvera in-app wallet (TEST NETWORKS ONLY: Shardeum Testnet, BNB Testnet, Sepolia). Keys are encrypted with your PIN and never leave this device. */
+/* Tazvera in-app wallet: Shardeum Mainnet + test networks (Shardeum Testnet, BNB Testnet, Sepolia). Keys are encrypted with your PIN and never leave this device. */
 (function(){
 var E=window.ethers;if(!E)return;
 var KS="cp3_inapp_keystore",W=null;
 /* Test networks only. Real-money networks are not allowed in the in-app wallet. */
 var NETS={"0x1fb7":{id:8119,r:["https://api-mezame.shardeum.org"]},"0x61":{id:97,r:["https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://bsc-testnet-rpc.publicnode.com"]},"0xaa36a7":{id:11155111,r:["https://ethereum-sepolia-rpc.publicnode.com","https://sepolia.drpc.org"]}};
-/* Shardeum Mainnet only when the hidden "Mainnet beta" switch is on */
-function nets(){var n={};for(var k in NETS)n[k]=NETS[k];try{if(localStorage.getItem("cp3_mainnet_beta")==="1")n["0x1fb6"]={id:8118,r:["https://api.shardeum.org"]}}catch(e){}return n}
+/* Shardeum Mainnet is on unless the user switched it off in About (cp3_mainnet_beta = "0") */
+function nets(){var n={};for(var k in NETS)n[k]=NETS[k];try{if(localStorage.getItem("cp3_mainnet_beta")!=="0")n["0x1fb6"]={id:8118,r:["https://api.shardeum.org"]}}catch(e){}return n}
 var CHAIN="0x1fb7";try{var sc=localStorage.getItem("cp3_inapp_chain");if(sc&&nets()[sc])CHAIN=sc}catch(e){}
 var RI=0;
 function prov(){var n=nets()[CHAIN]||NETS["0x1fb7"];return new E.JsonRpcProvider(n.r[RI%n.r.length],n.id,{staticNetwork:true})}

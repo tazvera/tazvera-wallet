@@ -341,3 +341,11 @@ html[data-theme=dark] .secc .sf{color:#FCD34D}
 .aifab:active{transform:scale(.94)}.aifab svg{width:38px;height:38px}
 html[data-theme=dark] .aifab{box-shadow:0 10px 26px rgba(0,0,0,.5)}html[data-theme=dark] .nvs span{box-shadow:0 12px 26px rgba(0,0,0,.5),0 0 0 5px var(--bg)}
 #app{padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+
+/* ---- wallet backup file ---- */
+.wbk{margin:12px 0 18px;padding:14px;border-radius:18px;background:var(--soft);border:1px solid var(--line)}.wbk .btn,.wbk .btnw{margin-top:10px}
+.wbkh{display:flex;gap:12px;align-items:flex-start}.wbkh span{width:40px;height:40px;border-radius:12px;background:var(--tx);color:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0}.wbkh b{display:block;font-size:15.5px}.wbkh small{display:block;color:var(--mu);font-size:13px;line-height:1.5;margin-top:2px}
+.wbbar{height:6px;border-radius:4px;background:var(--line);margin:8px 2px 0;overflow:hidden}.wbbar i{display:block;height:100%;width:0;border-radius:4px;transition:width .2s,background .2s}
+.wbbar i.l0{width:12%;background:var(--red)}.wbbar i.l1{width:38%;background:#F59E0B}.wbbar i.l2{width:70%;background:var(--green)}.wbbar i.l3{width:100%;background:var(--green)}
+.wbmsg{font-size:12.5px;font-weight:600;margin:6px 2px 0;min-height:16px}.wbmsg.l0{color:var(--red)}.wbmsg.l1{color:#B45309}.wbmsg.l2,.wbmsg.l3{color:var(--green)}
+.wlnk{display:block;width:100%;margin-top:14px;background:none;border:0;color:var(--tx);font-weight:600;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
