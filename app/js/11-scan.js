@@ -18,7 +18,7 @@ function parseQR(s){s=String(s||"").trim();var m;
  if((m=s.match(/^ethereum:(0x[0-9a-fA-F]{40})(?:@(\d+))?\/transfer\?(.*)$/i))){var q=new URLSearchParams(m[3]);var to=q.get("address");if(!/^0x[0-9a-fA-F]{40}$/.test(to||""))return null;var n=N(),tok=(n.tzt&&m[1].toLowerCase()===n.tzt.toLowerCase())?"tzt":(n.tzv&&m[1].toLowerCase()===n.tzv.toLowerCase())?"tzv":null;
   var chain=m[2]?+m[2]:null;if(!tok&&chain==null)return null;return{to:to,tok:tok||"",token:m[1],amt:qrAmt(q.get("uint256"),18),chain:chain}}
  if((m=s.match(/^ethereum:(0x[0-9a-fA-F]{40})(?:@(\d+))?(?:\?(.*))?$/i))){var q2=new URLSearchParams(m[3]||"");return{to:m[1],tok:"native",amt:qrAmt(q2.get("value"),18),chain:m[2]?+m[2]:null}}
- if((m=s.match(/0x[0-9a-fA-F]{40}/)))return{to:m[0],tok:"",amt:"",chain:null};return null}
+ if((m=s.match(/^0x[0-9a-fA-F]{40}$/)))return{to:m[0],tok:"",amt:"",chain:null};return null}
 
 function useQR(pr){S.snd.to=pr.to;if(pr.amt)S.snd.amt=pr.amt;if(pr.tok)S.snd.tok=pr.tok;else if(pr.token){var n=N(),k=pr.token.toLowerCase();S.snd.tok=(n.tzt&&k===n.tzt.toLowerCase())?"tzt":(n.tzv&&k===n.tzv.toLowerCase())?"tzv":"native"}S.tab="send";render();estFee()}
 /* the QR is for another network: say so clearly, and offer to switch (Mainnet still asks its real-money check first) */

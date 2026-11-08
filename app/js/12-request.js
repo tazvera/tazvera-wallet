@@ -2,7 +2,7 @@
 "use strict";
 /* ---------- REQUEST ---------- */
 var REQ={tok:"native",amt:""};
-function reqURI(){var n=N(),k=tokens().find(function(x){return x.id===REQ.tok})||tokens()[0],a=parseFloat(REQ.amt);var wei="";try{if(a>0)wei=ethers.parseUnits(String(REQ.amt),18).toString()}catch(e){}
+function reqURI(){var n=N(),k=tokens().find(function(x){return x.id===REQ.tok})||tokens()[0],a=parseFloat(REQ.amt);var wei="";try{if(a>0)wei=ethers.parseUnits(String(REQ.amt),k.dec||18).toString()}catch(e){}
  if(k.id==="native")return "ethereum:"+S.addr+"@"+n.dec+(wei?"?value="+wei:"");return "ethereum:"+k.addr+"@"+n.dec+"/transfer?address="+S.addr+(wei?"&uint256="+wei:"")}
 function reqHTML(){var n=N(),k=tokens().find(function(x){return x.id===REQ.tok})||tokens()[0];
  return '<div class="tb"><button class="ib" data-tab="home" aria-label="back">'+ic("back",20)+'</button><b>'+esc(t("reqT"))+'</b></div>'+

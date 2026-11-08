@@ -3,6 +3,15 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.6 · November 2026
+
+- Changing the PIN now re-locks every wallet on the phone with the new PIN (not only the open one)
+- Added tokens never borrow a real coin's picture; a token pretending to be SHM, TZV or TZT is refused; it must answer like a real token
+- Restoring the settings file needs the PIN and never changes PIN-on-send, auto-lock or the "already sent to" list
+- Removing a wallet needs the PIN, with a strong warning if its 12 words were never checked
+- Request QR uses each coin's own decimals
+- QR codes must be a whole address or an ethereum: link (no address taken from inside a key or hash)
+
 ## Version 8.5 · November 2026
 
 - Send: the confirm screen shows the exact amount that will be sent (no rounding)

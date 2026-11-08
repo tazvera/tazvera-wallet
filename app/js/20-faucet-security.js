@@ -20,7 +20,7 @@ function show12(){askPin(t("pinT"),t("show12"),async function(p,fail){try{var ph
   var r=$("wRev");if(r)r.onclick=function(){shown=true;d()};$("wDone").onclick=function(){w=null;ph=null;closeSheet()}}
  d()}catch(e){fail(t("pinBad"))}})}
 function changePin(){askPin(t("pinT"),t("oldPin"),async function(old,fail){var ph;try{ph=await CPW.phrase(old)}catch(e){return fail(t("pinBad"))}
- askPin(t("newPin"),t("newPinS"),function(p1){askPin(t("rePin"),t("newPinS"),async function(p2,f2){if(p1!==p2)return f2(t("pinMis"));sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);try{await CPW.imp(ph,p1);ph=null;closeSheet();toast(t("pinOk"))}catch(e){closeSheet();toast(String(e.message||e))}})})})}
+ askPin(t("newPin"),t("newPinS"),function(p1){askPin(t("rePin"),t("newPinS"),async function(p2,f2){if(p1!==p2)return f2(t("pinMis"));sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);try{await CPW.imp(ph,p1);ph=null;var miss=await pinRelockAll(old,p1);closeSheet();toast(miss?t("pinOkPart").replace("%n",miss):t("pinOk"))}catch(e){closeSheet();toast(String(e.message||e))}})})})}
 /* fingerprint (same storage as the classic app, so it keeps working) */
 var BKS="cp3_bio_ks",BID="cp3_bio_id",BMD="cp3_bio_mode",SALT=new TextEncoder().encode("Tazvera bio unlock v1 / wallet key");
 function b64u(b){var s="";new Uint8Array(b).forEach(function(c){s+=String.fromCharCode(c)});return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
