@@ -100,7 +100,7 @@ All help is welcome, big or small.
 
 1. **Report a bug or idea:** open an [Issue](https://github.com/tazvera/tazvera-wallet/issues). Screenshots and steps to repeat it help a lot.
 2. **Fix something:** fork the repo, make a small focused change, and open a Pull Request that explains what you changed and how you tested it.
-3. **Good first areas:** cleaning up `script.js`, accessibility, translations (Hindi, Marathi, Gujarati), tests, and security review of `wallet.js`.
+3. **Good first areas:** accessibility, translations (Hindi, Marathi, Gujarati), tests, and security review of `wallet.js`.
 
 Please keep in mind:
 - Keep pull requests small and about one thing.

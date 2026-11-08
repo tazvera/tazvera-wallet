@@ -24,14 +24,19 @@ function amtInr(){var n=N(),a=parseFloat(S.snd.amt);if(n.test||!S.inr||!a||S.snd
 function feeTxt(){var n=N();if(S.snd.fee==null)return"…";var f=S.snd.fee;if(!n.test&&S.inr)return"≈ "+inr(f*S.inr)+" ("+ffee(f)+" "+n.sym+")";return"≈ "+ffee(f)+" "+n.sym}
 async function estFee(){var n=N(),k=curTok();try{var gp=BigInt(await rpc(n.rpc,"eth_gasPrice",[]));var gas=BigInt(k.id==="native"?21000:65000);
  try{var to=/^0x[0-9a-fA-F]{40}$/.test(S.snd.to)?S.snd.to:S.addr;var a=parseFloat(S.snd.amt)>0?S.snd.amt:"0";var wei=ethers.parseUnits(String(a),k.dec||18);var tx=k.id==="native"?{from:S.addr,to:to,value:"0x"+wei.toString(16)}:{from:S.addr,to:k.addr,data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+wei.toString(16).padStart(64,"0")};var g=BigInt(await rpc(n.rpc,"eth_estimateGas",[tx]));if(g>0n)gas=g*11n/10n}catch(e){}
- S.snd.fee=Number(gp*gas)/1e18}catch(e){S.snd.fee=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}
-function readSend(){var a=$("sTo"),b=$("sAmt");if(a)S.snd.to=a.value.trim();if(b){var v=b.value.replace(/,/g,"").trim();if(S.snd.cur==="inr"&&rsOK()){S.snd.rs=v;var r=parseFloat(v);S.snd.amt=r>0?String(Math.floor(r/S.inr*1e6)/1e6):""}else S.snd.amt=v}}
+ S.snd.feeW=gp*gas;S.snd.fee=Number(gp*gas)/1e18}catch(e){S.snd.fee=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}
+function readSend(){var a=$("sTo"),b=$("sAmt");if(a)S.snd.to=a.value.trim();if(b){var v=b.value.replace(/,/g,"").trim();if(S.snd.cur==="inr"&&rsOK()){S.snd.rs=v;var r=parseFloat(v);S.snd.amt=r>0?String(Math.floor(r/S.inr*1e6)/1e6):""}else S.snd.amt=v.charAt(0)==="."?"0"+v:v}}
 function feeHigh(){var a=parseFloat(S.snd.amt);return S.snd.tok==="native"&&S.snd.fee>0&&a>0&&S.snd.fee>a}
-function validate(){var n=N(),k=curTok(),to=S.snd.to,a=parseFloat(S.snd.amt);
- if(!/^0x[0-9a-fA-F]{40}$/.test(to))return t("eAddr");if(!(a>0))return t("eAmt");
+/* amount text -> exact smallest units; null if it is not a clean positive number with at most "dec" decimals */
+function amtWei(v,dec){v=String(v==null?"":v).trim();if(!/^(\d+(\.\d*)?|\.\d+)$/.test(v))return null;if(((v.split(".")[1])||"").length>dec)return null;try{var w=ethers.parseUnits(v.charAt(0)==="."?"0"+v:v,dec);return w>0n?w:null}catch(e){return null}}
+function exactAmt(v){v=String(v==null?"":v).trim();if(v.charAt(0)===".")v="0"+v;var p=v.split("."),ip;try{ip=BigInt(p[0]||"0").toLocaleString("en-IN")}catch(e){ip=p[0]}var fr=(p[1]||"").replace(/0+$/,"");return fr?ip+"."+fr:ip}
+function validate(){var n=N(),k=curTok(),to=S.snd.to,dec=k.dec||18;
+ if(!/^0x[0-9a-fA-F]{40}$/.test(to))return t("eAddr");
+ if(/[a-f]/.test(to.slice(2))&&/[A-F]/.test(to.slice(2))){try{ethers.getAddress(to)}catch(e){return t("eSum")}}
+ var w=amtWei(S.snd.amt,dec);if(w==null)return((String(S.snd.amt||"").split(".")[1]||"").length>dec&&/^[\d.]+$/.test(String(S.snd.amt)))?t("eDec").replace("%d",dec):t("eAmt");
  if(navigator.onLine===false)return t("eOffline");if(k.bal==null||S.bal==null)return t("eNoBal");
- if(k.bal!=null&&a>k.bal+1e-12)return t("eBal").replace("%s",k.sym);
- if(S.bal!=null&&S.snd.fee!=null){var need=S.snd.fee+(k.id==="native"?a:0);if(need>S.bal+1e-12){var miss=need-S.bal;return t("eFee").replace("%s",n.sym).replace("%f",fmt(miss,miss<1?6:2)).replace("%s",n.sym)}}
+ if(k.raw!=null?w>k.raw:parseFloat(S.snd.amt)>k.bal+1e-12)return t("eBal").replace("%s",k.sym);
+ if(S.balW!=null&&S.snd.feeW!=null){var need=S.snd.feeW+(k.id==="native"?w:0n);if(need>S.balW){var miss=Number(need-S.balW)/1e18;return t("eFee").replace("%s",n.sym).replace("%f",fmt(miss,miss<1?6:2)).replace("%s",n.sym)}}
  return ""}
 function shield(){var to=S.snd.to.toLowerCase(),me=S.addr.toLowerCase();var known=contacts().map(function(c){return{a:c.a.toLowerCase(),n:c.n}}).concat(sentList().map(function(a){return{a:String(a).toLowerCase(),n:""}}));
  if(/^0x0{40}$/.test(to)||/^0x0{30,}dead$/i.test(to))return{lvl:"bad",t:t("shBurn"),s:t("shBurn2")};
@@ -43,7 +48,7 @@ function shield(){var to=S.snd.to.toLowerCase(),me=S.addr.toLowerCase();var know
  return{lvl:"warn",t:t("shNew"),s:t("shNew2")}}
 function openConfirm(){readSend();var e=validate();S.snd.err=e;var el=$("sErr");if(el)el.textContent=e;if(e)return;
  var n=N(),k=curTok(),a=S.snd.amt,to=S.snd.to,sd=shield(),nm=nameOf(to);
- var amtTxt=fmt(parseFloat(a),6)+" "+k.sym;var bigTxt=rsOK()?inr(parseFloat(a)*S.inr):amtTxt,subTxt=rsOK()?amtTxt:amtInr();
+ var amtTxt=exactAmt(a)+" "+k.sym;var bigTxt=rsOK()?inr(parseFloat(a)*S.inr):amtTxt,subTxt=rsOK()?amtTxt:amtInr();
  var card='<div class="sc '+sd.lvl+'">'+ic(sd.lvl==="ok"?"shield":"warn",24)+'<div><b>'+esc(sd.t)+'</b>'+(sd.s?'<small>'+esc(sd.s)+'</small>':"")+(sd.lvl==="bad"?'<label class="tick"><input type="checkbox" id="cTick">'+esc(t("tickT"))+'</label>':"")+'</div></div>';
  var h='<div class="grab"></div><div class="sht">'+esc(t("confirm"))+'</div>'+(n.test?"":'<div class="note2" style="color:var(--red);font-weight:700;margin:0">'+esc(t("real"))+' · '+esc(n.name)+'</div>')+
  '<div class="camt">'+esc(bigTxt)+'</div><div class="camtr">'+esc(subTxt)+'</div>'+(feeHigh()?'<div class="note2" style="color:#B45309;font-weight:600">'+esc(t("feeHi"))+'</div>':'')+''+

@@ -40,10 +40,10 @@ function take(now, key, ip) {
   ipHits.set(ip, recent(ipHits.get(ip), now).concat(now));
   allHits.push(now);
 }
-function give(key, ip, now) {   // undo, when the send did not happen
-  addrHit.delete(key);
-  const l = recent(ipHits.get(ip), now); l.pop(); ipHits.set(ip, l);
-  allHits.pop();
+function give(key, ip, now) {   // undo exactly this request's entries, when the send did not happen
+  if (addrHit.get(key) === now) addrHit.delete(key);
+  const l = recent(ipHits.get(ip), now), i = l.lastIndexOf(now); if (i >= 0) l.splice(i, 1); ipHits.set(ip, l);
+  const j = allHits.lastIndexOf(now); if (j >= 0) allHits.splice(j, 1);
 }
 
 const chain = {
@@ -92,7 +92,8 @@ async function handler(req, res) {
     return res.status(200).json({ ok: true, hash });
   } catch (e) {
     if (taken) give(key, ip, now);
-    return res.status(500).json({ error: String(e.shortMessage || e.message).slice(0, 120) });
+    console.error("[airdrop] " + String(e && (e.shortMessage || e.message) || e).slice(0, 200));
+    return res.status(500).json({ error: "Could not send test coins right now. Please try again later." });
   }
 }
 handler._chain = chain;   // replaced only in tests

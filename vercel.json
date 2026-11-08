@@ -42,5 +42,11 @@
     "api/tts.js": {
       "maxDuration": 20
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/.well-known/security.txt",
+      "destination": "/security.txt"
+    }
+  ]
 }

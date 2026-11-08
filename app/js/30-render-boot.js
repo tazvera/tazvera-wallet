@@ -64,7 +64,7 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.paste){(navigator.clipboard&&navigator.clipboard.readText?navigator.clipboard.readText():Promise.reject()).then(function(x){var m=String(x).match(/0x[0-9a-fA-F]{40}/);if(m){S.snd.to=m[0];$("sTo").value=m[0]}}).catch(function(){});return}
  if(d.pickc){readSend();S.snd.to=d.pickc;render();return}
  if(d.cur){readSend();if(S.snd.cur==="inr"){S.snd.cur="tok"}else{S.snd.cur="inr";var a0=parseFloat(S.snd.amt);S.snd.rs=a0>0?String(Math.round(a0*S.inr*100)/100):""}render();return}
- if(d.max){readSend();var k=curTok();var mx=k.id==="native"?Math.max(0,(k.bal||0)-(S.snd.fee||0)*1.2):(k.bal||0);S.snd.amt=String(Math.floor(mx*1e6)/1e6);if(S.snd.cur==="inr"&&rsOK())S.snd.rs=String(Math.floor(mx*S.inr*100)/100);render();return}
+ if(d.max){readSend();var k=curTok(),mx;if(k.raw!=null){var mw=k.id==="native"?k.raw-(S.snd.feeW!=null?S.snd.feeW*12n/10n:0n):k.raw;if(mw<0n)mw=0n;S.snd.amt=ethers.formatUnits(mw,k.dec||18).replace(/\.0$/,"");mx=parseFloat(S.snd.amt)}else{mx=k.id==="native"?Math.max(0,(k.bal||0)-(S.snd.fee||0)*1.2):(k.bal||0);S.snd.amt=String(Math.floor(mx*1e6)/1e6)}if(S.snd.cur==="inr"&&rsOK())S.snd.rs=String(Math.floor(mx*S.inr*100)/100);render();return}
  if(d.cont){openConfirm();return}
  if(d.tokpick){readSend();tokSheet();return}
  if(d.tok){S.snd.tok=d.tok;closeSheet();render();estFee();return}

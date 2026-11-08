@@ -3,6 +3,17 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.5 · November 2026
+
+- Send: the confirm screen shows the exact amount that will be sent (no rounding)
+- Send: strict amount check ("12abc", "1e-7" and too many decimals are refused with a clear message)
+- Send: balances, MAX and fee checks use exact whole-number math (no decimal rounding errors)
+- Send: addresses with a wrong capital-letter checksum are refused (typing mistakes caught)
+- Wallet engine is no longer exposed as window.ethereum (only the Tazvera app can use it); old "test networks only" text fixed; dead code removed
+- Assistant: at most 4 Google calls per question, and it stops at once on key, billing or quota problems
+- Test-coin faucet: exact undo of failed requests; no internal error text shown to users
+- ethers pinned to 6.17.0 (same as the app); security.txt also at /.well-known/security.txt; README cleaned; privacy page mentions coin pictures
+
 ## Version 8.4 · November 2026
 
 - Every new wallet now gets the 12-word check (3 random words each time), and "backup done" is tracked for each wallet separately

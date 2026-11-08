@@ -47,7 +47,7 @@ function emptyCard(){if(!(S.bal===0)||(S.tzt>0)||(S.tzv>0)||txs().length)return 
 function isBig(a,k){var x=parseFloat(a);if(!(x>0)||!k)return false;var n=N();if(n.test)return false;
  if(k.id==="native"&&S.inr&&x*S.inr>=1000)return true;
  if(k.bal>0&&x>=k.bal*0.5)return true;return false}
-function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&S.inr)?inr(parseFloat(a)*S.inr):fmt(parseFloat(a),6)+" "+k.sym;
+function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&S.inr)?inr(parseFloat(a)*S.inr):exactAmt(a)+" "+k.sym;
  return '<div class="sc warn" style="margin-top:10px">'+ic("warn",24)+'<div><b>'+esc(t("bigT"))+'</b><small>'+esc(t("bigS").replace("%a",txt))+'</small><label class="tick"><input type="checkbox" id="cBig">'+esc(t("bigTick"))+'</label></div></div>'}
 
 /* ----- news & alerts (announcements.json on the same site, so news can change without an app update) ----- */
@@ -199,3 +199,6 @@ function bkDone(a){a=String(a||"").toLowerCase();if(!a)return false;if(raw("tz_b
  setInterval(function(){if(S.mode!=="inapp"||!S.addr||document.hidden)return;if(typeof SLOCK!=="undefined"&&SLOCK)return;
   var open=false;try{open=sessionStorage.getItem("v2_unl")==="1"}catch(e){}if(!open)return;
   if(Date.now()-last>amin()*60000){try{CPW.lock();sessionStorage.removeItem("v2_unl");sessionStorage.removeItem("v2_act")}catch(e){}closeSheet();lockScreen();last=Date.now()}},15000)})();
+
+Object.assign(L.en,{eSum:"This address has a typing mistake (its capital letters do not match). Copy it again.",eDec:"Too many decimals: at most %d."});
+Object.assign(L.hi,{eSum:"इस पते में टाइपिंग की ग़लती लगती है (बड़े-छोटे अक्षर मेल नहीं खाते)। फिर से कॉपी कीजिए।",eDec:"बहुत ज़्यादा दशमलव: ज़्यादा से ज़्यादा %d।"});

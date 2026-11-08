@@ -90,9 +90,11 @@ module.exports = async function handler(req, res) {
   const models = [];
   [MODEL_FIRST, "gemini-2.5-flash-lite", "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-flash-latest"].forEach(function (m) { if (m && models.indexOf(m) < 0) models.push(m); });
   const started = Date.now();
+  let calls = 0;
   for (const model of models) {
     for (const thinkingOff of [true, false]) {
-      if (Date.now() - started > 24000) return send(res, 502, { error: "upstream" });
+      if (Date.now() - started > 24000 || calls >= 4) return send(res, 502, { error: "upstream" });
+      calls++;
       const ac = new AbortController(), tm = setTimeout(function () { ac.abort(); }, 8000);
       let next = "model";
       try {
@@ -108,7 +110,8 @@ module.exports = async function handler(req, res) {
           try { const raw = await r.text(); let em = null; try { em = JSON.parse(raw).error; } catch (e) { /* not JSON */ } why = (em && em.message ? String(em.status || "") + " | " + String(em.message) : raw).replace(/\s+/g, " ").slice(0, 160); } catch (e) { /* ignore */ }
           console.error("[ai] ERR " + r.status + " :: " + why + " :: model=" + model + " thinkingOff=" + thinkingOff);
           if (r.status === 400 && thinkingOff) next = "setting"; /* this model may not accept the thinking setting: same model, plain */
-          else if (r.status === 401 || r.status === 403) return send(res, 503, { error: "not_configured" }); /* key problem: no point trying more */
+          else if (r.status === 401 || r.status === 402 || r.status === 403) return send(res, 503, { error: "not_configured" }); /* key or billing problem: no point trying more */
+          else if (r.status === 429 && /billing|plan|exceeded your current quota/i.test(why)) return send(res, 429, { error: "slow_down" }); /* quota used up: stop, do not spend more calls */
         } else {
           const j = await r.json();
           const parts = j && j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts;
