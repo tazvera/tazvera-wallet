@@ -3,6 +3,16 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.2 · November 2026
+
+- QR codes from other wallets read correctly ("1e18", "2.5e18" amounts, exact decimals); no more freeze
+- QR for another network: clear warning with a "Switch network" button; unsupported networks are refused
+- Stricter security rule: no inline scripts can run (stronger protection against injected code)
+- Secret words: "do not take a screenshot" warning; the words close when you leave the app
+- Easier to read: darker grey and green text, QR codes described for screen readers (0 accessibility issues in the audit)
+- Activity CSV: Indian time (IST) column, works in Excel with Hindi, file name with network and date
+- The installed app now opens without internet (always uses the newest files when online)
+
 ## Version 8.1 · November 2026
 
 - Mainnet is now shown openly in the network list, marked "Real money", with a one-time safety check before the first switch
