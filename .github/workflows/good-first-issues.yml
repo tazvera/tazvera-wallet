@@ -1,0 +1,76 @@
+name: Create good first issues
+
+on:
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Labels
+        run: |
+          gh label create "good first issue" --color 7057ff --description "Good for newcomers" --force
+          gh label create "help wanted" --color 008672 --description "Extra attention is wanted" --force
+          gh label create "TZV reward" --color 00A86B --description "Thank-you reward in TZV after merge" --force
+
+      - name: Issues
+        run: |
+          make() {
+            if gh issue list --state all --limit 200 --json title -q '.[].title' | grep -qxF "$1"; then echo "Already there: $1"; return; fi
+            gh issue create --title "$1" --label "good first issue" --label "help wanted" --label "TZV reward" --body "$2"
+          }
+          FOOT=$'\n\n---\n**How to start:** read [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md). Test networks only.\n**Thank-you reward:** see the amount above, in TZV after merge (TZV is not for sale and has no market price). A Tazvera Certificate of Contribution on request.'
+
+          make "Help center: add 5 new questions and answers (Hindi + English)" "**Goal:** add 5 useful beginner questions to the in-app help center, for example: \"What is a network fee?\", \"Why is my transaction pending?\", \"Can someone reverse my payment?\".
+
+          **Where:** \`app/js/22-wallets-help-backup.js\` (help center list) and \`app/js/01-i18n.js\` (text in \`L.en\` and \`L.hi\`).
+
+          **Done when:** 5 new questions appear in the help center and its search, in both English and Hindi, with short, simple answers.
+
+          **Reward:** 5,000 TZV${FOOT}"
+
+          make "Tests: unit tests for the QR reader and the amount checks" "**Goal:** add automatic tests for \`parseQR\` (\`app/js/11-scan.js\`) and \`amtWei\` / \`validate\` (\`app/js/10-send.js\`).
+
+          **Cases:** plain address, \`ethereum:\` links with \`value=1e18\`, \`2.5e18\`, token \`/transfer\` links, another chain id, a private-key-looking string (must be refused), \"12abc\", \"1e-7\", too many decimals.
+
+          **Done when:** \`npm test\` runs the tests (Node, no browser needed) and they pass.
+
+          **Reward:** 15,000 TZV${FOOT}"
+
+          make "Large text: test with the biggest Android font size and fix layout problems" "**Goal:** on an Android phone set the font size and display size to the largest, open app.tazvera.com and check every screen (Home, Send, Receive, Request, Settings, Learn, Explore).
+
+          **Done when:** nothing is cut off or overlaps; send a pull request with CSS fixes in \`app/css/app.css\` and before/after screenshots.
+
+          **Reward:** 10,000 TZV${FOOT}"
+
+          make "Accessibility: find buttons without labels using TalkBack and fix them" "**Goal:** use Android TalkBack (or a desktop screen reader) on the app and find buttons or icons that are read as just \"button\".
+
+          **Done when:** every icon button has a clear \`aria-label\` in English/Hindi, and the change is listed in the pull request.
+
+          **Reward:** 10,000 TZV${FOOT}"
+
+          make "Explore: small 'fees in ₹' history for the last 10 sends" "**Goal:** a simple tool in Explore that shows the network fee (in the coin and in ₹ when a price exists) for the last 10 sends on the current network.
+
+          **Where:** \`app/js/24-explore.js\`, text in \`app/js/01-i18n.js\` (English + Hindi).
+
+          **Done when:** the tool works on test networks, shows a friendly empty state, and looks like the other tools.
+
+          **Reward:** 10,000 TZV${FOOT}"
+
+          make "Performance: measure loading on slow 3G and suggest improvements" "**Goal:** measure how fast app.tazvera.com opens on a slow connection (Chrome DevTools → Network → Slow 3G, and Lighthouse).
+
+          **Done when:** you post the numbers in this issue and open a pull request with at least one safe improvement.
+
+          **Reward:** 5,000 TZV${FOOT}"
+
+          make "README: add a simple 'How Tazvera works' diagram" "**Goal:** a clear diagram for the README: phone → PIN-locked keys → signed transaction → Shardeum network; plus where the price and assistant servers fit in.
+
+          **Done when:** an SVG or Mermaid diagram is added to \`README.md\` and is easy for beginners to understand.
+
+          **Reward:** 5,000 TZV${FOOT}"
