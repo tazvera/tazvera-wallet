@@ -22,6 +22,7 @@ Tazvera is a test version on test networks. Test coins have no value.
 - Very old history entries (made before networks were recorded, all on test networks) no longer show on Mainnet
 - Request/receive QR never contains an empty token address; request page coins without a logo show a letter
 - Sharing a payment request also shares the payment link with the amount
+- Cleaner Home: the safety card shows only when something is still missing; "Recent" shows only when there is activity
 
 ## Version 8.6 · November 2026
 

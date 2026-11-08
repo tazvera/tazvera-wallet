@@ -38,7 +38,7 @@ setInterval(function(){if(!document.hidden)checkNet()},60000);setTimeout(checkNe
 
 /* ----- home cards ----- */
 function secCard(){if(S.mode!=="inapp")return "";var c;try{c=checks()}catch(e){return ""}var miss=c.filter(function(x){return !x.ok}).length;
- if(!miss)return '<button class="secc ok" data-tab="chk"><span class="si">'+ic("shield",20)+'</span><span class="sm"><b>'+esc(t("secOk"))+'</b><small>'+esc(t("secAll"))+'</small></span>'+ic("right",16)+'</button>';
+ if(!miss)return "";
  return '<button class="secc warn" data-tab="chk"><span class="si">'+ic("warn",20)+'</span><span class="sm"><b>'+esc(t("secLeft").replace("%n",miss))+'</b></span><span class="sf">'+esc(t("secFix"))+'</span></button>'}
 function emptyCard(){if(!(S.bal===0)||(S.tzt>0)||(S.tzv>0)||txs().length)return "";var n=N();
  return '<div class="emptyc"><b>'+esc(t("emptyT"))+' 🎉</b><small>'+esc(t("emptyS"))+'</small><div class="eb"><button class="btn" data-go="recv">'+ic("recv",18)+esc(t("recv"))+'</button>'+(n.tzt?'<button class="btnw" data-fourth="1">'+esc(t("getTzt"))+'</button>':'')+'</div></div>'}
