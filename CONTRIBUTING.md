@@ -2,6 +2,14 @@
 
 Thank you for helping! Tazvera is a free, open-source, self-custody crypto wallet in Hindi and English, made for first-time crypto users in India. **App:** https://app.tazvera.com · **Website:** https://tazvera.com
 
+## Why contribute
+
+- **Public proof of your work:** every merged pull request stays on your GitHub profile. Recruiters look at GitHub.
+- **A real, live product:** a wallet used on a real blockchain, not a classroom project. Something real to talk about in interviews.
+- **Learn Web3 the safe way:** keys, signing, transactions, scam protection, testing.
+- **Real code review:** every pull request gets feedback before it is merged.
+- **A thank-you:** your name in the credits, a public thank-you from the founder on X/LinkedIn, and (for "TZV reward" issues) a thank-you in TZV. A certificate of contribution on request.
+
 ## Start in 5 steps
 
 1. Pick an issue labelled **good first issue**: https://github.com/tazvera/tazvera-wallet/contribute
@@ -30,10 +38,10 @@ Every pull request is reviewed before it is merged.
 - Keep text in **both** English and Hindi (`L.en` and `L.hi`).
 - Security problems: report privately, see [SECURITY.md](SECURITY.md).
 
-## Thank-you rewards
+## About the TZV thank-you
 
-Merged pull requests for issues labelled **TZV reward** receive a thank-you in **TZV**, Tazvera's own token, from the developer reward pool. TZV is **not for sale and has no market price**; it is a thank-you and a record of your contribution, not a salary. Contributors are also listed in the credits and can ask for a **Tazvera Certificate of Contribution**.
+Merged pull requests for issues labelled **TZV reward** receive a thank-you in **TZV**, Tazvera's own token, from the developer reward pool. TZV is **not for sale and has no market price**; it is a thank-you and a record of your contribution, not a salary. 
 
 ---
 
-**हिंदी में:** "good first issue" वाला काम चुनिए, fork करके बदलाव कीजिए, सिर्फ़ टेस्ट नेटवर्क पर जाँचिए, और pull request भेजिए। स्वीकार होने पर TZV इनाम (धन्यवाद का टोकन) और प्रमाणपत्र।
+**हिंदी में:** असली फ़ायदा: आपका काम GitHub प्रोफ़ाइल पर हमेशा दिखेगा, असली प्रोजेक्ट का अनुभव, Web3 सीखना, और हर PR पर समीक्षा। "good first issue" वाला काम चुनिए, fork करके बदलाव कीजिए, सिर्फ़ टेस्ट नेटवर्क पर जाँचिए, और pull request भेजिए। स्वीकार होने पर TZV इनाम (धन्यवाद का टोकन) और प्रमाणपत्र।
