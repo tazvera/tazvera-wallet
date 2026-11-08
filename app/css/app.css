@@ -349,3 +349,10 @@ html[data-theme=dark] .aifab{box-shadow:0 10px 26px rgba(0,0,0,.5)}html[data-the
 .wbbar i.l0{width:12%;background:var(--red)}.wbbar i.l1{width:38%;background:#F59E0B}.wbbar i.l2{width:70%;background:var(--green)}.wbbar i.l3{width:100%;background:var(--green)}
 .wbmsg{font-size:12.5px;font-weight:600;margin:6px 2px 0;min-height:16px}.wbmsg.l0{color:var(--red)}.wbmsg.l1{color:#B45309}.wbmsg.l2,.wbmsg.l3{color:var(--green)}
 .wlnk{display:block;width:100%;margin-top:14px;background:none;border:0;color:var(--tx);font-weight:600;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+/* ---- assistant: only the icon, bottom-right in the bar's line, can be moved ---- */
+.nav.n3{max-width:280px!important;min-width:256px}
+.aifab{right:max(6px,calc(50% - 214px))!important;bottom:calc(27px + env(safe-area-inset-bottom,0px))!important;width:48px!important;height:48px!important;background:none!important;border:0!important;box-shadow:none!important;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+html[data-theme=dark] .aifab{box-shadow:none!important}
+.aifab svg{width:46px!important;height:46px!important;pointer-events:none}
+.aifab.drag{transition:none;opacity:.85}
