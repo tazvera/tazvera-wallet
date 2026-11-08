@@ -59,7 +59,7 @@ function pinPad2(amtTxt,ok){var pin="";function dots(){return '<div class="dots"
   [].forEach.call(document.querySelectorAll("#sheet [data-k]"),function(b){b.onclick=async function(){var k=b.getAttribute("data-k");if(k==="del"){pin=pin.slice(0,-1);draw()}else if(pin.length<6){pin+=k;draw();if(pin.length===6){var p=pin;sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>',true);try{await CPW.unlock(p);ok()}catch(e){pin="";draw(t("pinBad"),true)}}}}})}
  draw()}
 function toHex(v){return "0x"+BigInt(v).toString(16)}
-async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=window.ethereum;sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>',true);
+async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=S.mode==="mm"?window.ethereum:(window.tazveraProvider||window.ethereum);sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>',true);
  try{var wei=ethers.parseUnits(String(S.snd.amt),k.dec||18);
   if(S.mode==="mm"){var acc=await prov.request({method:"eth_requestAccounts"});if(!acc||acc[0].toLowerCase()!==S.addr.toLowerCase())S.addr=acc[0];
    try{await prov.request({method:"wallet_switchEthereumChain",params:[{chainId:n.chainId}]})}catch(e){if(e&&(e.code===4902||e.code===-32603))await prov.request({method:"wallet_addEthereumChain",params:[{chainId:n.chainId,chainName:n.name,nativeCurrency:{name:n.sym,symbol:n.sym,decimals:18},rpcUrls:[n.rpc],blockExplorerUrls:[n.exp]}]});else throw e}}

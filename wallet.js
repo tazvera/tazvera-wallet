@@ -42,5 +42,5 @@ unlock:async function(pin){W=await E.Wallet.fromEncryptedJson(ks(),pin)},
 phrase:async function(pin){var w=await E.Wallet.fromEncryptedJson(ks(),pin);return w.mnemonic?w.mnemonic.phrase:""},
 unlockKs:async function(js,pw,expect){var x=await E.Wallet.fromEncryptedJson(js,pw);if(expect&&x.address.toLowerCase()!==String(expect).toLowerCase())throw new Error("wrong wallet");W=x},
 lock:function(){W=null},remove:function(){localStorage.removeItem(KS);W=null}};
-if(!window.ethereum)window.ethereum=P;
+window.tazveraProvider=P;if(!window.ethereum)window.ethereum=P;
 })();

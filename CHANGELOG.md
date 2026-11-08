@@ -8,6 +8,7 @@ Tazvera is a test version on test networks. Test coins have no value.
 - New: encrypted wallet backup file (Settings → Backup & restore). All wallets locked with a separate backup password (standard Ethereum keystore); restore on a new phone from the welcome screen
 - Bottom bar: Home · Learn · Explore; Scan stays at the top; the assistant sits in the bottom-right corner
 - Fix: Shardeum Mainnet sending now works for everyone (the wallet engine still expected the old hidden switch)
+- Fix: on computers with MetaMask, the Tazvera wallet works again (create, import, restore are always shown; MetaMask is an extra choice and never interferes)
 
 ## Version 8.2 · November 2026
 

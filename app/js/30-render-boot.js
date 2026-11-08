@@ -74,7 +74,7 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.lang){choose(t("lang"),[["en","English"],["hi","हिंदी"]],S.lang,function(v){S.lang=v;lss("lang",v);theme()});return}
  if(d.thm){choose(t("theme"),[["auto",t("auto")],["light",t("light")],["dark",t("dark")]],raw("tz_theme","")||"auto",function(v){rawSet("tz_theme",v==="auto"?null:v);theme()});return}});
 async function boot(){theme();var eth=window.ethereum;
- try{if(eth&&eth.isCpWallet&&window.CPW&&CPW.has()){S.addr=CPW.address();S.mode="inapp"}}catch(e){}
+ try{if(window.CPW&&CPW.has()){S.addr=CPW.address();S.mode="inapp"}}catch(e){}
  if(!S.addr&&eth&&!eth.isCpWallet){try{var a=await eth.request({method:"eth_accounts"});if(a&&a[0]){S.addr=a[0];S.mode="mm"}}catch(e){}}
  if(S.mode==="mm"&&NETS[ls("v2net","")]){S.net=ls("v2net","shardeum-testnet")}
  try{if(S.addr){var cb=ls("v2_bal_"+S.net+"_"+S.addr.toLowerCase(),null);if(cb&&cb.bal!=null)S.bal=cb.bal}}catch(e){}
