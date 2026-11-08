@@ -322,3 +322,6 @@ html[data-theme=dark] .warn3{background:#2A2110;color:#FCD34D}
 .tdb{margin-top:14px;padding:16px;border-radius:18px;background:var(--soft)}.tdb small{display:block;color:var(--mu);font-size:12.5px}.tdb b{display:block;font-size:24px;font-weight:700;margin-top:2px}.tdb span{display:block;color:var(--mu);font-size:14px;margin-top:2px}
 .tda{display:flex;gap:10px;margin-top:14px}.tda>*{flex:1;height:48px;font-size:15px}
 .riskl{margin:16px 20px 0}.rki{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--soft);margin-top:10px}.rki span{width:40px;height:40px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--tx)}.rki p{margin:0;font-size:14.5px;line-height:1.55}
+
+.srch input{min-width:0;width:100%}
+.cpbox{width:100%;min-height:90px;border:1px solid var(--line);border-radius:14px;padding:12px;font:600 15px ui-monospace,Menlo,Consolas,monospace;background:var(--soft);color:var(--tx);word-break:break-all;resize:none}

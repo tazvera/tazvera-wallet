@@ -66,7 +66,7 @@ function tokDetail(id){var k=tokens().find(function(x){return x.id===id});if(!k)
  sheet('<div class="grab"></div><div class="tdh"><span class="ci big'+(k.custom?' unv':'')+'">'+(k.img?'<img src="'+k.img+'" alt="">':'<b>'+esc(k.sym.slice(0,1))+'</b>')+'</span><div><b>'+esc(k.name)+tokBadge(k)+'</b><small>'+esc(k.sym+" · "+n.name)+'</small></div></div>'+
  '<div class="tdb"><small>'+esc(t("tdBal"))+'</small><b>'+(S.hide?"••••":esc(fmt(k.bal,6)+" "+k.sym))+'</b>'+(val&&!S.hide?'<span>'+esc(val)+'</span>':'')+'</div>'+
  (isVer(k)?'<div class="note2" style="color:var(--green);font-weight:600;margin:8px 0 0">✓ '+esc(t("tdVerS"))+'</div>':'<div class="sc warn" style="margin-top:12px">'+ic("warn",22)+'<div><small style="font-size:13px;font-weight:600">'+esc(t("tdUnvW"))+'</small></div></div>')+
- (k.addr?'<div class="kv" style="margin-top:12px"><div><span>'+esc(t("tdContract"))+'</span><b style="display:flex;gap:10px;align-items:center">'+esc(sh(k.addr))+' <button data-tkcopy="'+esc(k.addr)+'" aria-label="copy">'+ic("copy",15)+'</button><a href="'+n.exp+'/token/'+k.addr+'" target="_blank" rel="noopener" style="color:var(--green);font-size:13px">'+esc(t("tdExp"))+' ↗</a></b></div></div>':'')+
+ (k.addr?'<div class="kv" style="margin-top:12px"><div><span>'+esc(t("tdContract"))+'</span><b style="display:flex;gap:10px;align-items:center">'+esc(sh(k.addr))+' <button data-tkcopy="'+esc(k.addr)+'" aria-label="copy">'+ic("copy",15)+'</button><a href="'+n.exp+'/address/'+k.addr+'" target="_blank" rel="noopener" style="color:var(--green);font-size:13px">'+esc(t("tdExp"))+' ↗</a></b></div></div>':'')+
  '<div class="tda"><button class="btn" data-tksend="'+esc(k.id)+'">'+ic("send",18,2.1)+esc(t("send"))+'</button><button class="btnw" data-tkrecv="'+esc(k.id)+'">'+ic("recv",18)+esc(t("recv"))+'</button></div>'+extra+
  (k.id==="tzv"&&typeof lockBox==="function"?lockBox():'')+
  '<div class="day" style="margin:18px 0 6px">'+esc(t("tdHist"))+'</div>'+(hist.length?'<div class="card" style="margin:0">'+hist.map(rowTx).join("")+'</div>':'<div class="empty">'+esc(t("tdNoHist"))+'</div>'))}
@@ -98,7 +98,7 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-tok
  if(d.bell){bellSheet();return}
  if(d.tksend){closeSheet();S.snd.tok=d.tksend;S.tab="send";H.page=true;hPush();render();window.scrollTo(0,0);return}
  if(d.tkrecv){closeSheet();if(typeof RCV==="object")RCV.tok=d.tkrecv;S.tab="recv";H.page=true;hPush();render();window.scrollTo(0,0);return}
- if(d.tkcopy){try{navigator.clipboard.writeText(d.tkcopy);toast(t("copied"))}catch(x){}return}
+ if(d.tkcopy){copyText(d.tkcopy);return}
  if(d.exn){EXIT.sheet=false;closeSheet();setTimeout(exitArm,400);return}
  if(d.exy){EXIT.leaving=true;EXIT.sheet=false;$("sheet").classList.remove("on");$("sbg").classList.remove("on");H.sheet=false;try{history.go(-2)}catch(x){}
   setTimeout(function(){if(document.hidden)return;try{window.close()}catch(x){}EXIT.leaving=false;EXIT.off=Date.now()+15000},500)}});
@@ -106,3 +106,26 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-tok
 /* ----- refresh without the PIN, but only inside the auto-lock time ----- */
 function markAct(){try{if(sessionStorage.getItem("v2_unl")==="1")sessionStorage.setItem("v2_act",String(Date.now()))}catch(e){}}
 setInterval(function(){if(!document.hidden)markAct()},15000);window.addEventListener("pagehide",markAct);document.addEventListener("click",markAct,true);
+
+/* ----- copying that tells the truth: real copy, a second way, or "copy it yourself" ----- */
+Object.assign(L.en,{cpManT:"Copy it yourself",cpManS:"This browser did not allow copying. Press and hold the text below, then choose Copy."});
+Object.assign(L.hi,{cpManT:"ख़ुद कॉपी करें",cpManS:"इस ब्राउज़र ने कॉपी नहीं करने दिया। नीचे के अक्षर दबाकर रखिए, फिर Copy चुनिए।"});
+function manualCopy(txt){sheet('<div class="grab"></div><div class="sht">'+esc(t("cpManT"))+'</div><p class="note2" style="margin:6px 0 10px">'+esc(t("cpManS"))+'</p><textarea readonly class="cpbox" onfocus="this.select()" onclick="this.select()">'+esc(txt)+'</textarea>')}
+function copyText(txt){txt=String(txt==null?"":txt);
+ function second(){var ok=false;try{var ta=document.createElement("textarea");ta.value=txt;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;top:0;left:0;opacity:0;font-size:16px";document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,txt.length);ok=document.execCommand&&document.execCommand("copy");document.body.removeChild(ta)}catch(e){ok=false}
+  if(ok)toast(t("copied"));else manualCopy(txt)}
+ try{if(navigator.clipboard&&navigator.clipboard.writeText&&window.isSecureContext){navigator.clipboard.writeText(txt).then(function(){toast(t("copied"))},second);return}}catch(e){}
+ second()}
+
+/* ----- wrong PIN: after 5 wrong tries, wait 30 s, then 1, 5, 15 minutes ----- */
+var PINF="tz_pinfail",PINSTEP=[30,60,300,900];
+function pinSt(){try{var o=JSON.parse(localStorage.getItem(PINF)||"null");if(o&&typeof o.n==="number")return o}catch(e){}return{n:0,u:0}}
+function pinWait(){return Math.max(0,pinSt().u-Date.now())}
+function pinFail(){var o=pinSt();o.n++;if(o.n>=5){o.u=Date.now()+PINSTEP[Math.min(o.n-5,PINSTEP.length-1)]*1000}try{localStorage.setItem(PINF,JSON.stringify(o))}catch(e){}}
+function pinOk(){try{localStorage.removeItem(PINF)}catch(e){}}
+function waitTxt(ms){var sec=Math.ceil(ms/1000);return sec>=60?Math.ceil(sec/60)+(S.lang==="hi"?" मिनट":" min"):sec+(S.lang==="hi"?" सेकंड":" s")}
+(function(){var bEn=L.en.pinBad,bHi=L.hi.pinBad;
+ try{Object.defineProperty(L.en,"pinBad",{configurable:true,get:function(){var w=pinWait();return w?"Too many wrong PINs. Wait "+waitTxt(w)+", then try again.":bEn}});
+  Object.defineProperty(L.hi,"pinBad",{configurable:true,get:function(){var w=pinWait();return w?"बहुत बार ग़लत PIN। "+waitTxt(w)+" रुककर फिर कोशिश कीजिए।":bHi}})}catch(e){}
+ function guard(fn){return async function(){if(pinWait()>0)throw new Error("pin-wait");try{var r=await fn.apply(this,arguments);pinOk();return r}catch(e){pinFail();throw e}}}
+ if(window.CPW){CPW.unlock=guard(CPW.unlock);CPW.phrase=guard(CPW.phrase)}})();

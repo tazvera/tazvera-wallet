@@ -48,7 +48,7 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.rtok){REQ.tok=d.rtok;render();return}
  if(d.rcvtok){RCV.tok=d.rcvtok;render();return}
  if(d.sx){closeSheet();return}
- if(d.rshare){var k=tokens().find(function(x){return x.id===REQ.tok})||tokens()[0];var msg=t("reqMsg").replace("%a",(REQ.amt?REQ.amt+" ":"")+k.sym+" ("+N().name+")")+" "+S.addr;if(navigator.share)navigator.share({text:msg}).catch(function(){});else{try{navigator.clipboard.writeText(msg);toast(t("copied"))}catch(_){}}return}
+ if(d.rshare){var k=tokens().find(function(x){return x.id===REQ.tok})||tokens()[0];var msg=t("reqMsg").replace("%a",(REQ.amt?REQ.amt+" ":"")+k.sym+" ("+N().name+")")+" "+S.addr;if(navigator.share)navigator.share({text:msg}).catch(function(){});else{copyText(msg)}return}
  if(d.wnew){createFlow();return}
  if(d.wimp){importFlow();return}
  if(d.wmm){window.ethereum.request({method:"eth_requestAccounts"}).then(function(a){if(a&&a[0]){S.addr=a[0];S.mode="mm";render();load()}}).catch(function(){});return}
@@ -56,8 +56,8 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.go){S.tab=d.go;render();window.scrollTo(0,0);if(d.go==="send")estFee();return}
  if(d.net)return netSheet();
  if(d.pick){S.net=d.pick;lss("v2net",S.net);S.bal=null;S.tzt=null;S.snd.tok="native";S.snd.fee=null;closeSheet();render();load();return}
- if(d.copy){try{navigator.clipboard.writeText(S.addr);toast(t("copied"))}catch(_){}return}
- if(d.share){if(navigator.share)navigator.share({text:S.addr}).catch(function(){});else{try{navigator.clipboard.writeText(S.addr);toast(t("copied"))}catch(_){}}return}
+ if(d.copy){copyText(S.addr);return}
+ if(d.share){if(navigator.share)navigator.share({text:S.addr}).catch(function(){});else{copyText(S.addr)}return}
  if(d.hide){S.hide=!S.hide;lss("hide",S.hide);render();return}
  if(d.flt){S.flt=d.flt;render();return}
  if(d.scan){if(S.tab==="send")readSend();scan();return}
