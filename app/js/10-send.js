@@ -15,7 +15,7 @@ function sendHTML(){var k=curTok(),n=N(),cs=contacts().slice(0,4);var inrMode=S.
  '<div class="sub3"><span id="sInr">'+amtInr()+'</span>'+(rsOK()?'<button class="max" data-cur="1">'+(inrMode?esc(k.sym):"₹")+'</button>':'')+'<button class="max" data-max="1">MAX</button></div>'+
  '<div class="fee"><span>'+esc(t("fee"))+'</span><b id="sFee">'+feeTxt()+'</b></div><div id="sWarn">'+feeWarn()+'</div><div class="err" id="sErr">'+esc(S.snd.err)+'</div>'+
  '<div class="bar"><button class="btn" data-cont="1"'+(lowFee()?' disabled':'')+'>'+esc(t("cont"))+'</button></div>'}
-function lowFee(){var n=N(),k=curTok(),a=parseFloat(S.snd.amt)||0;if(S.bal==null||S.snd.fee==null)return false;return S.snd.fee+(k.id==="native"?a:0)>S.bal+1e-12&&(k.id!=="native"||S.bal<S.snd.fee)}
+function lowFee(){if(S.bal==null||S.balW==null||S.snd.feeW==null)return false;return S.snd.feeW>S.balW}
 function feeWarn(){if(!lowFee())return"";var n=N(),f=S.snd.fee;var link=S.net==="shardeum-testnet"?'<a href="https://docs.shardeum.org" target="_blank" rel="noopener">'+esc(t("getTestShm"))+' ›</a>':S.net==="shardeum"?'<a href="#" data-fourth="1">'+esc(t("addShm"))+' ›</a>':'<a href="#" data-fourth="1">'+esc(t("testCoins"))+' ›</a>';
  return '<div class="warn3">'+ic("info",18)+'<span>'+esc(t("needFee").replace("%f",ffee(f)).replace("%s",n.sym).replace("%b",fmt(S.bal,4)).replace("%s",n.sym))+' '+link+'</span></div>'}
 function ffee(f){if(f==null)return"…";if(f>=1)return fmt(f,2);if(f>=0.0001)return fmt(f,6);return Number(f).toPrecision(2)}
@@ -23,7 +23,7 @@ function rsOK(){var n=N();return !n.test&&S.inr>0&&S.snd.tok==="native"}
 function amtInr(){var n=N(),a=parseFloat(S.snd.amt);if(n.test||!S.inr||!a||S.snd.tok!=="native")return"";return S.snd.cur==="inr"?"= "+fmt(a,4)+" "+n.sym:"≈ "+inr(a*S.inr)}
 function feeTxt(){var n=N();if(S.snd.fee==null)return"…";var f=S.snd.fee;if(!n.test&&S.inr)return"≈ "+inr(f*S.inr)+" ("+ffee(f)+" "+n.sym+")";return"≈ "+ffee(f)+" "+n.sym}
 async function estFee(){var n=N(),k=curTok();try{var gp=BigInt(await rpc(n.rpc,"eth_gasPrice",[]));var gas=BigInt(k.id==="native"?21000:65000);
- try{var to=/^0x[0-9a-fA-F]{40}$/.test(S.snd.to)?S.snd.to:S.addr;var a=parseFloat(S.snd.amt)>0?S.snd.amt:"0";var wei=ethers.parseUnits(String(a),k.dec||18);var tx=k.id==="native"?{from:S.addr,to:to,value:"0x"+wei.toString(16)}:{from:S.addr,to:k.addr,data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+wei.toString(16).padStart(64,"0")};var g=BigInt(await rpc(n.rpc,"eth_estimateGas",[tx]));if(g>0n)gas=g*11n/10n}catch(e){}
+ try{var to=/^0x[0-9a-fA-F]{40}$/.test(S.snd.to)?S.snd.to:S.addr;var wei=amtWei(S.snd.amt,k.dec||18)||0n;var tx=k.id==="native"?{from:S.addr,to:to,value:"0x"+wei.toString(16)}:{from:S.addr,to:k.addr,data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+wei.toString(16).padStart(64,"0")};var g=BigInt(await rpc(n.rpc,"eth_estimateGas",[tx]));if(g>0n)gas=g*11n/10n}catch(e){}
  S.snd.feeW=gp*gas;S.snd.fee=Number(gp*gas)/1e18}catch(e){S.snd.fee=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}
 function readSend(){var a=$("sTo"),b=$("sAmt");if(a)S.snd.to=a.value.trim();if(b){var v=b.value.replace(/,/g,"").trim();if(S.snd.cur==="inr"&&rsOK()){S.snd.rs=v;var r=parseFloat(v);S.snd.amt=r>0?String(Math.floor(r/S.inr*1e6)/1e6):""}else S.snd.amt=v.charAt(0)==="."?"0"+v:v}}
 function feeHigh(){var a=parseFloat(S.snd.amt);return S.snd.tok==="native"&&S.snd.fee>0&&a>0&&S.snd.fee>a}
@@ -66,9 +66,10 @@ function pinPad2(amtTxt,ok){var pin="";function dots(){return '<div class="dots"
 function toHex(v){return "0x"+BigInt(v).toString(16)}
 async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=S.mode==="mm"?window.ethereum:(window.tazveraProvider||window.ethereum);sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>',true);
  try{var wei=ethers.parseUnits(String(S.snd.amt),k.dec||18);
-  if(S.mode==="mm"){var acc=await prov.request({method:"eth_requestAccounts"});if(!acc||acc[0].toLowerCase()!==S.addr.toLowerCase())S.addr=acc[0];
+  if(S.mode==="mm"){var acc=await prov.request({method:"eth_requestAccounts"});if(!acc||!acc[0]||acc[0].toLowerCase()!==S.addr.toLowerCase())throw new Error(t("mmOther"));
    try{await prov.request({method:"wallet_switchEthereumChain",params:[{chainId:n.chainId}]})}catch(e){if(e&&(e.code===4902||e.code===-32603))await prov.request({method:"wallet_addEthereumChain",params:[{chainId:n.chainId,chainName:n.name,nativeCurrency:{name:n.sym,symbol:n.sym,decimals:18},rpcUrls:[n.rpc],blockExplorerUrls:[n.exp]}]});else throw e}}
   else{await prov.request({method:"wallet_switchEthereumChain",params:[{chainId:n.chainId}]})}
+  if(k.id!=="native"&&!/^0x[0-9a-fA-F]{40}$/.test(k.addr||""))throw new Error(t("eTok"));
   var tx=k.id==="native"?{from:S.addr,to:to,value:toHex(wei)}:{from:S.addr,to:k.addr,value:"0x0",data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+BigInt(wei).toString(16).padStart(64,"0")};
   var hash=await prov.request({method:"eth_sendTransaction",params:[tx]});
   var list=txsAll();list.unshift({type:"out",amt:String(S.snd.amt),symbol:k.sym,hash:hash||"",time:Date.now(),net:S.net,st:"pending"});lss("txs",list.slice(0,300));
@@ -76,5 +77,5 @@ async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=S.mode==="mm
   if(raw("tz_pinsend","1")!=="0"&&S.mode==="inapp"){try{CPW.lock()}catch(e){}}
   var toN=nameOf(to)||sh(to),net0=S.net;function bindOk(){var b=$("dOk");if(b)b.onclick=function(){closeSheet();S.snd={tok:"native",to:"",amt:"",fee:null,err:"",cur:"tok",rs:""};S.tab="home";render();load()}}
   sheet(stepsHTML("wait",amtTxt,toN,hash),true);if(hash){trackTx(hash,net0,function(st){sheet(stepsHTML(st,amtTxt,toN,hash),true);bindOk();load()})}else{sheet(stepsHTML("slow",amtTxt,toN,hash),true);bindOk()}}
- catch(e){var m=(e&&(e.shortMessage||e.message))||String(e);if(/insufficient funds/i.test(m))m=t("eFee").replace("%s",n.sym).replace("%f","?").replace("%s",n.sym);if(/user (rejected|denied)/i.test(m))m="Cancelled";
+ catch(e){var m=(e&&(e.shortMessage||e.message))||String(e);if(/insufficient funds/i.test(m))m=t("eFee").replace("%s",n.sym).replace("%f","?").replace("%s",n.sym);if(/user (rejected|denied)/i.test(m))m=t("cancelled");
   sheet('<div class="grab"></div><div class="done"><div class="ok2" style="background:var(--redSoft);color:var(--red)">'+ic("x",34,2.4)+'</div><h3>'+esc(t("failT"))+'</h3><p>'+esc(m).slice(0,180)+'</p><div style="margin-top:18px"><button class="btnw" id="dOk">'+esc(t("doneB"))+'</button></div></div>',true);$("dOk").onclick=closeSheet}}

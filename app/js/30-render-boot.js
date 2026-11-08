@@ -55,7 +55,7 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.tab){closeSheet();if(S.tab==="send")readSend();S.tab=d.tab;render();window.scrollTo(0,0);return}
  if(d.go){S.tab=d.go;render();window.scrollTo(0,0);if(d.go==="send")estFee();return}
  if(d.net)return netSheet();
- if(d.pick){S.net=d.pick;lss("v2net",S.net);S.bal=null;S.tzt=null;S.snd.tok="native";S.snd.fee=null;closeSheet();render();load();return}
+ if(d.pick){S.net=d.pick;lss("v2net",S.net);netReset();S.snd.tok="native";closeSheet();render();load();return}
  if(d.copy){copyText(S.addr);return}
  if(d.share){if(navigator.share)navigator.share({text:S.addr}).catch(function(){});else{copyText(S.addr)}return}
  if(d.hide){S.hide=!S.hide;lss("hide",S.hide);render();return}

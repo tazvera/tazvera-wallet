@@ -14,7 +14,7 @@ Your keys stay on your phone, locked by your PIN. No MetaMask needed. Built in t
 - Website: https://tazvera.com
 - X: [@TazveraApp](https://x.com/TazveraApp) · Telegram: [t.me/TazveraApp](https://t.me/TazveraApp) · Discord: [discord.gg/s2tjFdaCVN](https://discord.gg/s2tjFdaCVN)
 
-> ⚠️ **Test version.** Tazvera runs on test networks only (Shardeum Testnet, BNB Testnet, Ethereum Sepolia). Test coins have no value. Nothing here is financial advice.
+> ⚠️ **New wallets start on Shardeum Testnet** (test coins, no value). **Shardeum Mainnet** (real money) is available after a clear real-money warning. Test networks: Shardeum Testnet, BNB Testnet, Ethereum Sepolia. Nothing here is financial advice.
 
 ---
 
@@ -29,7 +29,7 @@ Your keys stay on your phone, locked by your PIN. No MetaMask needed. Built in t
 
 ## Project structure
 
-The app (Version 7, "Design 2.0") is plain HTML, CSS and JavaScript. No framework and no build step.
+The app (Version 8) is plain HTML, CSS and JavaScript. No framework and no build step.
 
 | Path | What it is |
 |------|-----------|
@@ -41,11 +41,14 @@ The app (Version 7, "Design 2.0") is plain HTML, CSS and JavaScript. No framewor
 | `app/js/02-core.js` | Balances, history, home, activity, receive |
 | `app/js/10-send.js` … `13-lock-onboarding.js` | Send + Shield, QR scan, request, lock screen, new wallet |
 | `app/js/20-…` … `25-…` | Faucet and security, tools, wallets, help center, backup, Back button, Explore, Settings |
+| `app/js/26-v8-trust.js` | Version 8: verified badges, token pages, news bell, network check, safety cards, PIN wait, copy, idle lock |
+| `app/js/27-ai.js` | Tazvera Assistant (chat + voice) |
+| `app/js/28-backup.js` | Encrypted wallet backup file |
 | `app/js/30-render-boot.js` | Screen switching and app start |
+| `sw.js` | Lets the installed app open without internet (always uses the newest files when online) |
 | `wallet.js` | In-app wallet: keys are encrypted with the PIN and stay on the phone |
-| `api/` | Vercel serverless functions: SHM price, TZT faucet |
+| `api/` | Vercel serverless functions: SHM price, TZT faucet, assistant (Gemini), voice (Text-to-Speech) |
 | `contracts/` | Solidity source of the TZV token and the TZV lock |
-| `classic/` | The previous app (Version 6), kept for a short time |
 | `web/` | Website (tazvera.com) |
 
 ## Run it on your computer

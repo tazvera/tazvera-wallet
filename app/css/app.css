@@ -356,3 +356,6 @@ html[data-theme=dark] .aifab{box-shadow:0 10px 26px rgba(0,0,0,.5)}html[data-the
 html[data-theme=dark] .aifab{box-shadow:none!important}
 .aifab svg{width:46px!important;height:46px!important;pointer-events:none}
 .aifab.drag{transition:none;opacity:.85}
+
+.tav{width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--tx);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.netp .tav{width:100%;height:100%;font-size:18px;background:var(--card)}

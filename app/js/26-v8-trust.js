@@ -96,7 +96,7 @@ setInterval(exitArm,1500);
 document.addEventListener("click",function(e){var el=e.target.closest("[data-tokd],[data-bell],[data-tksend],[data-tkrecv],[data-tkcopy],[data-exy],[data-exn]");if(!el)return;var d=el.dataset;
  if(d.tokd){tokDetail(d.tokd);return}
  if(d.bell){bellSheet();return}
- if(d.tksend){closeSheet();S.snd.tok=d.tksend;S.tab="send";H.page=true;hPush();render();window.scrollTo(0,0);return}
+ if(d.tksend){closeSheet();S.snd.tok=d.tksend;S.snd.fee=null;S.snd.feeW=null;S.tab="send";H.page=true;hPush();render();window.scrollTo(0,0);estFee();return}
  if(d.tkrecv){closeSheet();if(typeof RCV==="object")RCV.tok=d.tkrecv;S.tab="recv";H.page=true;hPush();render();window.scrollTo(0,0);return}
  if(d.tkcopy){copyText(d.tkcopy);return}
  if(d.exn){EXIT.sheet=false;closeSheet();setTimeout(exitArm,400);return}
@@ -150,7 +150,7 @@ var pinWasWaiting=false;setInterval(function(){var w=pinWait(),el=document.query
 /* Mainnet: shown openly, with a one-time "real money" check before the first switch */
 function mainnetSheet(){var ok=false;sheet('<div class="grab"></div><div class="sht">'+esc(t("mnT"))+'</div><div class="riskl" style="margin:6px 0 0">'+[["warn","mn1"],["shield","mn2"],["lock","mn3"]].map(function(r){return '<div class="rki"><span>'+ic(r[0],22)+'</span><p>'+esc(t(r[1]))+'</p></div>'}).join("")+'</div><label class="tick" style="margin:16px 2px 0;color:var(--tx)"><input type="checkbox" id="mnOk">'+esc(t("mnTick"))+'</label><div style="margin-top:14px"><button class="btn" id="mnGo" disabled>'+esc(t("mnGo"))+'</button></div>');
  $("mnOk").onchange=function(){ok=this.checked;$("mnGo").disabled=!ok};
- $("mnGo").onclick=function(){if(!ok)return;rawSet("tz_mn_ok","1");S.net="shardeum";lss("v2net",S.net);S.bal=null;S.tzt=null;S.balErr=false;S.snd.tok="native";S.snd.fee=null;closeSheet();render();load();checkNet()}}
+ $("mnGo").onclick=function(){if(!ok)return;rawSet("tz_mn_ok","1");S.net="shardeum";lss("v2net",S.net);netReset();S.snd.tok="native";closeSheet();render();load();checkNet()}}
 document.addEventListener("click",function(e){var el=e.target.closest('[data-pick="shardeum"]');if(!el||raw("tz_mn_ok","")==="1"||S.net==="shardeum")return;e.stopImmediatePropagation();e.preventDefault();mainnetSheet()},true);
 
 /* ----- Version 8.2 ----- */
@@ -212,3 +212,20 @@ Object.assign(L.en,{pinOkPart:"PIN changed. %n wallet(s) still use an older PIN.
  rmNoBkT:"These 12 words were never checked",rmNoBkS:"\"%w\" was never confirmed as backed up. If you remove it without its 12 words, any money in it is lost forever.",rmNoBkTick:"I have its 12 words on paper, or it is empty"});
 Object.assign(L.hi,{pinOkPart:"PIN बदल गया। %n वॉलेट अभी भी पुराने PIN पर हैं।",tokFake:"\"%s\" आधिकारिक सिक्के जैसा नाम रखता है, पर पता अलग है। यह शायद नक़ली है, इसलिए जोड़ा नहीं गया।",
  rmNoBkT:"इसके 12 शब्द कभी जाँचे नहीं गए",rmNoBkS:"\"%w\" का बैकअप कभी पक्का नहीं हुआ। 12 शब्दों के बिना हटाया, तो इसमें रखा पैसा हमेशा के लिए चला जाएगा।",rmNoBkTick:"इसके 12 शब्द मेरे पास काग़ज़ पर हैं, या यह ख़ाली है"});
+
+/* ----- Version 8.7 ----- */
+Object.assign(L.en,{scanFail:"The scanner could not load. Check the internet, or paste the address.",cancelled:"Cancelled",mmOther:"MetaMask has a different account selected. Choose this wallet's account in MetaMask and try again.",eTok:"This token has no valid contract address.",
+ shCon:"This is a smart-contract address",shCon2:"Coins sent to a contract are often lost forever unless it was made to receive them. Send only if you are sure."});
+Object.assign(L.hi,{scanFail:"स्कैनर नहीं खुला। इंटरनेट देखिए, या पता चिपकाइए।",cancelled:"रद्द किया",mmOther:"MetaMask में दूसरा खाता चुना है। MetaMask में इसी वॉलेट का खाता चुनकर फिर कोशिश कीजिए।",eTok:"इस टोकन का सही कॉन्ट्रैक्ट पता नहीं है।",
+ shCon:"यह स्मार्ट-कॉन्ट्रैक्ट का पता है",shCon2:"कॉन्ट्रैक्ट पर भेजे सिक्के अक्सर हमेशा के लिए खो जाते हैं, जब तक वह पाने के लिए न बना हो। पूरी तरह पक्का हों, तभी भेजें।"});
+/* clear every number that belongs to the old network / wallet */
+function netReset(){S.bal=null;S.balW=null;S.tzt=null;S.tztW=null;S.tzv=null;S.tzvW=null;S.cust=[];S.balErr=false;S.nh="";if(S.snd){S.snd.fee=null;S.snd.feeW=null;S.snd.codeFor=null;S.snd.isC=false}setTimeout(function(){if(typeof checkNet==="function")checkNet()},60)}
+/* only one send at a time (a double tap can never send twice) */
+(function(){var _ds=doSend;doSend=async function(a){if(S.sending)return;S.sending=true;try{return await _ds(a)}finally{S.sending=false}}})();
+/* Shield: ask the blockchain whether the address is a smart contract */
+(function(){var _oc=openConfirm,_sh=shield;
+ openConfirm=function(){readSend();var to=String(S.snd.to||"").toLowerCase(),key=to+"|"+S.net;
+  if(/^0x[0-9a-f]{40}$/.test(to)&&S.snd.codeFor!==key){S.snd.codeFor=key;S.snd.isC=false;
+   Promise.race([rpc(N().rpc,"eth_getCode",[S.snd.to,"latest"]),new Promise(function(_,rj){setTimeout(function(){rj(0)},6000)})]).then(function(c){S.snd.isC=!!c&&c!=="0x"&&c!=="0x0"}).catch(function(){}).then(function(){if(S.tab==="send")_oc()});return}
+  _oc()};
+ shield=function(){var r=_sh();if(r.lvl==="warn"&&S.snd.isC&&S.snd.codeFor===String(S.snd.to||"").toLowerCase()+"|"+S.net)return{lvl:"bad",t:t("shCon"),s:t("shCon2")};return r}})();

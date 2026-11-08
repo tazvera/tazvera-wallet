@@ -24,7 +24,7 @@ case"eth_estimateGas":return"0x"+(await tryP(function(v){return v.estimateGas(p[
 case"eth_requestAccounts":case"eth_accounts":{var ad=window.CPW.address();if(ad)return[ad];break}}
 if(!W)throw{code:4100,message:"Wallet is locked"};
 switch(m){
-case"eth_sendTransaction":{var t=p[0],pv=prov(),gp=await pv.send("eth_gasPrice",[]),r=await W.connect(pv).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:gp});return r.hash}
+case"eth_sendTransaction":{var t=p[0],pv=prov(),gp=await pv.send("eth_gasPrice",[]),est=await pv.estimateGas({from:W.address,to:t.to,data:t.data,value:t.value}),r=await W.connect(pv).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:gp,gasLimit:est*12n/10n});return r.hash}
 default:throw{code:-32601,message:"Not supported: "+m}}},
 on:function(){},removeListener:function(){}};
 function ks(){return localStorage.getItem(KS)}

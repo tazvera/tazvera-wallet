@@ -3,6 +3,22 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.7 · November 2026
+
+- Shield asks the blockchain whether an address is a smart contract and warns before sending to it; the three TZV lock contracts are blocked like the token
+- Only one send at a time (a double tap can never send twice)
+- MetaMask with a different account selected: the send is stopped with a clear message (no silent switch)
+- Network or wallet change clears every number from the old one (balances, TZV, fee)
+- Tokens you add belong to the network you added them on
+- A transaction counts as successful only with a clear success status
+- Token send refuses a missing contract address; the fee estimate uses the same strict amount check as sending
+- Opening Send from a coin's page works out the fee at once
+- No guessed rupee price (the "dollar x 88" fallback is gone)
+- Clear message when the QR scanner cannot load; "Cancelled" now in Hindi too
+- In-app wallet adds a 20% gas safety margin; Continue uses the exact fee check
+- Tokens without a logo show a letter instead of a broken picture
+- README: the real network story and the current file list
+
 ## Version 8.6 · November 2026
 
 - Changing the PIN now re-locks every wallet on the phone with the new PIN (not only the open one)

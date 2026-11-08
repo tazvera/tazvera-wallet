@@ -3,7 +3,7 @@
 /* ---------- SCAN ---------- */
 var camStream=null;
 async function scan(){sheet('<div class="grab"></div><div class="sht">'+esc(t("scanT"))+'</div><div class="cam"><video id="cv" playsinline muted></video></div><div class="note2" id="cMsg">'+esc(t("scanS"))+'</div>');
- if(!window.jsQR){var s=document.createElement("script");s.src="jsqr.js";document.head.appendChild(s);await new Promise(function(r){s.onload=r;s.onerror=r})}
+ if(!window.jsQR){var s=document.createElement("script");s.src="jsqr.js";document.head.appendChild(s);await new Promise(function(r){s.onload=r;s.onerror=r});if(!window.jsQR){s.remove();var cm=$("cMsg");if(cm)cm.textContent=t("scanFail");return}}
  try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});var v=$("cv");v.srcObject=camStream;await v.play();var c=document.createElement("canvas"),x=c.getContext("2d",{willReadFrequently:true});
   (function tick(){if(!camStream)return;if(v.readyState>=2){c.width=v.videoWidth;c.height=v.videoHeight;x.drawImage(v,0,0);var d=x.getImageData(0,0,c.width,c.height);var q=window.jsQR&&jsQR(d.data,d.width,d.height);if(q&&q.data){var pr=parseQR(q.data);if(pr){pr.raw=q.data;stopCam();closeSheet();if(pr.chain!=null&&pr.chain!==N().dec){setTimeout(function(){qrNetSheet(pr)},350);return}useQR(pr);return}}}requestAnimationFrame(tick)})()}
  catch(e){var mm=$("cMsg");if(mm)mm.textContent=t("noCam")}}
@@ -25,4 +25,4 @@ function useQR(pr){S.snd.to=pr.to;if(pr.amt)S.snd.amt=pr.amt;if(pr.tok)S.snd.tok
 function qrNetSheet(pr){var key=Object.keys(NETS).filter(function(k){return NETS[k].dec===pr.chain})[0],cur=N();
  if(!key){sheet('<div class="grab"></div><div class="sht">'+esc(t("qrNetT"))+'</div><div class="sc bad">'+ic("warn",22)+'<div><small style="font-size:13.5px;font-weight:600">'+esc(t("qrNetNo").replace("%c",pr.chain))+'</small></div></div>');return}
  var tn=NETS[key];sheet('<div class="grab"></div><div class="sht">'+esc(t("qrNetT"))+'</div><div class="sc warn">'+ic("warn",22)+'<div><small style="font-size:13.5px;font-weight:600">'+esc(t("qrNetS").replace("%q",tn.name).replace("%n",cur.name))+'</small>'+(tn.test?'':'<small style="display:block;margin-top:6px;color:var(--red);font-weight:700">'+esc(t("realTag"))+'</small>')+'</div></div><div class="tda"><button class="btnw" data-sx="1">'+esc(t("cancel2"))+'</button><button class="btn" id="qrSw">'+esc(t("qrNetGo").replace("%q",tn.name))+'</button></div>');
- $("qrSw").onclick=function(){if(key==="shardeum"&&raw("tz_mn_ok","")!=="1"){closeSheet();setTimeout(mainnetSheet,300);return}closeSheet();S.net=key;lss("v2net",key);S.bal=null;S.tzt=null;S.tzv=null;S.balErr=false;S.snd.fee=null;load();checkNet();var p2=parseQR(pr.raw||"")||pr;useQR(p2)}}
+ $("qrSw").onclick=function(){if(key==="shardeum"&&raw("tz_mn_ok","")!=="1"){closeSheet();setTimeout(mainnetSheet,300);return}closeSheet();S.net=key;lss("v2net",key);netReset();load();checkNet();var p2=parseQR(pr.raw||"")||pr;useQR(p2)}}
