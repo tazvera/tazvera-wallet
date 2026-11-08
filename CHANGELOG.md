@@ -3,6 +3,10 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.8 · November 2026
+
+- New opening animation: the Tazvera "T" builds itself, a light sweep and a soft green pulse, then TAZVERA and "Your keys · Your crypto" (Hindi or English). About 2 seconds, once per opening, a tap skips it, and it is off when the phone asks for reduced motion
+
 ## Version 8.7 · November 2026
 
 - Shield asks the blockchain whether an address is a smart contract and warns before sending to it; the three TZV lock contracts are blocked like the token
