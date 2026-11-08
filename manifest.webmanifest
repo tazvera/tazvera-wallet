@@ -1,1 +1,38 @@
-{"name":"Tazvera","short_name":"Tazvera","start_url":"/","display":"standalone","background_color":"#000000","theme_color":"#FFFFFF","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}
+{
+ "id": "/",
+ "name": "Tazvera",
+ "short_name": "Tazvera",
+ "description": "A simple self-custody crypto wallet in Hindi and English. हिंदी और English में सरल क्रिप्टो वॉलेट।",
+ "lang": "en",
+ "dir": "ltr",
+ "start_url": "/",
+ "scope": "/",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#0B1D3A",
+ "theme_color": "#0B1D3A",
+ "categories": [
+  "finance",
+  "utilities"
+ ],
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

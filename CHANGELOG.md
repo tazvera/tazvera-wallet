@@ -3,6 +3,17 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.1 · November 2026
+
+- Mainnet is now shown openly in the network list, marked "Real money", with a one-time safety check before the first switch
+- No internet: clear message and a "Try again" button instead of endless loading; refreshes by itself when the internet is back; Send is blocked early
+- Copy buttons tell the truth: a second way to copy, or "copy it yourself" when a browser blocks copying
+- After 5 wrong PINs: waiting time with a live countdown (30 s, 1 min, 5 min, 15 min)
+- Google voice for the assistant now plays (security rule fixed); phone voice stays as backup
+- AI and voice servers only answer our own app
+- Phone status bar follows light/dark; "Auto" follows the phone at once; better install settings
+- Small phones: search boxes fixed; token Explorer link fixed; Settings shows Version 8
+
 ## Version 8 · November 2026
 
 - Verified badges on official coins; "not verified" warning on tokens you add yourself

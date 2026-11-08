@@ -325,3 +325,6 @@ html[data-theme=dark] .warn3{background:#2A2110;color:#FCD34D}
 
 .srch input{min-width:0;width:100%}
 .cpbox{width:100%;min-height:90px;border:1px solid var(--line);border-radius:14px;padding:12px;font:600 15px ui-monospace,Menlo,Consolas,monospace;background:var(--soft);color:var(--tx);word-break:break-all;resize:none}
+
+.retry{display:inline-flex;align-items:center;gap:6px;margin:6px 0 2px;padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:600}
+.rtag{display:inline-flex;margin-left:6px;padding:2px 8px;border-radius:9px;background:var(--redSoft,rgba(220,38,38,.12));color:var(--red,#DC2626);font-size:11px;font-weight:700;vertical-align:1px}

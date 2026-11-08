@@ -80,6 +80,10 @@ function clean(s) { /* plain speakable text: no markdown marks, no links */
 }
 
 module.exports = async function handler(req, res) {
+  /* Only our own app may use this (stops other websites from spending our free Google quota). */
+  const sfs = req.headers && req.headers["sec-fetch-site"];
+  if (sfs && sfs !== "same-origin" && sfs !== "none") { res.statusCode = 403; res.setHeader("Content-Type", "application/json"); return res.end(JSON.stringify({ error: "not_allowed" })); }
+
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
   if (req.method === "GET") return send(res, 200, { enabled: !!KEY() });

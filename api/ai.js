@@ -56,6 +56,10 @@ function looksSecret(s) {
 }
 
 module.exports = async function handler(req, res) {
+  /* Only our own app may use this (stops other websites from spending our free Google quota). */
+  const sfs = req.headers && req.headers["sec-fetch-site"];
+  if (sfs && sfs !== "same-origin" && sfs !== "none") { res.statusCode = 403; res.setHeader("Content-Type", "application/json"); return res.end(JSON.stringify({ error: "not_allowed" })); }
+
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
   const key = process.env.GEMINI_API_KEY || process.env.GEMINI_AI_KEY || ""; /* either name works */
