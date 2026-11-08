@@ -187,3 +187,15 @@ Object.assign(L.hi,{navScan:"स्कैन",navLearn:"सीखें",aiFab:"
  document.addEventListener("pointerup",end);document.addEventListener("pointercancel",end);
  document.addEventListener("click",function(e){if(e.target.closest(".aifab")&&Date.now()-justMoved<400){e.stopImmediatePropagation();e.preventDefault()}},true);
 })();
+
+/* ----- 12-word backup is checked for EVERY wallet, not just the first one ----- */
+function bkMark(a){if(a)rawSet("tz_bk_"+String(a).toLowerCase(),"1")}
+function bkDone(a){a=String(a||"").toLowerCase();if(!a)return false;if(raw("tz_bk_"+a,"")==="1")return true;
+ try{var l=wList();if(ls("backup_ok",0)&&l.length&&String(l[0].addr).toLowerCase()===a)return true}catch(e){}return false}
+
+/* ----- lock by itself when nobody touches the app (computers keep the tab open for hours) ----- */
+(function(){var last=Date.now();function act(){last=Date.now()}
+ ["pointerdown","keydown","wheel","touchstart"].forEach(function(ev){document.addEventListener(ev,act,{capture:true,passive:true})});
+ setInterval(function(){if(S.mode!=="inapp"||!S.addr||document.hidden)return;if(typeof SLOCK!=="undefined"&&SLOCK)return;
+  var open=false;try{open=sessionStorage.getItem("v2_unl")==="1"}catch(e){}if(!open)return;
+  if(Date.now()-last>amin()*60000){try{CPW.lock();sessionStorage.removeItem("v2_unl");sessionStorage.removeItem("v2_act")}catch(e){}closeSheet();lockScreen();last=Date.now()}},15000)})();

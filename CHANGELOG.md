@@ -3,6 +3,12 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 8.4 · November 2026
+
+- Every new wallet now gets the 12-word check (3 random words each time), and "backup done" is tracked for each wallet separately
+- The app locks by itself when nobody touches it for the auto-lock time, even if it stays open on a computer
+- The assistant icon: no background, sits in the bottom bar's line, and can be moved with a finger
+
 ## Version 8.3 · November 2026
 
 - New: encrypted wallet backup file (Settings → Backup & restore). All wallets locked with a separate backup password (standard Ethereum keystore); restore on a new phone from the welcome screen
