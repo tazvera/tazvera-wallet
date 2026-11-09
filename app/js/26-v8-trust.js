@@ -242,10 +242,13 @@ document.addEventListener("click",function(e){if(!e.target.closest("[data-curset
 /* ----- Version 9: price chart (24 hours / 7 days / 30 days) ----- */
 Object.assign(L.en,{chT:"Price chart",ch1:"24H",ch7:"7D",ch30:"30D",chHi:"High",chLo:"Low",chNo:"Chart not available right now. Check the internet and try again.",chSrc:"Prices from CoinGecko. Past prices do not tell the future."});
 Object.assign(L.hi,{chT:"भाव का ग्राफ़",ch1:"24 घंटे",ch7:"7 दिन",ch30:"30 दिन",chHi:"सबसे ऊँचा",chLo:"सबसे नीचा",chNo:"ग्राफ़ अभी उपलब्ध नहीं। इंटरनेट देखकर फिर कोशिश कीजिए।",chSrc:"भाव CoinGecko से। पुराने भाव भविष्य नहीं बताते।"});
-var CHID={SHM:"shardeum",BTC:"bitcoin",ETH:"ethereum",BNB:"binancecoin",USDT:"tether"},CHC={};
-async function chData(sym,days){var id=CHID[sym];if(!id)return null;var key=sym+"|"+days+"|"+curC(),c=CHC[key];if(c&&Date.now()-c.t<300000)return c.p;
- var r=await fetch("https://api.coingecko.com/api/v3/coins/"+id+"/market_chart?vs_currency="+curC()+"&days="+days);if(!r.ok)throw 0;var j=await r.json();
- var p=(j&&Array.isArray(j.prices)?j.prices:[]).filter(function(x){return Array.isArray(x)&&x[1]>0});if(p.length<2)throw 0;CHC[key]={t:Date.now(),p:p};return p}
+var CHID={SHM:["shardeum-2","shardeum"],BTC:["bitcoin"],ETH:["ethereum"],BNB:["binancecoin"],USDT:["tether"]},CHC={};
+/* CoinGecko lists today's Shardeum as "shardeum-2" (the old "shardeum" page has no recent data); try each id in order */
+async function chData(sym,days){var ids=CHID[sym];if(!ids)return null;var key=sym+"|"+days+"|"+curC(),c=CHC[key];if(c&&Date.now()-c.t<300000)return c.p;
+ for(var i=0;i<ids.length;i++){try{var r=await fetch("https://api.coingecko.com/api/v3/coins/"+ids[i]+"/market_chart?vs_currency="+curC()+"&days="+days);if(!r.ok)continue;var j=await r.json();
+  var p=(j&&Array.isArray(j.prices)?j.prices:[]).filter(function(x){return Array.isArray(x)&&x[1]>0});
+  if(p.length<2||Date.now()-p[p.length-1][0]>3*864e5)continue;CHC[key]={t:Date.now(),p:p};return p}catch(e){}}
+ throw 0}
 function chSVG(p){var W=340,H=170,P=6,xs=p.map(function(x){return x[0]}),ys=p.map(function(x){return x[1]}),x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),lo=Math.min.apply(null,ys),hi=Math.max.apply(null,ys),sp=(hi-lo)||hi*0.01||1;
  var pts=p.map(function(q){return [P+(q[0]-x0)/((x1-x0)||1)*(W-2*P),P+(1-(q[1]-lo)/sp)*(H-2*P)]}),up=ys[ys.length-1]>=ys[0],col=up?"#00A86B":"#E5484D";
  var line=pts.map(function(q,i){return (i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1)}).join(" "),area=line+" L"+(W-P)+" "+H+" L"+P+" "+H+" Z",last=pts[pts.length-1];
