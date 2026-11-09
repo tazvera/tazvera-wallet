@@ -1,5 +1,6 @@
 /* Tazvera wallet · api/tts.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
+const guard = require("../lib/guard");
 /* Server-side proxy for speech (Google Cloud Text-to-Speech) used by the "Tazvera Sahayyak" bot.
    The language is worked out from the text itself: English (en-IN), Hindi (hi-IN), Marathi (mr-IN) and the other
    Indian scripts (Bengali, Gujarati, Punjabi, Tamil, Telugu, Kannada, Malayalam, Odia) when Google has a voice for them.
@@ -81,15 +82,14 @@ function clean(s) { /* plain speakable text: no markdown marks, no links */
 
 module.exports = async function handler(req, res) {
   /* Only our own app may use this (stops other websites from spending our free Google quota). */
-  const sfs = req.headers && req.headers["sec-fetch-site"];
-  if (sfs && sfs !== "same-origin" && sfs !== "none") { res.statusCode = 403; res.setHeader("Content-Type", "application/json"); return res.end(JSON.stringify({ error: "not_allowed" })); }
+  if (!guard.originOk(req)) { res.statusCode = 403; res.setHeader("Content-Type", "application/json"); return res.end(JSON.stringify({ error: "not_allowed" })); }
 
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
   if (req.method === "GET") return send(res, 200, { enabled: !!KEY() });
   if (req.method !== "POST") return send(res, 405, { error: "method" });
   if (!KEY()) return send(res, 503, { error: "not_configured" });
-  if (limited(clientIp(req), 15, 600000)) return send(res, 429, { error: "slow_down" });
+  if (!(await guard.check(req, res, "tts", { perIp: 15, windowSec: 600, daily: Number(process.env.TTS_DAILY_MAX) || 800 }))) return;
   let b = req.body;
   if (typeof b === "string") { try { b = JSON.parse(b); } catch (e) { b = null; } }
   b = b && typeof b === "object" ? b : {};

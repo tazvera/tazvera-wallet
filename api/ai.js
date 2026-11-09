@@ -1,5 +1,6 @@
 /* Tazvera wallet · api/ai.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
+const guard = require("../lib/guard");
 /* Server-side proxy for the "Tazvera Sahayyak" support bot (Google Gemini).
 
    Rules this file follows:
@@ -57,8 +58,7 @@ function looksSecret(s) {
 
 module.exports = async function handler(req, res) {
   /* Only our own app may use this (stops other websites from spending our free Google quota). */
-  const sfs = req.headers && req.headers["sec-fetch-site"];
-  if (sfs && sfs !== "same-origin" && sfs !== "none") { res.statusCode = 403; res.setHeader("Content-Type", "application/json"); return res.end(JSON.stringify({ error: "not_allowed" })); }
+  if (!guard.originOk(req)) { res.statusCode = 403; res.setHeader("Content-Type", "application/json"); return res.end(JSON.stringify({ error: "not_allowed" })); }
 
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
   if (req.method !== "POST") return send(res, 405, { error: "method" });
   if (!key) return send(res, 503, { error: "not_configured" });
   const ip = clientIp(req);
-  if (limited(ip, 20, 600000)) return send(res, 429, { error: "slow_down" });
+  if (!(await guard.check(req, res, "ai", { perIp: 20, windowSec: 600, daily: Number(process.env.AI_DAILY_MAX) || 1500 }))) return;
 
   let b = req.body;
   if (typeof b === "string") { try { b = JSON.parse(b); } catch (e) { b = null; } }

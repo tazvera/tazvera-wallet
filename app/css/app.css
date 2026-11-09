@@ -411,3 +411,5 @@ html[data-theme=dark] .aifab{box-shadow:none!important}
 
 /* ---- strong lock (password) ---- */
 .passw{display:flex;flex-direction:column;gap:12px;margin-top:18px;width:100%}.passw input{width:100%;height:52px;border-radius:16px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);padding:0 16px;font:600 17px Poppins,system-ui,sans-serif;text-align:center;letter-spacing:2px}.passw input:focus{outline:none;border-color:var(--tx)}
+
+.chmode{display:flex;gap:6px;margin-top:10px;background:var(--soft);padding:4px;border-radius:14px}.chmode button{flex:1;padding:8px;border-radius:10px;font-weight:600;font-size:13.5px;color:var(--mu);background:none}.chmode button.on{background:var(--card);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.08)}

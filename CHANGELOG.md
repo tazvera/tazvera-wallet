@@ -3,6 +3,11 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 9.1 · November 2026
+
+- Price chart: choose Line or Candles (green up, red down, with high/low wicks). 24 hours = 30-minute candles, 7 days = 4-hour, 30 days = 1-day; the choice is remembered
+- Assistant and voice servers: shared protection (lib/guard.js): requests without our own site are refused, 20 questions per person per 10 minutes, and a daily total cap; counts can be shared across servers with a free Upstash Redis
+
 ## Version 9 · November 2026
 
 - Currency option: show balances and prices in ₹ (INR) or $ (USD / USDT) — Settings → Currency
