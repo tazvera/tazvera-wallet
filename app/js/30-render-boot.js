@@ -81,7 +81,7 @@ async function boot(){theme();var eth=window.ethereum;
  try{if(S.mode==="inapp")wList()}catch(e){}
  var unl=false;try{unl=sessionStorage.getItem("v2_unl")==="1"&&(CPW.unlocked()||Number(sessionStorage.getItem("v2_act")||0)>Date.now()-amin()*60000)}catch(e){}
  if(S.mode==="inapp"&&!unl){lockScreen();setInterval(function(){if(CPW.unlocked())load()},30000);return}
- render();load();setInterval(load,30000);setInterval(function(){if(alarms().length){S.mkt=0;loadMk().then(function(){fetch("/api/price").then(function(r){return r.json()}).then(function(pj){if(pj&&pj.inr>0)S.inr=pj.inr;checkAlarms()}).catch(checkAlarms)})}},60000)}
+ render();load();setInterval(load,30000);setInterval(function(){if(alarms().length){S.mkt=0;loadMk().then(function(){fetch("/api/price").then(function(r){return r.json()}).then(function(pj){if(pj&&pj.inr>0)S.inr=pj.inr;if(pj&&pj.usd>0)S.usd=pj.usd;checkAlarms()}).catch(checkAlarms)})}},60000)}
 window.addEventListener("pageshow",function(){theme()});
 boot();
 

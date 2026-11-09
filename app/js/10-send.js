@@ -19,9 +19,9 @@ function lowFee(){if(S.bal==null||S.balW==null||S.snd.feeW==null)return false;re
 function feeWarn(){if(!lowFee())return"";var n=N(),f=S.snd.fee;var link=S.net==="shardeum-testnet"?'<a href="https://docs.shardeum.org" target="_blank" rel="noopener">'+esc(t("getTestShm"))+' ›</a>':S.net==="shardeum"?'<a href="#" data-fourth="1">'+esc(t("addShm"))+' ›</a>':'<a href="#" data-fourth="1">'+esc(t("testCoins"))+' ›</a>';
  return '<div class="warn3">'+ic("info",18)+'<span>'+esc(t("needFee").replace("%f",ffee(f)).replace("%s",n.sym).replace("%b",fmt(S.bal,4)).replace("%s",n.sym))+' '+link+'</span></div>'}
 function ffee(f){if(f==null)return"…";if(f>=1)return fmt(f,2);if(f>=0.0001)return fmt(f,6);return Number(f).toPrecision(2)}
-function rsOK(){var n=N();return !n.test&&S.inr>0&&S.snd.tok==="native"}
-function amtInr(){var n=N(),a=parseFloat(S.snd.amt);if(n.test||!S.inr||!a||S.snd.tok!=="native")return"";return S.snd.cur==="inr"?"= "+fmt(a,4)+" "+n.sym:"≈ "+inr(a*S.inr)}
-function feeTxt(){var n=N();if(S.snd.fee==null)return"…";var f=S.snd.fee;if(!n.test&&S.inr)return"≈ "+inr(f*S.inr)+" ("+ffee(f)+" "+n.sym+")";return"≈ "+ffee(f)+" "+n.sym}
+function rsOK(){var n=N();return !n.test&&S.inr>0&&S.snd.tok==="native"&&curC()==="inr"}
+function amtInr(){var n=N(),a=parseFloat(S.snd.amt);var px=dpx();if(n.test||!px||!a||S.snd.tok!=="native")return"";return (S.snd.cur==="inr"&&rsOK())?"= "+fmt(a,4)+" "+n.sym:"≈ "+money(a*px)}
+function feeTxt(){var n=N();if(S.snd.fee==null)return"…";var f=S.snd.fee;if(!n.test&&dpx())return"≈ "+money(f*dpx())+" ("+ffee(f)+" "+n.sym+")";return"≈ "+ffee(f)+" "+n.sym}
 async function estFee(){var n=N(),k=curTok();try{var gp=BigInt(await rpc(n.rpc,"eth_gasPrice",[]));var gas=BigInt(k.id==="native"?21000:65000);
  try{var to=/^0x[0-9a-fA-F]{40}$/.test(S.snd.to)?S.snd.to:S.addr;var wei=amtWei(S.snd.amt,k.dec||18)||0n;var tx=k.id==="native"?{from:S.addr,to:to,value:"0x"+wei.toString(16)}:{from:S.addr,to:k.addr,data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+wei.toString(16).padStart(64,"0")};var g=BigInt(await rpc(n.rpc,"eth_estimateGas",[tx]));if(g>0n)gas=g*11n/10n}catch(e){}
  S.snd.feeW=gp*gas;S.snd.fee=Number(gp*gas)/1e18}catch(e){S.snd.fee=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}

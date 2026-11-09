@@ -29,7 +29,7 @@ Your keys stay on your phone, locked by your PIN. No MetaMask needed. Built in t
 
 ## Project structure
 
-The app (Version 8) is plain HTML, CSS and JavaScript. No framework and no build step.
+The app (Version 9) is plain HTML, CSS and JavaScript. No framework and no build step.
 
 | Path | What it is |
 |------|-----------|
@@ -43,6 +43,7 @@ The app (Version 8) is plain HTML, CSS and JavaScript. No framework and no build
 | `app/js/20-…` … `25-…` | Faucet and security, tools, wallets, help center, backup, Back button, Explore, Settings |
 | `app/js/26-v8-trust.js` | Version 8: verified badges, token pages, news bell, network check, safety cards, PIN wait, copy, idle lock |
 | `app/js/27-ai.js` | Tazvera Assistant (chat + voice) |
+| `app/js/05-splash.js` | Opening animation |
 | `app/js/28-backup.js` | Encrypted wallet backup file |
 | `app/js/30-render-boot.js` | Screen switching and app start |
 | `sw.js` | Lets the installed app open without internet (always uses the newest files when online) |

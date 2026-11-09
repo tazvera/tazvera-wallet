@@ -393,3 +393,21 @@ html[data-theme=dark] .aifab{box-shadow:none!important}
 @keyframes spTile{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
 .sp-word{margin-top:30px!important;font-size:30px!important;letter-spacing:8px!important}
 .sp-tag{font-size:15px!important;margin-top:12px!important}
+
+/* ---- price chart ---- */
+.chtabs{display:flex;gap:8px;margin-top:10px}.chtabs .f1{flex:1}
+.chnow{display:flex;align-items:baseline;gap:10px;margin-top:14px}.chnow b{font-size:26px}.chnow span{font-weight:700;font-size:14px}
+.chbox{margin-top:10px;background:var(--soft);border-radius:18px;padding:10px 6px;min-height:170px;display:flex;align-items:center;justify-content:center}.chsvg{width:100%;height:auto;display:block}
+.chhl{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--mu)}.chhl b{color:var(--tx)}
+
+/* ---- crypto quiz ---- */
+.qzc{display:flex;align-items:center;gap:12px;width:calc(100% - 40px);margin:14px 20px 0;padding:14px;border-radius:18px;background:linear-gradient(135deg,#0B1D3A,#1E3A6E);color:#fff;text-align:left}
+.qzc span{font-size:28px}.qzc div{flex:1}.qzc b{display:block;font-size:16px}.qzc small{display:block;color:#C7D2FE;font-size:12.5px}
+.qzbar{height:6px;border-radius:4px;background:var(--line);margin-top:10px;overflow:hidden}.qzbar i{display:block;height:100%;background:var(--green);border-radius:4px}
+.qzq{font-size:17px;font-weight:600;line-height:1.45;margin:14px 2px 10px}
+.qzo{display:block;width:100%;text-align:left;padding:13px 14px;margin-top:8px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-size:15px;color:var(--tx)}
+.qzo.ok{border-color:var(--green);background:rgba(0,168,107,.1)}.qzo.no{border-color:var(--red);background:rgba(229,72,77,.08)}
+.qzx{margin-top:12px;padding:12px;border-radius:14px;font-size:14px;line-height:1.5}.qzx.ok{background:rgba(0,168,107,.1)}.qzx.no{background:rgba(245,158,11,.12)}
+
+/* ---- strong lock (password) ---- */
+.passw{display:flex;flex-direction:column;gap:12px;margin-top:18px;width:100%}.passw input{width:100%;height:52px;border-radius:16px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);padding:0 16px;font:600 17px Poppins,system-ui,sans-serif;text-align:center;letter-spacing:2px}.passw input:focus{outline:none;border-color:var(--tx)}

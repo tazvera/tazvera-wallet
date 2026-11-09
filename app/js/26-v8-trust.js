@@ -47,7 +47,7 @@ function emptyCard(){if(!(S.bal===0)||(S.tzt>0)||(S.tzv>0)||txs().length)return 
 function isBig(a,k){var x=parseFloat(a);if(!(x>0)||!k)return false;var n=N();if(n.test)return false;
  if(k.id==="native"&&S.inr&&x*S.inr>=1000)return true;
  if(k.bal>0&&x>=k.bal*0.5)return true;return false}
-function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&S.inr)?inr(parseFloat(a)*S.inr):exactAmt(a)+" "+k.sym;
+function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&dpx())?money(parseFloat(a)*dpx()):exactAmt(a)+" "+k.sym;
  return '<div class="sc warn" style="margin-top:10px">'+ic("warn",24)+'<div><b>'+esc(t("bigT"))+'</b><small>'+esc(t("bigS").replace("%a",txt))+'</small><label class="tick"><input type="checkbox" id="cBig">'+esc(t("bigTick"))+'</label></div></div>'}
 
 /* ----- news & alerts (announcements.json on the same site, so news can change without an app update) ----- */
@@ -60,14 +60,14 @@ function bellSheet(){lss("annSeen",annMax());render();var L2=S.lang==="hi"?"hi":
 
 /* ----- token detail ----- */
 function tokDetail(id){var k=tokens().find(function(x){return x.id===id});if(!k)return;var n=N();
- var val=(k.id==="native"&&S.inr&&!n.test&&k.bal!=null)?inr(k.bal*S.inr):"";
+ var val=(k.id==="native"&&dpx()&&!n.test&&k.bal!=null)?money(k.bal*dpx()):"";
  var hist=txs().filter(function(x){return String(x.symbol||n.sym).toUpperCase()===String(k.sym).toUpperCase()}).slice(0,8);
  var extra=k.id==="tzt"?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("drop",18)+esc(t("getTzt"))+'</button>':(k.id==="native"&&S.net==="shardeum")?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("add",18)+esc(t("addShm"))+'</button>':(k.id==="native"&&n.test&&!n.tzt)?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("drop",18)+esc(t("testCoins"))+'</button>':'';
  sheet('<div class="grab"></div><div class="tdh"><span class="ci big'+(k.custom?' unv':'')+'">'+(k.img?'<img src="'+k.img+'" alt="">':'<b>'+esc(k.sym.slice(0,1))+'</b>')+'</span><div><b>'+esc(k.name)+tokBadge(k)+'</b><small>'+esc(k.sym+" · "+n.name)+'</small></div></div>'+
  '<div class="tdb"><small>'+esc(t("tdBal"))+'</small><b>'+(S.hide?"••••":esc(fmt(k.bal,6)+" "+k.sym))+'</b>'+(val&&!S.hide?'<span>'+esc(val)+'</span>':'')+'</div>'+
  (isVer(k)?'<div class="note2" style="color:var(--green);font-weight:600;margin:8px 0 0">✓ '+esc(t("tdVerS"))+'</div>':'<div class="sc warn" style="margin-top:12px">'+ic("warn",22)+'<div><small style="font-size:13px;font-weight:600">'+esc(t("tdUnvW"))+'</small></div></div>')+
  (k.addr?'<div class="kv" style="margin-top:12px"><div><span>'+esc(t("tdContract"))+'</span><b style="display:flex;gap:10px;align-items:center">'+esc(sh(k.addr))+' <button data-tkcopy="'+esc(k.addr)+'" aria-label="copy">'+ic("copy",15)+'</button><a href="'+n.exp+'/address/'+k.addr+'" target="_blank" rel="noopener" style="color:var(--green);font-size:13px">'+esc(t("tdExp"))+' ↗</a></b></div></div>':'')+
- '<div class="tda"><button class="btn" data-tksend="'+esc(k.id)+'">'+ic("send",18,2.1)+esc(t("send"))+'</button><button class="btnw" data-tkrecv="'+esc(k.id)+'">'+ic("recv",18)+esc(t("recv"))+'</button></div>'+extra+
+ (k.id==="native"&&S.net==="shardeum"?'<button class="btnw" data-mkc="SHM" style="margin-top:12px">'+ic("pl",18)+esc(t("chT"))+'</button>':'')+'<div class="tda"><button class="btn" data-tksend="'+esc(k.id)+'">'+ic("send",18,2.1)+esc(t("send"))+'</button><button class="btnw" data-tkrecv="'+esc(k.id)+'">'+ic("recv",18)+esc(t("recv"))+'</button></div>'+extra+
  (k.id==="tzv"&&typeof lockBox==="function"?lockBox():'')+
  '<div class="day" style="margin:18px 0 6px">'+esc(t("tdHist"))+'</div>'+(hist.length?'<div class="card" style="margin:0">'+hist.map(rowTx).join("")+'</div>':'<div class="empty">'+esc(t("tdNoHist"))+'</div>'))}
 
@@ -229,3 +229,116 @@ function netReset(){S.bal=null;S.balW=null;S.tzt=null;S.tztW=null;S.tzv=null;S.t
    Promise.race([rpc(N().rpc,"eth_getCode",[S.snd.to,"latest"]),new Promise(function(_,rj){setTimeout(function(){rj(0)},6000)})]).then(function(c){S.snd.isC=!!c&&c!=="0x"&&c!=="0x0"}).catch(function(){}).then(function(){if(S.tab==="send")_oc()});return}
   _oc()};
  shield=function(){var r=_sh();if(r.lvl==="warn"&&S.snd.isC&&S.snd.codeFor===String(S.snd.to||"").toLowerCase()+"|"+S.net)return{lvl:"bad",t:t("shCon"),s:t("shCon2")};return r}})();
+
+/* ----- Version 9: show money in ₹ or in US dollars (USDT) ----- */
+Object.assign(L.en,{curT:"Currency",curInr:"₹ Indian Rupee (INR)",curUsd:"$ US Dollar (USD / USDT)",curNote:"Balances and prices are shown in this currency. Tools like the converter and bill split stay in ₹."});
+Object.assign(L.hi,{curT:"मुद्रा",curInr:"₹ भारतीय रुपया (INR)",curUsd:"$ अमेरिकी डॉलर (USD / USDT)",curNote:"बैलेंस और भाव इसी मुद्रा में दिखेंगे। कन्वर्टर, बिल बाँटें जैसे औज़ार ₹ में ही रहेंगे।"});
+function curC(){return raw("tz_cur","inr")==="usd"?"usd":"inr"}
+function dpx(){var p=curC()==="usd"?S.usd:S.inr;return (p>0)?p:null}
+function money(v){if(curC()!=="usd")return inr(v);if(v==null||isNaN(v))return "—";var d=v<0.01?6:(v<1?4:2);return "$"+Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:d})}
+document.addEventListener("click",function(e){if(!e.target.closest("[data-curset]"))return;
+ choose(t("curT"),[["inr",t("curInr")],["usd",t("curUsd")]],curC(),function(v){rawSet("tz_cur",v==="usd"?"usd":null);S.mkt=0;if(typeof loadMk==="function")loadMk();render();toast(t("curNote"))})});
+
+/* ----- Version 9: price chart (24 hours / 7 days / 30 days) ----- */
+Object.assign(L.en,{chT:"Price chart",ch1:"24H",ch7:"7D",ch30:"30D",chHi:"High",chLo:"Low",chNo:"Chart not available right now. Check the internet and try again.",chSrc:"Prices from CoinGecko. Past prices do not tell the future."});
+Object.assign(L.hi,{chT:"भाव का ग्राफ़",ch1:"24 घंटे",ch7:"7 दिन",ch30:"30 दिन",chHi:"सबसे ऊँचा",chLo:"सबसे नीचा",chNo:"ग्राफ़ अभी उपलब्ध नहीं। इंटरनेट देखकर फिर कोशिश कीजिए।",chSrc:"भाव CoinGecko से। पुराने भाव भविष्य नहीं बताते।"});
+var CHID={SHM:"shardeum",BTC:"bitcoin",ETH:"ethereum",BNB:"binancecoin",USDT:"tether"},CHC={};
+async function chData(sym,days){var id=CHID[sym];if(!id)return null;var key=sym+"|"+days+"|"+curC(),c=CHC[key];if(c&&Date.now()-c.t<300000)return c.p;
+ var r=await fetch("https://api.coingecko.com/api/v3/coins/"+id+"/market_chart?vs_currency="+curC()+"&days="+days);if(!r.ok)throw 0;var j=await r.json();
+ var p=(j&&Array.isArray(j.prices)?j.prices:[]).filter(function(x){return Array.isArray(x)&&x[1]>0});if(p.length<2)throw 0;CHC[key]={t:Date.now(),p:p};return p}
+function chSVG(p){var W=340,H=170,P=6,xs=p.map(function(x){return x[0]}),ys=p.map(function(x){return x[1]}),x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),lo=Math.min.apply(null,ys),hi=Math.max.apply(null,ys),sp=(hi-lo)||hi*0.01||1;
+ var pts=p.map(function(q){return [P+(q[0]-x0)/((x1-x0)||1)*(W-2*P),P+(1-(q[1]-lo)/sp)*(H-2*P)]}),up=ys[ys.length-1]>=ys[0],col=up?"#00A86B":"#E5484D";
+ var line=pts.map(function(q,i){return (i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1)}).join(" "),area=line+" L"+(W-P)+" "+H+" L"+P+" "+H+" Z",last=pts[pts.length-1];
+ return '<svg viewBox="0 0 '+W+' '+H+'" class="chsvg" role="img" aria-label="'+esc(t("chT"))+'"><defs><linearGradient id="chg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+col+'" stop-opacity=".28"/><stop offset="1" stop-color="'+col+'" stop-opacity="0"/></linearGradient></defs><path d="'+area+'" fill="url(#chg)"/><path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="4.5" fill="'+col+'" stroke="var(--card)" stroke-width="2"/></svg>'}
+async function chartSheet(sym,days){days=days||1;var name={SHM:"Shardeum",BTC:"Bitcoin",ETH:"Ethereum",BNB:"BNB",USDT:"Tether"}[sym]||sym;
+ function head(body){sheet('<div class="grab"></div><div class="sht">'+esc(name)+' · '+esc(t("chT"))+'</div><div class="chtabs">'+[[1,"ch1"],[7,"ch7"],[30,"ch30"]].map(function(d){return '<button class="f1'+(d[0]===days?" on":"")+'" data-chd="'+d[0]+'" data-chs="'+esc(sym)+'">'+esc(t(d[1]))+'</button>'}).join("")+'</div>'+body+'<div class="note2" style="margin-top:10px">'+esc(t("chSrc"))+'</div>')}
+ head('<div class="chbox"><div class="empty">'+esc(t("loading"))+'</div></div>');
+ try{var p=await chData(sym,days);if(!$("sheet").classList.contains("on")||!document.querySelector('[data-chs="'+sym+'"]'))return;
+  var ys=p.map(function(x){return x[1]}),f=ys[0],l=ys[ys.length-1],ch=(l-f)/f*100,up=ch>=0;
+  head('<div class="chnow"><b>'+esc(money(l))+'</b><span class="'+(up?"up2":"dn2")+'">'+(up?"+":"")+fmt(ch,2)+'%</span></div><div class="chbox">'+chSVG(p)+'</div><div class="chhl"><span>'+esc(t("chHi"))+' <b>'+esc(money(Math.max.apply(null,ys)))+'</b></span><span>'+esc(t("chLo"))+' <b>'+esc(money(Math.min.apply(null,ys)))+'</b></span></div>')}
+ catch(e){if(document.querySelector('[data-chs="'+sym+'"]'))head('<div class="chbox"><div class="empty">'+esc(t("chNo"))+'</div></div>')}}
+document.addEventListener("click",function(e){var el=e.target.closest("[data-mkc],[data-chd]");if(!el)return;if(el.dataset.chd){chartSheet(el.dataset.chs,+el.dataset.chd);return}var s=el.dataset.mkc;if(CHID[s]){if($("sheet").classList.contains("on"))closeSheet();setTimeout(function(){chartSheet(s,1)},$("sheet").classList.contains("on")?250:0)}});
+
+/* ----- Version 9: Crypto Quiz in Learn (10 questions, Hindi + English) ----- */
+var QZ=[
+ {en:["Who can you share your 12 secret words with?",["Nobody, ever","Tazvera support","A friend you trust"],0,"Anyone with the 12 words can take all your money. No real support team ever asks for them."],
+  hi:["अपने 12 गुप्त शब्द किसे बता सकते हैं?",["किसी को भी नहीं","Tazvera सहायता टीम को","भरोसेमंद दोस्त को"],0,"जिसके पास 12 शब्द हों, वह पूरा पैसा ले सकता है। कोई असली सहायता टीम ये कभी नहीं माँगती।"]},
+ {en:["Someone messages you: \"Send 100 SHM, get 1,000 back.\" This is…",["A scam","A lucky offer","Worth a small try"],0,"Doubling offers are always scams. Never send money to get more back."],
+  hi:["कोई संदेश भेजे: \"100 SHM भेजो, 1,000 वापस पाओ।\" यह…",["ठगी है","क़िस्मत वाला मौक़ा है","थोड़ा आज़माने लायक़ है"],0,"पैसा दोगुना करने वाले प्रस्ताव हमेशा ठगी होते हैं। ज़्यादा पाने के लिए कभी पैसा मत भेजिए।"]},
+ {en:["Where does the network fee go?",["To the blockchain network","To Tazvera","To the person you pay"],0,"The fee pays the network to process your payment. Tazvera takes nothing."],
+  hi:["नेटवर्क फ़ीस कहाँ जाती है?",["ब्लॉकचेन नेटवर्क को","Tazvera को","जिसे भुगतान किया, उसे"],0,"फ़ीस नेटवर्क को आपका भुगतान पूरा करने के लिए मिलती है। Tazvera कुछ नहीं लेता।"]},
+ {en:["You lost your phone and your 12 words. What happens?",["The wallet is lost forever","Tazvera can bring it back","The bank can bring it back"],0,"In a self-custody wallet only you hold the key. Keep the 12 words (or a wallet backup file) safe."],
+  hi:["फ़ोन और 12 शब्द दोनों खो गए। अब क्या होगा?",["वॉलेट हमेशा के लिए गया","Tazvera वापस ला देगा","बैंक वापस ला देगा"],0,"अपनी चाबी वाले वॉलेट में चाबी सिर्फ़ आपके पास होती है। 12 शब्द (या वॉलेट बैकअप फ़ाइल) संभालकर रखिए।"]},
+ {en:["A free \"USDT\" token suddenly appears in your wallet. What should you do?",["Ignore it, it may be fake","Sell it quickly","Claim it on its website"],0,"Fake airdrop tokens lead to scam websites. Never \"claim\" or connect your wallet to them."],
+  hi:["वॉलेट में अचानक मुफ़्त \"USDT\" टोकन आ गया। क्या करें?",["छोड़ दें, नक़ली हो सकता है","जल्दी बेच दें","उसकी वेबसाइट पर claim करें"],0,"नक़ली airdrop टोकन ठगी वाली वेबसाइटों पर ले जाते हैं। उन्हें कभी claim मत कीजिए।"]},
+ {en:["Before sending, how much of the address should you check?",["The whole address","Only the first 4 letters","Nothing, the app checks it"],0,"Scammers copy the start and the end of addresses. Check the whole address, or use your address book."],
+  hi:["भेजने से पहले पते का कितना हिस्सा जाँचें?",["पूरा पता","सिर्फ़ पहले 4 अक्षर","कुछ नहीं, ऐप देख लेगा"],0,"ठग पते की शुरुआत और आख़िर की नक़ल करते हैं। पूरा पता जाँचिए, या पता-पुस्तिका इस्तेमाल कीजिए।"]},
+ {en:["What are test network (Testnet) coins worth?",["Nothing, they are for practice","The same as real coins","Half of real coins"],0,"Test coins have no value. Practise on Testnet before using real money."],
+  hi:["टेस्ट नेटवर्क (Testnet) के सिक्कों की क़ीमत?",["कुछ नहीं, ये अभ्यास के लिए हैं","असली सिक्कों जितनी","असली की आधी"],0,"टेस्ट सिक्कों की कोई क़ीमत नहीं। असली पैसे से पहले Testnet पर अभ्यास कीजिए।"]},
+ {en:["You send coins to a smart-contract address by mistake. Usually…",["They are lost","They come back by themselves","Tazvera returns them"],0,"Most contracts cannot send coins back. Tazvera Shield warns you before this happens."],
+  hi:["ग़लती से सिक्के स्मार्ट-कॉन्ट्रैक्ट पते पर चले गए। आम तौर पर…",["वे खो जाते हैं","अपने-आप लौट आते हैं","Tazvera लौटा देता है"],0,"ज़्यादातर कॉन्ट्रैक्ट सिक्के वापस नहीं भेज सकते। Tazvera Shield पहले ही चेतावनी देता है।"]},
+ {en:["Which TZV is the real one?",["Only the official contract 0x4cC2…dE73","Any token called TZV","The one someone sells you"],0,"There is one official TZV contract. TZV is not for sale; anyone selling \"Tazvera\" coins is a scammer."],
+  hi:["असली TZV कौन-सा है?",["सिर्फ़ आधिकारिक पता 0x4cC2…dE73","TZV नाम का कोई भी टोकन","जो कोई आपको बेचे"],0,"आधिकारिक TZV एक ही है। TZV बिकता नहीं; जो \"Tazvera\" सिक्का बेचे, वह ठग है।"]},
+ {en:["Can a crypto payment be reversed after it is sent?",["No","Yes, by Tazvera","Yes, by the bank"],0,"Blockchain payments are final. That is why Tazvera checks everything before you send."],
+  hi:["भेजा हुआ crypto भुगतान क्या वापस हो सकता है?",["नहीं","हाँ, Tazvera करेगा","हाँ, बैंक करेगा"],0,"ब्लॉकचेन भुगतान पक्के होते हैं। इसीलिए Tazvera भेजने से पहले सब जाँचता है।"]}];
+Object.assign(L.en,{qzT:"Crypto Quiz",qzS:"10 quick questions. How safe are you?",qzBest:"Best: %s/10",qzNext:"Next",qzRight:"Correct!",qzWrong:"Not quite.",qzDone:"Your score: %s/10",qzGreat:"Excellent! You know how to stay safe.",qzGood:"Good! Read the answers you missed.",qzMore:"Keep learning: read the help center and try again.",qzAgain:"Try again"});
+Object.assign(L.hi,{qzT:"Crypto Quiz",qzS:"10 छोटे सवाल। आप कितने सुरक्षित हैं?",qzBest:"सबसे अच्छा: %s/10",qzNext:"आगे",qzRight:"सही!",qzWrong:"यह सही नहीं।",qzDone:"आपके अंक: %s/10",qzGreat:"शानदार! आप सुरक्षित रहना जानते हैं।",qzGood:"अच्छा! जो छूटे, उनके जवाब पढ़ लीजिए।",qzMore:"सीखते रहिए: मदद केंद्र पढ़कर फिर कोशिश कीजिए।",qzAgain:"फिर से खेलें"});
+function quizCard(){var b=ls("quizBest",null);return '<button class="qzc" data-quiz="1"><span>🎓</span><div><b>'+esc(t("qzT"))+'</b><small>'+esc(b!=null?t("qzBest").replace("%s",b):t("qzS"))+'</small></div>'+ic("right",16)+'</button>'}
+function quizRun(){var i=0,score=0,L2=S.lang==="hi"?"hi":"en";
+ function q(){var x0=QZ[i][L2],ord=[0,1,2].sort(function(){return Math.random()-.5}),x=[x0[0],ord.map(function(k){return x0[1][k]}),ord.indexOf(x0[2]),x0[3]];sheet('<div class="grab"></div><div class="sht">'+esc(t("qzT"))+' · '+(i+1)+'/'+QZ.length+'</div><div class="qzbar"><i style="width:'+((i)/QZ.length*100)+'%"></i></div><p class="qzq">'+esc(x[0])+'</p>'+x[1].map(function(o,k){return '<button class="qzo" data-qa="'+k+'">'+esc(o)+'</button>'}).join("")+'<div id="qzE"></div>');
+  [].forEach.call(document.querySelectorAll("#sheet [data-qa]"),function(b){b.onclick=function(){if(b.parentNode.querySelector(".qzo.ok"))return;var k=+b.dataset.qa,ok=k===x[2];if(ok)score++;
+   [].forEach.call(document.querySelectorAll("#sheet [data-qa]"),function(o){if(+o.dataset.qa===x[2])o.classList.add("ok");else if(o===b)o.classList.add("no");o.disabled=true});
+   $("qzE").innerHTML='<div class="qzx '+(ok?"ok":"no")+'"><b>'+esc(ok?t("qzRight"):t("qzWrong"))+'</b> '+esc(x[3])+'</div><div style="margin-top:12px"><button class="btn" id="qzN">'+esc(i<QZ.length-1?t("qzNext"):t("done2"))+'</button></div>';
+   $("qzN").onclick=function(){i++;if(i<QZ.length)q();else end()}}})}
+ function end(){var b=ls("quizBest",null);if(b==null||score>b)lss("quizBest",score);
+  sheet('<div class="grab"></div><div class="done" style="padding-top:8px"><div style="font-size:44px">'+(score>=9?"🏆":score>=6?"👍":"📘")+'</div><div class="sht" style="margin:4px 0 0">'+esc(t("qzDone").replace("%s",score))+'</div><p style="color:var(--mu);margin:8px 0 0">'+esc(score>=9?t("qzGreat"):score>=6?t("qzGood"):t("qzMore"))+'</p></div><div class="tda"><button class="btnw" data-sx="1">'+esc(t("done2"))+'</button><button class="btn" id="qzA">'+esc(t("qzAgain"))+'</button></div>');
+  $("qzA").onclick=function(){i=0;score=0;q()};if(S.tab==="helpc")setTimeout(function(){var y=scrollY;render();scrollTo(0,y)},50)}
+ q()}
+document.addEventListener("click",function(e){if(e.target.closest("[data-quiz]"))quizRun()});
+
+/* ----- Version 9: strong lock (a long password instead of the 6-digit PIN) ----- */
+Object.assign(L.en,{lockSP:"Enter your password to open",slT:"Strong lock",slOn:"Password",slOff:"6-digit PIN",passT:"Enter your password",passGo:"Unlock",passOk:"OK",
+ slInfo:"A long password is much harder to guess than a 6-digit PIN. Recommended if you keep real money in Tazvera. It replaces your PIN everywhere.",
+ slNew:"New password (at least 10 characters)",slNew2:"Type the password again",slSet:"Use this password",slDone:"Strong lock is on",slBack:"Go back to a 6-digit PIN",slBackDone:"Back to the 6-digit PIN",slCur:"Enter your current PIN",slCurP:"Enter your current password",slTick:"I wrote this password on paper"});
+Object.assign(L.hi,{lockSP:"खोलने के लिए पासवर्ड डालिए",slT:"मज़बूत ताला",slOn:"पासवर्ड",slOff:"6 अंकों का PIN",passT:"अपना पासवर्ड डालिए",passGo:"खोलें",passOk:"ठीक",
+ slInfo:"लंबा पासवर्ड 6 अंकों के PIN से कहीं ज़्यादा मुश्किल से टूटता है। Tazvera में असली पैसा रखते हों, तो यही अच्छा। यह हर जगह PIN की जगह लेगा।",
+ slNew:"नया पासवर्ड (कम से कम 10 अक्षर)",slNew2:"पासवर्ड दोबारा लिखिए",slSet:"यही पासवर्ड रखें",slDone:"मज़बूत ताला चालू",slBack:"वापस 6 अंकों का PIN",slBackDone:"फिर से 6 अंकों का PIN",slCur:"अपना अभी का PIN डालिए",slCurP:"अपना अभी का पासवर्ड डालिए",slTick:"मैंने यह पासवर्ड काग़ज़ पर लिख लिया"});
+function passOn(){return raw("tz_lockmode","")==="pass"}
+function passForm(id,btn){return '<div class="passw"><input id="'+id+'" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" aria-label="password"><button class="btn" id="'+id+'Go">'+esc(btn)+'</button></div>'}
+function passBind(id,cb){var i=$(id),g=$(id+"Go");if(!i||!g)return;setTimeout(function(){try{i.focus()}catch(e){}},80);function go(){var v=i.value;if(!v)return;i.value="";cb(v)}g.onclick=go;i.onkeydown=function(e){if(e.key==="Enter")go()}}
+(function(){var _ps=pinScreen,_ap=askPin,_pp=pinPad2,_np=newPinFlow;window.askPin6=_ap;
+ newPinFlow=function(done){rawSet("tz_lockmode",null);_np(done)};
+ pinScreen=function(title,sub,onDone,opts){if(!passOn())return _ps(title,sub,onDone,opts);opts=opts||{};var tt=(title===t("lockT"))?title:t("passT");if(sub===t("lockS"))sub=t("lockSP");
+  function draw(msg,bad){$("app").innerHTML='<div class="scr on" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12vh 24px 30px;text-align:center;box-sizing:border-box">'+(opts.back?'<button class="ib" id="pBack" style="position:absolute;left:20px;top:16px">'+ic("back",20)+'</button>':'')+'<img src="'+LOGO+'" alt="" style="width:84px;height:84px;border-radius:24px"><div class="pinw" style="margin-top:16px;width:100%;max-width:360px"><div class="pt" style="font-size:22px;font-weight:700">'+esc(tt)+'</div><div class="ps'+(bad?" e":"")+'">'+esc(msg||sub||t("passT"))+'</div>'+passForm("lp",t("passGo"))+'</div></div>';
+   var bk=$("pBack");if(bk)bk.onclick=opts.back;passBind("lp",function(v){onDone(v,function(m){draw(m,true)})})}
+  draw()};
+ askPin=function(title,sub,cb){if(!passOn())return _ap(title,sub,cb);
+  function draw(msg,bad){sheet('<div class="grab"></div><button class="ib" id="pX" style="position:absolute;right:16px;top:14px" aria-label="close">'+ic("x",18)+'</button><div class="pinw"><div class="pt">'+esc(title===t("pinT")?t("passT"):title)+'</div><div class="ps'+(bad?" e":"")+'">'+esc(msg||sub||"")+'</div>'+passForm("ap",t("passOk"))+'</div>',true);$("pX").onclick=closeSheet;passBind("ap",function(v){cb(v,function(m){draw(m,true)})})}
+  draw()};
+ pinPad2=function(amtTxt,ok){if(!passOn())return _pp(amtTxt,ok);
+  function draw(msg,bad){sheet('<div class="grab"></div><button class="ib" id="pX" style="position:absolute;right:16px;top:14px" aria-label="close">'+ic("x",18)+'</button><div class="pinw"><div class="pt">'+esc(t("passT"))+'</div><div class="ps'+(bad?" e":"")+'">'+esc(msg||t("pinS").replace("%a",amtTxt))+'</div>'+passForm("sp",t("passOk"))+'</div>',true);var px=$("pX");if(px)px.onclick=closeSheet;
+   passBind("sp",async function(v){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("sending"))+'</div></div>',true);try{await CPW.unlock(v);ok()}catch(e){draw(t("pinBad"),true)}})}
+  draw()}})();
+function slSetSheet(oldSecret){var lv=0;
+ sheet('<div class="grab"></div><div class="sht">'+esc(t("slT"))+'</div><p class="note2" style="text-align:left;margin:6px 2px 0">'+esc(t("slInfo"))+'</p>'+
+ '<div class="lbl2" style="margin:14px 2px 6px">'+esc(t("slNew"))+'</div><div class="box inp" style="margin:0"><input id="slP1" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false"></div><div class="wbbar"><i id="slBar"></i></div><div class="wbmsg" id="slMsg"></div>'+
+ '<div class="lbl2" style="margin:10px 2px 6px">'+esc(t("slNew2"))+'</div><div class="box inp" style="margin:0"><input id="slP2" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false"></div>'+
+ '<label class="tick" style="color:var(--tx)"><input type="checkbox" id="slTk">'+esc(t("slTick"))+'</label><div style="margin-top:14px"><button class="btn" id="slGo" disabled>'+esc(t("slSet"))+'</button></div>');
+ var p1=$("slP1"),p2=$("slP2"),go=$("slGo");
+ function upd(){lv=wbkLevel(p1.value,oldSecret);var why=wbkWhy(p1.value,p2.value,oldSecret);$("slBar").className="l"+lv;$("slMsg").textContent=p1.value?(lv<2?why:(p2.value&&p2.value!==p1.value?t("wbkSame"):(lv===3?t("wbkStrong"):t("wbkOk")))):"";$("slMsg").className="wbmsg l"+lv;go.disabled=!!why||!$("slTk").checked}
+ p1.oninput=p2.oninput=$("slTk").onchange=upd;
+ go.onclick=async function(){if(go.disabled)return;var np=p1.value;p1.value=p2.value="";sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);
+  try{var ph=await CPW.phrase(oldSecret);await CPW.imp(ph,np);ph=null;var miss=await pinRelockAll(oldSecret,np);rawSet("tz_lockmode","pass");closeSheet();render();toast(miss?t("pinOkPart").replace("%n",miss):t("slDone"))}catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}}}
+function slBackToPin(oldPass){var first=null;
+ function ask(title){window.askPin6(t("pinT"),title,async function(p,fail){if(first===null){first=p;closeSheet();setTimeout(function(){ask(t("rePin"))},250);return}
+  if(p!==first){first=null;closeSheet();toast(t("pinMis"));return}
+  sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);
+  try{var ph=await CPW.phrase(oldPass);await CPW.imp(ph,p);ph=null;var miss=await pinRelockAll(oldPass,p);rawSet("tz_lockmode",null);closeSheet();render();toast(miss?t("pinOkPart").replace("%n",miss):t("slBackDone"))}catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}})}
+ ask(t("newPin"))}
+document.addEventListener("click",function(e){if(!e.target.closest("[data-slock]"))return;
+ if(!passOn()){askPin(t("pinT"),t("slCur"),async function(p,fail){try{await CPW.unlock(p)}catch(x){return fail(t("pinBad"))}closeSheet();setTimeout(function(){slSetSheet(p)},250)});return}
+ choose(t("slT"),[["keep",t("slOn")+" ✓"],["pin",t("slBack")]],"keep",function(v){if(v!=="pin")return;setTimeout(function(){askPin(t("passT"),t("slCurP"),async function(p,fail){try{await CPW.unlock(p)}catch(x){return fail(t("pinBad"))}closeSheet();setTimeout(function(){slBackToPin(p)},250)})},250)})});
+/* wrong-password wording in strong-lock mode */
+(function(){var gEn=Object.getOwnPropertyDescriptor(L.en,"pinBad"),gHi=Object.getOwnPropertyDescriptor(L.hi,"pinBad");
+ try{Object.defineProperty(L.en,"pinBad",{configurable:true,get:function(){var v=gEn.get?gEn.get():gEn.value;return (passOn()&&!pinWait())?"Wrong password. Try again.":v}});
+  Object.defineProperty(L.hi,"pinBad",{configurable:true,get:function(){var v=gHi.get?gHi.get():gHi.value;return (passOn()&&!pinWait())?"पासवर्ड ग़लत है। फिर कोशिश कीजिए।":v}})}catch(e){}})();
