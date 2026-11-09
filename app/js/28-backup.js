@@ -52,7 +52,7 @@ async function wbkBuild(pin,pw){var l=wList(),out=[];
 /* ---- open the file (new phone, or add to this phone) ---- */
 function wbkRestore(){var inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";inp.style.display="none";document.body.appendChild(inp);
  inp.onchange=function(){var f=inp.files&&inp.files[0];inp.remove();if(!f)return;var r=new FileReader();r.onload=function(){var o=null;try{o=JSON.parse(r.result)}catch(e){}
-  if(!o||o.app!=="Tazvera"||o.type!==WBK_TYPE||!Array.isArray(o.wallets)||!o.wallets.length||!o.wallets.every(function(x){return x&&typeof x.ks==="string"})){toast(t("wbkBad"));return}wbkPwAsk(o)};r.readAsText(f)};inp.click()}
+  if(!o||o.app!=="Tazvera"||o.type!==WBK_TYPE||!Array.isArray(o.wallets)||!o.wallets.length||o.wallets.length>20||!o.wallets.every(function(x){return x&&typeof x.ks==="string"})){toast(t("wbkBad"));return}wbkPwAsk(o)};r.readAsText(f)};inp.click()}
 function wbkPwAsk(o){
  sheet('<div class="grab"></div><div class="sht">'+esc(t("wbkRestore"))+'</div><div class="note2" style="margin:4px 0 0">'+esc(t("wbkFound").replace("%n",o.wallets.length))+'</div>'+
  '<div class="lbl2" style="margin:14px 2px 6px">'+esc(t("wbkPw"))+'</div><div class="box inp" style="margin:0"><input id="wbR" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false"></div><div class="err" id="wbRE" style="margin:8px 2px 0"></div>'+
@@ -66,10 +66,10 @@ function wbkPwAsk(o){
 async function wbkSave(ws,pin,fresh){
  var busy='<div class="wel"><img src="'+LOGO+'" alt=""><h1 style="font-size:20px">'+esc(t("making"))+'</h1></div>';if(fresh)$("app").innerHTML=busy;else sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);
  try{try{wSyncActive()}catch(e){}var l=fresh?[]:wList(),have={},added=0,first=null;l.forEach(function(x){have[String(x.addr).toLowerCase()]=1});
-  for(var i=0;i<ws.length;i++){var a=ws[i].w.address;if(have[a.toLowerCase()])continue;var id="w"+Date.now()+"_"+i;l.push({id:id,name:ws[i].name||(t("wallet")+" "+(l.length+1)),ks:await ws[i].w.encrypt(pin),addr:a});have[a.toLowerCase()]=1;added++;if(!first)first=l[l.length-1]}
+  for(var i=0;i<ws.length;i++){var a=ws[i].w.address;if(have[a.toLowerCase()])continue;var id="w"+Date.now()+"_"+i;l.push({id:id,name:ws[i].name||wNextName(l),ks:await ws[i].w.encrypt(pin),addr:a});have[a.toLowerCase()]=1;added++;if(!first)first=l[l.length-1]}
   if(!added){if(!fresh)closeSheet();toast(t("wbkNone"));if(fresh)render();return}
   wSave(l);var act=fresh?l[0]:first;rawSet("cp3_inapp_keystore",act.ks);rawSet("cp3_v2_active",act.id);
-  await CPW.unlock(pin);try{sessionStorage.setItem("v2_unl","1")}catch(e){}S.addr=CPW.address();S.mode="inapp";S.bal=null;S.tzt=null;S.tzv=null;S.cust=[];S.tab="home";
+  await CPW.unlock(pin);try{sessionStorage.setItem("v2_unl","1")}catch(e){}S.addr=CPW.address();S.mode="inapp";netReset();S.tab="home";
   if(!fresh)closeSheet();render();load();toast(t("wbkAdded").replace("%n",added))}
  catch(e){if(!fresh)closeSheet();toast(String(e&&e.message||e).slice(0,80));if(fresh)render()}}
 

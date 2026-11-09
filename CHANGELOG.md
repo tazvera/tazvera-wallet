@@ -3,6 +3,15 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 9.2 · November 2026
+
+- Removing the open wallet (Backup & restore) now shows the same "12 words never checked" warning as removing any other wallet
+- Adding, removing or restoring wallets clears every number from the old wallet; new wallets get the next free "Wallet N" name
+- Wallet backup files with more than 20 wallets are refused (opening many locked wallets could freeze the phone)
+- Assistant: the 12-word check uses the real 12-word list (BIP39), so long questions in Hinglish or English are no longer blocked by mistake (app and server)
+- Assistant knows Version 9: currency, price charts, Crypto Quiz, Strong lock, wallet backup file, the new bottom bar
+- Server: old unused in-memory limiter removed from api/ai.js (lib/guard.js handles limits)
+
 ## Version 9.1 · November 2026
 
 - Price chart: choose Line or Candles (green up, red down, with high/low wicks). 24 hours = 30-minute candles, 7 days = 4-hour, 30 days = 1-day; the choice is remembered
