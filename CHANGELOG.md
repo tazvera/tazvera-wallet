@@ -6,7 +6,7 @@ Tazvera is a test version on test networks. Test coins have no value.
 ## Version 9 · November 2026
 
 - Currency option: show balances and prices in ₹ (INR) or $ (USD / USDT) — Settings → Currency
-- Price chart for SHM, BTC, ETH, BNB and USDT (24 hours / 7 days / 30 days), from Explore or the SHM page
+- Price chart for SHM, BTC, ETH, BNB and USDT (24 hours / 7 days / 30 days), from Explore or the SHM page; history comes from public exchange candles (KuCoin, Gate backup) through a small cached server function (api/chart.js), so it does not hit outside rate limits
 - Crypto Quiz in Learn: 10 safety questions in Hindi and English, answers shuffled, best score saved
 - Strong lock: use a long password instead of the 6-digit PIN everywhere (lock screen, sending, settings), and go back to a PIN any time; every wallet is re-locked
 - Settings shows Version 9
