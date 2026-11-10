@@ -361,10 +361,25 @@ document.addEventListener("click",function(e){if(!e.target.closest("[data-slock]
    started typing your PIN. The "Use fingerprint" button stays on the screen while you type. */
 (function(){var _ls=lockScreen;lockScreen=function(){if(!(typeof BIO!=="undefined"&&BIO.on()))return _ls();
  var typed=false,busy=false;
- pinScreen(t("lockT"),t("lockS"),async function(p,fail){try{await CPW.unlock(p);try{sessionStorage.setItem("v2_unl","1")}catch(e){}render();load()}catch(e){fail(t("pinBad"))}});
+ pinScreen(t("lockT"),t("lockS"),async function(p,fail){try{await CPW.unlock(p);try{sessionStorage.setItem("v2_unl","1")}catch(e){}if(typeof tzSound==="function")tzSound("unlock");render();load()}catch(e){fail(t("pinBad"))}});
  function onLock(){return !!document.querySelector("#app [data-pk], #app #lp")}
- function go2(){if(busy||!onLock())return;busy=true;BIO.unlock().then(function(){try{sessionStorage.setItem("v2_unl","1")}catch(e){}render();load()}).catch(function(){}).then(function(){busy=false})}
+ function go2(){if(busy||!onLock())return;busy=true;BIO.unlock().then(function(){try{sessionStorage.setItem("v2_unl","1")}catch(e){}if(typeof tzSound==="function")tzSound("unlock");render();load()}).catch(function(){}).then(function(){busy=false})}
  function addBtn(){if(!onLock()||document.getElementById("fpBtn"))return;var b=document.createElement("button");b.id="fpBtn";b.type="button";b.className="btnw";b.style.cssText="width:auto;padding:0 18px;height:44px;margin:14px auto 0;font-size:14px;gap:8px";b.innerHTML=ic("shield",18)+esc(t("useFp"));b.onclick=function(){typed=true;go2()};var pw=document.querySelector("#app .pinw");if(pw)pw.after(b)}
  addBtn();var app=document.getElementById("app"),mo=new MutationObserver(function(){if(!onLock()){mo.disconnect();return}addBtn()});mo.observe(app,{childList:true,subtree:true});
  function k(e){if(e.target.closest&&e.target.closest("[data-pk],#lp,#lpGo")){typed=true;document.removeEventListener("pointerdown",k,true)}}document.addEventListener("pointerdown",k,true);
  setTimeout(function(){if(!typed&&!document.hidden)go2()},document.getElementById("splash")?2600:400)}})();
+
+/* ----- Version 9.4: gentle sounds (made by code, no files, works offline) -----
+   Unlock: two soft notes. Payment confirmed: a bright "ting". Money received while the app is open: a warm chime.
+   Browsers allow sound only after you touch the screen, so the first touch quietly prepares the sound. Settings → Sounds turns them off. */
+Object.assign(L.en,{sndT:"Sounds"});Object.assign(L.hi,{sndT:"आवाज़ें"});
+function sndOn(){return raw("tz_sound","1")!=="0"}
+var TZA=null;
+function tzAC(){try{if(!TZA){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;TZA=new C()}if(TZA.state==="suspended")TZA.resume();return TZA}catch(e){return null}}
+document.addEventListener("pointerdown",function(){if(sndOn())tzAC()},{capture:true,passive:true});
+function tzSound(kind){if(!sndOn())return;var ac=tzAC();if(!ac)return;
+ var notes={unlock:[[1046.5,0],[1568,.11]],ok:[[880,0],[1174.7,.09],[1760,.18]],in:[[1318.5,0],[1046.5,.12],[1568,.24]]}[kind];if(!notes)return;var t0=ac.currentTime+.02;
+ try{notes.forEach(function(n){var o=ac.createOscillator(),o2=ac.createOscillator(),g=ac.createGain(),g2=ac.createGain();o.type="sine";o2.type="triangle";o.frequency.value=n[0];o2.frequency.value=n[0]*2;g2.gain.value=.12;
+  o.connect(g);o2.connect(g2);g2.connect(g);g.connect(ac.destination);var s=t0+n[1];g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(.16,s+.015);g.gain.exponentialRampToValueAtTime(.0001,s+.45);
+  o.start(s);o2.start(s);o.stop(s+.5);o2.stop(s+.5)})}catch(e){}}
+document.addEventListener("click",function(e){if(!e.target.closest("[data-sndsw]"))return;rawSet("tz_sound",sndOn()?"0":null);render();if(sndOn())tzSound("unlock")});

@@ -3,6 +3,10 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 9.4 · November 2026
+
+- Gentle sounds, made by code (no files, works offline): two soft notes when the wallet opens with PIN or fingerprint, a bright "ting" when a payment is confirmed, a warm chime when money arrives while the app is open. Settings → Sounds turns them off
+
 ## Version 9.3 · November 2026
 
 - Tazvera Assistant 2.0: new polished icon; a cleaner chat with avatar, quick question cards and one-tap buttons (Send, Receive, Price chart, Quiz, Activity, Network fee, Backup, 12 words)
