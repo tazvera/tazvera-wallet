@@ -3,6 +3,11 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 9.5 · November 2026
+
+- Code tidy-up, no change in what the app does: the big app/js/26-v8-trust.js is split into one file per feature in app/js/features/ (currency, chart, quiz, strong-lock, lock-screen-fingerprint, sounds, send-safety, pin-wait, idle-lock, backup-check, pin-change-wallets, session-and-copy, offline-theme-mainnet, qr-network-privacy, bottom-bar-assistant-icon). They load in the same order as before, so a change in one feature cannot move or break another
+- README lists the new files
+
 ## Version 9.4 · November 2026
 
 - Gentle sounds, made by code (no files, works offline): two soft notes when the wallet opens with PIN or fingerprint, a bright "ting" when a payment is confirmed, a warm chime when money arrives while the app is open. Settings → Sounds turns them off

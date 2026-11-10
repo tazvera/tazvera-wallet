@@ -41,8 +41,10 @@ The app (Version 9) is plain HTML, CSS and JavaScript. No framework and no build
 | `app/js/02-core.js` | Balances, history, home, activity, receive |
 | `app/js/10-send.js` … `13-lock-onboarding.js` | Send + Shield, QR scan, request, lock screen, new wallet |
 | `app/js/20-…` … `25-…` | Faucet and security, tools, wallets, help center, backup, Back button, Explore, Settings |
-| `app/js/26-v8-trust.js` | Version 8: verified badges, token pages, news bell, network check, safety cards, PIN wait, copy, idle lock |
+| `app/js/26-v8-trust.js` | Version 8 core: verified badges, token pages, news bell, network check, home cards, big-amount check |
+| `app/js/features/` | One file per feature (load in the order listed in `index.html`): `currency`, `chart`, `quiz`, `strong-lock`, `lock-screen-fingerprint`, `sounds`, `send-safety`, `pin-wait`, `idle-lock`, `backup-check`, `pin-change-wallets`, `session-and-copy`, `offline-theme-mainnet`, `qr-network-privacy`, `bottom-bar-assistant-icon` |
 | `app/js/27-ai.js` | Tazvera Assistant (chat + voice) |
+| `app/js/29-ai2.js` | Assistant 2.0: private wallet answers, chat history, one-tap buttons |
 | `app/js/05-splash.js` | Opening animation |
 | `app/js/28-backup.js` | Encrypted wallet backup file |
 | `app/js/30-render-boot.js` | Screen switching and app start |
