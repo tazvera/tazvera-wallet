@@ -3,6 +3,13 @@
 All notable changes to the Tazvera wallet. Newest first.
 Tazvera is a test version on test networks. Test coins have no value.
 
+## Version 9.3 · November 2026
+
+- Tazvera Assistant 2.0: new polished icon; a cleaner chat with avatar, quick question cards and one-tap buttons (Send, Receive, Price chart, Quiz, Activity, Network fee, Backup, 12 words)
+- Private wallet answers: "What is my balance?", "Show my recent activity", "How much is the fee now?", "What is the BTC price?" are answered by the app itself. These answers never go to any server and are never sent to the AI later
+- Chat history on this phone only (last 20 chats), with "New chat" and "Delete all chats"
+- Clear line under every chat: information, not advice
+
 ## Version 9.2 · November 2026
 
 - Removing the open wallet (Backup & restore) now shows the same "12 words never checked" warning as removing any other wallet
