@@ -382,7 +382,7 @@ html[data-theme=dark] .aifab{box-shadow:none!important}
 @keyframes spRing{0%{opacity:.75;transform:scale(.72)}100%{opacity:0;transform:scale(1.35)}}
 @keyframes spL{to{opacity:1;transform:none}}
 @keyframes spT{to{opacity:1}}
-@media (prefers-reduced-motion: reduce){#splash{display:none}}
+
 
 /* opening animation v2: bigger logo on its black tile, no green behind green */
 .sp-glow{background:radial-gradient(circle,rgba(96,140,255,.22),rgba(96,140,255,0) 65%)!important;width:520px!important;height:520px!important}
@@ -431,3 +431,9 @@ html[data-theme=dark] .aim.u .aib{background:linear-gradient(135deg,#14C8A8,#0EA
 .aiin{display:flex;gap:8px;margin-top:10px}.aiin input{flex:1;min-width:0;padding:13px 15px;border-radius:18px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);font-size:15px}.aiin input:focus{outline:none;border-color:#14C8A8}
 .aiin button{width:50px;border-radius:18px;background:linear-gradient(135deg,#5BE88A,#14C8A8 55%,#0EA5E9);color:#04210F;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(20,200,168,.35)}
 .aifab svg{filter:drop-shadow(0 6px 12px rgba(14,165,233,.35))}
+
+/* calm opening (phones with "remove animations" on): the same picture, no movement */
+#splash.calm *{animation:none!important;transition:none!important}
+#splash.calm .pc,#splash.calm .sp-tile,#splash.calm .sp-word i,#splash.calm .sp-tag,#splash.calm .sp-glow{opacity:1!important;transform:none!important}
+#splash.calm .sp-glow{transform:translate(-50%,-50%)!important}
+#splash.calm .sp-ring,#splash.calm .sp-shine{opacity:0!important}

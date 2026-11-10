@@ -9,6 +9,8 @@ Tazvera is a test version on test networks. Test coins have no value.
 - Private wallet answers: "What is my balance?", "Show my recent activity", "How much is the fee now?", "What is the BTC price?" are answered by the app itself. These answers never go to any server and are never sent to the AI later
 - Chat history on this phone only (last 20 chats), with "New chat" and "Delete all chats"
 - Clear line under every chat: information, not advice
+- Opening animation now also shows on phones with "remove animations" switched on (a calm version without movement)
+- Lock screen: the fingerprint prompt opens by itself only once, after the opening animation, and never once you start typing the PIN; the fingerprint button stays on screen
 
 ## Version 9.2 · November 2026
 
