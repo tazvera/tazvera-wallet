@@ -1,5 +1,6 @@
 /* Tazvera wallet · api/chart.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
+const guard = require("../lib/guard");
 /* Price history for the in-app chart, from public exchange candles (KuCoin, then Gate as backup).
    Cached by Vercel for 5 minutes, so many users share one upstream call. No user data is involved. */
 const PAIRS = { SHM: ["SHM-USDT", "SHM_USDT"], BTC: ["BTC-USDT", "BTC_USDT"], ETH: ["ETH-USDT", "ETH_USDT"], BNB: ["BNB-USDT", "BNB_USDT"] };
@@ -33,6 +34,9 @@ async function usdInr() {
 }
 
 module.exports = async function handler(req, res) {
+  /* Only our own app may use this, and each IP / the whole day has a limit (stops abuse of the exchange calls). */
+  if (!guard.originOk(req)) { res.status(403).json({ error: "not_allowed" }); return; }
+  if (!(await guard.check(req, res, "chart", { perIp: 60, windowSec: 600, daily: Number(process.env.CHART_DAILY_MAX) || 20000 }))) return;
   const q = req.query || {};
   const sym = String(q.sym || "").toUpperCase(), days = Number(q.days), cur = q.cur === "usd" ? "usd" : "inr";
   res.setHeader("X-Content-Type-Options", "nosniff");
