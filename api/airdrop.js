@@ -1,6 +1,7 @@
 // Tazvera free test-coin server (Shardeum Testnet). Sends 100 TZT to a new tester; the server pays the network fee.
 // Needs the environment variable AIRDROP_KEY (the airdrop wallet's private key, kept only in Vercel).
 const ethers = require("ethers");
+const guard = require("../lib/guard");
 
 const RPC = "https://api-mezame.shardeum.org";
 const CHAIN_ID = 8119;
@@ -69,12 +70,13 @@ async function handler(req, res) {
   let key = "", ip = "", taken = false;
   try {
     res.setHeader("Cache-Control", "no-store");
-    const sf = req.headers && req.headers["sec-fetch-site"];
-    if (sf && sf !== "same-origin" && sf !== "none") return res.status(403).json({ error: "Not allowed" });
+    if (!guard.originOk(req)) return res.status(403).json({ error: "Not allowed" });
     const to = String((req.query && req.query.address) || "");
     if (!ethers.isAddress(to)) return res.status(400).json({ error: "Invalid address" });
     if (!process.env.AIRDROP_KEY) return res.status(500).json({ error: "Airdrop is not set up yet" });
     key = to.toLowerCase(); ip = clientIp(req);
+    /* shared counter (Redis when set), so every server instance sees the same limits */
+    if (!(await guard.check(req, res, "airdrop", { perIp: PER_IP, windowSec: 86400, daily: GLOBAL_MAX }))) return;
     const no = allow(now, key, ip);
     if (no) return res.status(no[1]).json({ error: no[0] });
     take(now, key, ip); taken = true;
