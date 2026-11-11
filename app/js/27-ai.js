@@ -8,13 +8,13 @@ var AI_TX={en:{name:"Tazvera Assistant",hi:"Hello! I am the Tazvera Assistant. A
  warn:"AI can make mistakes. Never type your 12 words, PIN or private key here.",think:"Writing an answer…",
  eSecret:"This looks like your 12 words or a private key. Never type them here. It was not sent.",
  eOff:"The assistant is not available right now. Write to contact@tazvera.com.",eSlow:"Too many questions. Please try again in a few minutes.",eNet:"No answer received. Please try again.",
- listen:"Listen ▶",stopb:"Stop ■",eVoice:"Voice not available",
+ listen:"Listen ▶",stopb:"Stop ■",eVoice:"Voice not available",copy:"Copy",copied:"Copied",share:"Share",like:"Good answer",dislike:"Bad answer",again:"Try again",
  q:["How do I send money?","What is the network fee?","What are the 12 words?","What is TZV?"]},
  hi:{name:"Tazvera सहायक",hi:"नमस्ते! मैं Tazvera सहायक हूँ। Tazvera के बारे में कुछ भी पूछिए, किसी भी भाषा में: हिंदी, मराठी, English…",ph:"अपना सवाल लिखिए",send:"भेजें",
  warn:"AI ग़लती कर सकता है। अपने 12 शब्द, PIN या प्राइवेट की यहाँ कभी न लिखें।",think:"जवाब लिख रहा हूँ…",
  eSecret:"यह आपके 12 शब्द या चाबी जैसा लगता है। इसे यहाँ कभी न लिखें। यह भेजा नहीं गया।",
  eOff:"सहायक अभी उपलब्ध नहीं है। contact@tazvera.com पर लिखिए।",eSlow:"बहुत सवाल हो गए। थोड़ी देर बाद फिर कोशिश कीजिए।",eNet:"जवाब नहीं मिला। फिर कोशिश कीजिए।",
- listen:"सुनें ▶",stopb:"रोकें ■",eVoice:"आवाज़ उपलब्ध नहीं",
+ listen:"सुनें ▶",stopb:"रोकें ■",eVoice:"आवाज़ उपलब्ध नहीं",copy:"कॉपी",copied:"कॉपी हो गया",share:"शेयर",like:"अच्छा जवाब",dislike:"खराब जवाब",again:"दोबारा",
  q:["पैसे कैसे भेजें?","नेटवर्क फ़ीस क्या है?","12 शब्द क्या हैं?","TZV क्या है?"]}};
 var AI_T={};function aiLang(){var L2=(S.lang==="hi")?"hi":"en";var src=AI_TX[L2];for(var k in src)AI_T[k]=src[k]}aiLang();
 var AI_SVG='<svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 30C14 19 22 10 32 10C42 10 50 19 50 30" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="8" y="26" width="6" height="15" rx="3" fill="#38BDF8"/><rect x="50" y="26" width="6" height="15" rx="3" fill="#38BDF8"/><path d="M52 38L44 48H36" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="35" cy="48" r="2.5" fill="#F59E0B"/><rect x="16" y="18" width="32" height="28" rx="9" fill="#1E293B" stroke="#38BDF8" stroke-width="2"/><circle cx="26" cy="28" r="3" fill="#38BDF8"/><circle cx="38" cy="28" r="3" fill="#38BDF8"/><line x1="26" y1="37" x2="38" y2="37" stroke="#64748B" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -62,8 +62,33 @@ function aiSpeak(btn,text){if(btn.getAttribute("data-on")==="1"){aiStop();return
   var a=new Audio("data:audio/mpeg;base64,"+x.j.audio);AI.aud=a;btn.setAttribute("data-on","1");btn.textContent=AI_T.stopb;
   a.onended=function(){if(AI.aud===a)AI.aud=null;btn.setAttribute("data-on","0");btn.textContent=AI_T.listen};a.ontimeupdate=function(){if(!document.getElementById("aiLog")){a.pause();AI.aud=null}};
   var pr=a.play();if(pr&&pr.catch)pr.catch(function(){AI.aud=null;aiLocal(btn,text)})}).catch(function(){aiLocal(btn,text)})}
-function aiBtn(d,text){if((!AI.tts&&!window.speechSynthesis)||!d)return;var b=document.createElement("button");b.type="button";b.setAttribute("data-aispk","1");b.textContent=AI_T.listen;
- b.style.cssText="display:block;margin-top:6px;padding:4px 10px;border-radius:12px;background:var(--soft);color:var(--tx);font-size:12.5px;font-weight:600";b.onclick=function(){aiSpeak(b,text)};d.appendChild(b)}
+/* ---- small buttons under every answer: listen, copy, share, like, dislike, try again. Nothing here sends data anywhere. ---- */
+var AI_IC={copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/>',like:'<path d="M7 11v9H4v-9h3zM7 11l4-7c1.5 0 2.5 1 2.5 2.5V9H19a2 2 0 0 1 2 2.3l-1 7a2 2 0 0 1-2 1.7H7"/>',dislike:'<path d="M17 13V4h3v9h-3zM17 13l-4 7c-1.5 0-2.5-1-2.5-2.5V15H5a2 2 0 0 1-2-2.3l1-7A2 2 0 0 1 6 4h11"/>',again:'<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/>'};
+function aiIcon(n,sz){return '<svg width="'+(sz||17)+'" height="'+(sz||17)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+AI_IC[n]+'</svg>'}
+function aiCopy(text,done){var ok=function(){done(true)},bad=function(){done(false)};
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok,function(){fb()});return}}catch(e){}fb();
+ function fb(){try{var ta=document.createElement("textarea");ta.value=text;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;left:-9999px;top:0";document.body.appendChild(ta);ta.select();var r=document.execCommand("copy");document.body.removeChild(ta);r?ok():bad()}catch(e){bad()}}}
+/* the same question again, with a fresh answer (only the newest answer has this button) */
+function aiRegen(d){if(AI.busy)return;var log=document.getElementById("aiLog");if(!log)return;
+ /* two chat layouts exist: the new one (29-ai2.js: AI.cur + .aim rows) and the old one (AI.msgs + plain bubbles) */
+ var row=d.closest?d.closest(".aim"):null,last=row?log.lastElementChild:log.lastChild,mine=row||d;if(last!==mine)return;
+ var arr=(AI.cur&&AI.cur.msgs)?AI.cur.msgs:AI.msgs,q=null;
+ if(arr.length&&arr[arr.length-1].role==="model"){arr.pop();if(arr.length&&arr[arr.length-1].role==="user")q=arr.pop().text}
+ if(!q)return;aiStop();var u=mine.previousSibling;log.removeChild(mine);if(u&&u.parentNode===log)log.removeChild(u);aiAsk(q)}
+function aiBtn(d,text){if(!d)return;
+ var row=document.createElement("div");row.setAttribute("data-airow","1");row.style.cssText="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px";
+ var base="display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 9px;border-radius:12px;background:var(--soft);color:var(--tx);font-size:12.5px;font-weight:600;border:0;cursor:pointer";
+ function mk(name,label){var b=document.createElement("button");b.type="button";b.setAttribute("aria-label",label);b.title=label;b.style.cssText=base;b.innerHTML=aiIcon(name);return b}
+ if(AI.tts||window.speechSynthesis){var l=document.createElement("button");l.type="button";l.setAttribute("data-aispk","1");l.textContent=AI_T.listen;l.style.cssText=base;l.onclick=function(){aiSpeak(l,text)};row.appendChild(l)}
+ var c=mk("copy",AI_T.copy);c.onclick=function(){aiCopy(text,function(ok){if(!ok)return;c.textContent=AI_T.copied;c.style.color="var(--green)";setTimeout(function(){c.innerHTML=aiIcon("copy");c.style.color="var(--tx)"},1600)})};row.appendChild(c);
+ if(navigator.share){var sh=mk("share",AI_T.share);sh.onclick=function(){try{var r=navigator.share({text:String(text).slice(0,1500)+"\n\n— Tazvera · tazvera.com"});if(r&&r.catch)r.catch(function(){})}catch(e){}};row.appendChild(sh)}
+ /* like / dislike: only a mark on this phone, nothing is sent and nothing is saved */
+ var up=mk("like",AI_T.like),dn=mk("dislike",AI_T.dislike);
+ function mark(on,off,col){var was=on.getAttribute("aria-pressed")==="true";on.setAttribute("aria-pressed",!was);on.style.color=was?"var(--tx)":col;on.style.background=was?"var(--soft)":"var(--card)";off.setAttribute("aria-pressed","false");off.style.color="var(--tx)";off.style.background="var(--soft)"}
+ up.onclick=function(){mark(up,dn,"var(--green)")};dn.onclick=function(){mark(dn,up,"var(--red,#DC2626)")};row.appendChild(up);row.appendChild(dn);
+ var rf=mk("again",AI_T.again);rf.setAttribute("data-airf","1");rf.onclick=function(){aiRegen(d)};row.appendChild(rf);
+ [].forEach.call(document.querySelectorAll("#aiLog [data-airf]"),function(o){if(o!==rf&&o.parentNode)o.parentNode.removeChild(o)});
+ d.appendChild(row)}
 try{if(window.speechSynthesis){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){}}}catch(e){}
 function aiCheck(cb){if(AI.on!==null)return cb(AI.on);fetch("/api/ai",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){AI.on=!!(j&&j.enabled);cb(AI.on)}).catch(function(){cb(false)})}
 var AI_FLOAT=false; /* the bot opens from the Helper button in the Home header; set true to also show a floating button */
