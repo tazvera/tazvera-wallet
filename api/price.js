@@ -1,5 +1,9 @@
 // Vercel serverless function: SHM price (median of several exchanges) + 24h change + USD->INR
+const guard = require("../lib/guard");
 module.exports = async function handler(req, res) {
+  /* Only our own app may use this, with limits per IP and per day (stops abuse of the exchange calls). */
+  if (!guard.originOk(req)) { res.status(403).json({ error: "not_allowed" }); return; }
+  if (!(await guard.check(req, res, "price", { perIp: 60, windowSec: 600, daily: Number(process.env.PRICE_DAILY_MAX) || 20000 }))) return;
   const get = async (url, pick) => {
     try {
       const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
