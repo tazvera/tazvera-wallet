@@ -7,6 +7,8 @@ Object.assign(L.hi,{eSum:"इस पते में टाइपिंग क�
 /* ----- Version 8.7 ----- */
 Object.assign(L.en,{scanFail:"The scanner could not load. Check the internet, or paste the address.",cancelled:"Cancelled",mmOther:"MetaMask has a different account selected. Choose this wallet's account in MetaMask and try again.",eTok:"This token has no valid contract address.",
  shCon:"This is a smart-contract address",shCon2:"Coins sent to a contract are often lost forever unless it was made to receive them. Send only if you are sure."});
+Object.assign(L.en,{chkFail:"Could not confirm whether this address is a contract. Send with care.",chkFail2:"The network check did not answer. Make sure the address is right before you send."});
+Object.assign(L.hi,{chkFail:"कॉन्ट्रैक्ट की पुष्टि नहीं हो सकी। सावधानी से भेजें।",chkFail2:"नेटवर्क ने जवाब नहीं दिया। भेजने से पहले पता अच्छे से जाँच लीजिए।"});
 Object.assign(L.hi,{scanFail:"स्कैनर नहीं खुला। इंटरनेट देखिए, या पता चिपकाइए।",cancelled:"रद्द किया",mmOther:"MetaMask में दूसरा खाता चुना है। MetaMask में इसी वॉलेट का खाता चुनकर फिर कोशिश कीजिए।",eTok:"इस टोकन का सही कॉन्ट्रैक्ट पता नहीं है।",
  shCon:"यह स्मार्ट-कॉन्ट्रैक्ट का पता है",shCon2:"कॉन्ट्रैक्ट पर भेजे सिक्के अक्सर हमेशा के लिए खो जाते हैं, जब तक वह पाने के लिए न बना हो। पूरी तरह पक्का हों, तभी भेजें।"});
 
@@ -56,21 +58,27 @@ function netReset(){
       armConfirm();
     }
     if(/^0x[0-9a-f]{40}$/.test(to)&&S.snd.codeFor!==key){
-      S.snd.codeFor=key;S.snd.isC=false;
+      S.snd.codeFor=key;S.snd.isC=false;S.snd.chkFail=false;
       Promise.race([
         rpc(N().rpc,"eth_getCode",[S.snd.to,"latest"]),
         new Promise(function(_,rj){setTimeout(function(){rj(0)},6000)})
       ]).then(function(c){
         S.snd.isC=!!c&&c!=="0x"&&c!=="0x0";
-      }).catch(function(){}).then(show);
+        S.snd.chkFail=false;
+      }).catch(function(){
+        S.snd.isC=false;S.snd.chkFail=true;
+      }).then(show);
       return;
     }
     show();
   };
   shield=function(){
     var r=_sh();
-    if(r.lvl==="warn"&&S.snd.isC&&S.snd.codeFor===String(S.snd.to||"").toLowerCase()+"|"+S.net)
+    var key=String(S.snd.to||"").toLowerCase()+"|"+S.net;
+    if(r.lvl==="warn"&&S.snd.isC&&S.snd.codeFor===key)
       return{lvl:"bad",t:t("shCon"),s:t("shCon2")};
+    if(r.lvl!=="bad"&&S.snd.chkFail&&S.snd.codeFor===key)
+      return{lvl:"warn",t:t("chkFail"),s:t("chkFail2")};
     return r;
   };
 })();
