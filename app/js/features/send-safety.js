@@ -96,3 +96,28 @@ function netReset(){
     return r;
   };
 })();
+/* MetaMask in the wallet list: shows an extra row when this browser has MetaMask (window.ethereum). Tapping it makes the MetaMask account the active one. */
+Object.assign(L.en,{mmUse:"MetaMask account",mmUseS:"Use the account you connect in MetaMask. Balance and sends will use MetaMask.",mmNone:"Open this page inside MetaMask's browser to use MetaMask here."});
+Object.assign(L.hi,{mmUse:"MetaMask खाता",mmUseS:"MetaMask में जुड़ा खाता इस्तेमाल होगा। बैलेंस और भेजना MetaMask से होगा।",mmNone:"MetaMask के ब्राउज़र में यह पेज खोलिए, तभी MetaMask यहाँ चलेगा।"});
+(function(){
+  var _ws=wSheet,_sw=wSwitch;
+  wSheet=function(){
+    _ws();
+    var h='<button class="opt" data-mmuse="1" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left"><span class="av" style="width:42px;height:42px;border-radius:12px;font-size:18px">🦊</span><div class="m"><b>'+esc(t("mmUse"))+'</b><small>'+esc(window.ethereum?t("mmUseS"):t("mmNone"))+'</small></div></button>';
+    $("sheet").insertAdjacentHTML("beforeend",h);
+  };
+  wSwitch=async function(id){
+    await _sw(id);
+    S.mode="inapp";
+    render();load();
+  };
+  document.addEventListener("click",async function(e){
+    var el=e.target.closest("[data-mmuse]");if(!el)return;
+    if(!window.ethereum){toast(t("mmNone"));return}
+    try{
+      var a=await window.ethereum.request({method:"eth_requestAccounts"});
+      if(!a||!a[0]){return}
+      S.addr=a[0];S.mode="mm";netReset();closeSheet();render();load();
+    }catch(err){toast(String((err&&err.message)||err))}
+  });
+})();
