@@ -16,7 +16,10 @@ function sendHTML(){var k=curTok(),n=N(),cs=contacts().slice(0,4);var inrMode=S.
  '<div class="fee"><span>'+esc(t("fee"))+'</span><b id="sFee">'+feeTxt()+'</b></div><div id="sWarn">'+feeWarn()+'</div><div class="err" id="sErr">'+esc(S.snd.err)+'</div>'+
  '<div class="bar"><button class="btn" data-cont="1"'+(lowFee()?' disabled':'')+'>'+esc(t("cont"))+'</button></div>'}
 function lowFee(){if(S.bal==null||S.balW==null||S.snd.feeW==null)return false;return S.snd.feeW>S.balW}
-function feeWarn(){if(!lowFee())return"";var n=N(),f=S.snd.fee;var link=S.net==="shardeum-testnet"?'<a href="https://docs.shardeum.org" target="_blank" rel="noopener">'+esc(t("getTestShm"))+' ›</a>':S.net==="shardeum"?'<a href="#" data-fourth="1">'+esc(t("addShm"))+' ›</a>':'<a href="#" data-fourth="1">'+esc(t("testCoins"))+' ›</a>';
+var FEE_WARN_SHM=5; // सीमा: इससे ज़्यादा fee पर चेतावनी (placeholder, बदली जा सकती है)
+function highFee(){return S.snd.fee!=null&&S.snd.fee>FEE_WARN_SHM}
+function feeWarn(){var lo=feeWarnLow();if(!highFee())return lo;return lo+'<div class="err" style="color:#f5a623">नेटवर्क fee असामान्य रूप से ज़्यादा है। भेजने से पहले Explorer पर जाँचें।</div>'}
+function feeWarnLow(){if(!lowFee())return"";var n=N(),f=S.snd.fee;var link=S.net==="shardeum-testnet"?'<a href="https://docs.shardeum.org" target="_blank" rel="noopener">'+esc(t("getTestShm"))+' ›</a>':S.net==="shardeum"?'<a href="#" data-fourth="1">'+esc(t("addShm"))+' ›</a>':'<a href="#" data-fourth="1">'+esc(t("testCoins"))+' ›</a>';
  return '<div class="warn3">'+ic("info",18)+'<span>'+esc(t("needFee").replace("%f",ffee(f)).replace("%s",n.sym).replace("%b",fmt(S.bal,4)).replace("%s",n.sym))+' '+link+'</span></div>'}
 function ffee(f){if(f==null)return"…";if(f>=1)return fmt(f,2);if(f>=0.0001)return fmt(f,6);return Number(f).toPrecision(2)}
 function rsOK(){var n=N();return !n.test&&S.inr>0&&S.snd.tok==="native"&&curC()==="inr"}
