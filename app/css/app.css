@@ -187,7 +187,7 @@ to{opacity:1;transform:none}
 
 .who2{display:flex;align-items:center;gap:8px}
 
-.addr{margin-top:12px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.2px;letter-spacing:-.2px;color:var(--mu);line-height:1.5;word-break:break-all}
+.addr{margin-top:12px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;letter-spacing:.2px;color:var(--mu);line-height:1.6;word-break:break-all}
 .addr em{font-style:normal;color:var(--green);font-weight:700;font-size:13.5px}
 
 .sc{margin-top:12px;display:flex;gap:12px;align-items:flex-start;border-radius:16px;padding:12px 14px}
@@ -437,3 +437,26 @@ html[data-theme=dark] .aim.u .aib{background:linear-gradient(135deg,#14C8A8,#0EA
 #splash.calm .pc,#splash.calm .sp-tile,#splash.calm .sp-word i,#splash.calm .sp-tag,#splash.calm .sp-glow{opacity:1!important;transform:none!important}
 #splash.calm .sp-glow{transform:translate(-50%,-50%)!important}
 #splash.calm .sp-ring,#splash.calm .sp-shine{opacity:0!important}
+
+/* ---------- accessibility & polish (added 2026-11) ---------- */
+
+/* 1. Respect "reduce motion": the OS setting is an accessibility need, not a preference.
+      Every animation and transition in this file becomes instant, nothing else changes. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .anim{animation:none!important}
+}
+
+/* 2. Visible keyboard focus. Without this, a Bluetooth keyboard, a switch device or a screen reader
+      user has no idea which button is selected. Mouse and touch taps are not affected. */
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:12px}
+.k:focus-visible,.kp .k:focus-visible{border-radius:50%;outline-offset:3px}
+
+/* 3. Hindi needs more room: Devanagari matras sit above and below the baseline and clip at tight
+      line heights. Only headings, buttons and sheet titles — body text already has enough. */
+html[lang="hi"] h1,html[lang="hi"] h3,html[lang="hi"] .sht,html[lang="hi"] .pt,
+html[lang="hi"] .btn,html[lang="hi"] .btnw,html[lang="hi"] .opt b,html[lang="hi"] .srow b{line-height:1.5}
+
+/* 4. Long Hindi/Marathi button labels must wrap, never spill outside the button. */
+.btn,.btnw,.b2{white-space:normal;word-break:break-word;text-align:center}

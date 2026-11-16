@@ -27,7 +27,12 @@ function netReset(){
   /* before sending: confirm the wallet is on the network the app shows. For MetaMask, try to switch once. Fail closed. */
   function provFor(){return S.mode==="mm"?window.ethereum:(window.tazveraProvider||window.ethereum)}
   async function chainNow(p){var c=await p.request({method:"eth_chainId"});return String(c||"").toLowerCase()}
-  function stopSend(msg){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(msg)+'</div><button class="btn" onclick="closeSheet()">OK</button></div>',true)}
+  /* the OK button is bound in JS, not with an inline onclick="…": the app's own CSP (script-src 'self')
+     blocks inline event handlers, which left this sheet impossible to close. */
+  function stopSend(msg){
+    sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(msg)+'</div><button class="btn" id="stopOk">'+esc(t("doneB"))+'</button></div>',true);
+    var b=$("stopOk");if(b)b.onclick=closeSheet;
+  }
   doSend=async function(a){
     if(S.sending)return;
     S.sending=true;S._goLock=true;
