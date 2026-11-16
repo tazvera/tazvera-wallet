@@ -259,6 +259,43 @@ ok("landing page stays under 150 KB", webKB < 150, webKB + " KB");
 eq("landing page has no inlined images", (webHtml.match(/data:image/g) || []).length, 0);
 eq("landing page has no inlined fonts", (webHtml.match(/data:font/g) || []).length, 0);
 
+/* ------------------------------------------------------------------ 6. Explore prices */
+/* Explore reads mk.<coin>[currency] and mk.<coin>[currency + "_24h_change"].
+   Prices are a median of KuCoin / MEXC / Gate, changes are their average, CoinGecko is the fallback. */
+const marketFile = path.join(ROOT, "api/market.js");
+if (fs.existsSync(marketFile)) {
+  const m = require(marketFile);
+  ok("api/market.js exports its helpers for testing",
+     typeof m._shape === "function" && typeof m._median === "function" && typeof m._avg === "function");
+
+  eq("median of three", m._median([3, 1, 2]), 2);
+  eq("median of four", m._median([4, 1, 3, 2]), 2.5);
+  eq("median ignores zero and junk", m._median([0, null, "x", 5, 5, 5]), 5);
+  eq("median of nothing is null", m._median([]), null);
+
+  eq("average of changes", m._avg([1, 2]), 1.5);
+  eq("average ignores nonsense", m._avg([1, null, "x", 999999, 3]), 2);
+  eq("average of nothing is null", m._avg([]), null);
+
+  const ku = { bitcoin: { usd: 100, chg: 2 }, ethereum: { usd: 10, chg: -1 } };
+  const mx = { bitcoin: { usd: 102, chg: 4 }, ethereum: { usd: 10.4, chg: -3 } };
+  const ga = { bitcoin: { usd: 98, chg: 3 } };
+  const cg = { tether: { inr: 93.8, usd: 1, usd_24h_change: 0.02, inr_24h_change: 0.03 } };
+  const out = m._shape([ku, mx, ga], cg, 88);
+
+  eq("bitcoin price is the median of three exchanges", out.bitcoin.usd, 100);
+  eq("bitcoin change is the average of three", out.bitcoin.usd_24h_change, 3);
+  eq("rupee price comes from the FX rate", out.bitcoin.inr, 8800);
+  eq("rupee percentage is filled in", out.bitcoin.inr_24h_change, 3);
+  eq("ethereum uses the two exchanges that answered", out.ethereum.usd, 10.2);
+  eq("ethereum change averages the two", out.ethereum.usd_24h_change, -2);
+  eq("a coin only CoinGecko had is kept", out.tether.usd, 1);
+  eq("its percentage still arrives", out.tether.inr_24h_change, 0.03);
+  eq("every coin carries both percentages",
+     Object.values(out).every(c => typeof c.inr_24h_change === "number" && typeof c.usd_24h_change === "number"), true);
+  eq("no exchange and no CoinGecko means the row is dropped", m._shape([{}, {}], {}, 88).dogecoin, undefined);
+}
+
 /* ------------------------------------------------------------------ report */
 console.log(`\n${pass} passed, ${fail} failed  (${loaded.length}/${FILES.length} modules loaded)\n`);
 if (fail) {
