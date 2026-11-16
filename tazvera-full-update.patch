@@ -1,0 +1,280 @@
+diff --git a/app/css/app.css b/app/css/app.css
+index f4f4722..e774d59 100644
+--- a/app/css/app.css
++++ b/app/css/app.css
+@@ -187,7 +187,7 @@ to{opacity:1;transform:none}
+ 
+ .who2{display:flex;align-items:center;gap:8px}
+ 
+-.addr{margin-top:12px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.2px;letter-spacing:-.2px;color:var(--mu);line-height:1.5;word-break:break-all}
++.addr{margin-top:12px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;letter-spacing:.2px;color:var(--mu);line-height:1.6;word-break:break-all}
+ .addr em{font-style:normal;color:var(--green);font-weight:700;font-size:13.5px}
+ 
+ .sc{margin-top:12px;display:flex;gap:12px;align-items:flex-start;border-radius:16px;padding:12px 14px}
+@@ -437,3 +437,45 @@ html[data-theme=dark] .aim.u .aib{background:linear-gradient(135deg,#14C8A8,#0EA
+ #splash.calm .pc,#splash.calm .sp-tile,#splash.calm .sp-word i,#splash.calm .sp-tag,#splash.calm .sp-glow{opacity:1!important;transform:none!important}
+ #splash.calm .sp-glow{transform:translate(-50%,-50%)!important}
+ #splash.calm .sp-ring,#splash.calm .sp-shine{opacity:0!important}
++
++/* ---------- accessibility & polish (added 2026-11) ---------- */
++
++/* 1. Respect "reduce motion": the OS setting is an accessibility need, not a preference.
++      Every animation and transition in this file becomes instant, nothing else changes. */
++@media (prefers-reduced-motion: reduce){
++  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
++  .anim{animation:none!important}
++}
++
++/* 2. Visible keyboard focus. Without this, a Bluetooth keyboard, a switch device or a screen reader
++      user has no idea which button is selected. Mouse and touch taps are not affected. */
++:focus{outline:none}
++:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:12px}
++.k:focus-visible,.kp .k:focus-visible{border-radius:50%;outline-offset:3px}
++
++/* 3. Hindi needs more room: Devanagari matras sit above and below the baseline and clip at tight
++      line heights. Only headings, buttons and sheet titles — body text already has enough. */
++html[lang="hi"] h1,html[lang="hi"] h3,html[lang="hi"] .sht,html[lang="hi"] .pt,
++html[lang="hi"] .btn,html[lang="hi"] .btnw,html[lang="hi"] .opt b,html[lang="hi"] .srow b{line-height:1.5}
++
++/* 4. Long Hindi/Marathi button labels must wrap, never spill outside the button. */
++.btn,.btnw,.b2{white-space:normal;word-break:break-word;text-align:center}
++
++/* ---------- press feedback, and no long-press image menu (added 2026-11) ---------- */
++
++/* On Android a long press on any picture opens "Copy image / Download image / Share image /
++   Open in Chrome". Inside a wallet that menu is noise, and it looks broken. Decorative images and
++   icons must not be selectable, draggable or long-pressable: taps go to the button around them. */
++body{-webkit-tap-highlight-color:transparent}
++img{-webkit-touch-callout:none;-webkit-user-drag:none;user-select:none;-moz-user-select:none;pointer-events:none}
++svg{-webkit-touch-callout:none;user-select:none}
++/* long press on text must not start a text selection either (except where the user may copy) */
++.btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.it,.m,.sht,.lb,.lb2,.lb3,.note2,.err,.kv span,.kv b{-webkit-user-select:none;user-select:none}
++.cpbox,.addr,input,textarea{-webkit-user-select:text;user-select:text}
++
++/* real press feedback: the button sinks a little, so a tap feels answered even with vibration off */
++.btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.tab{transition:transform .09s ease,filter .09s ease}
++.btn:active,.btnw:active,.b2:active,.opt:active,.srow:active,.chip2:active,.max:active,.ib:active,.k:active,.tab:active{transform:scale(.97);filter:brightness(.94)}
++@media (prefers-reduced-motion: reduce){
++  .btn:active,.btnw:active,.b2:active,.opt:active,.srow:active,.chip2:active,.max:active,.ib:active,.k:active,.tab:active{transform:none;filter:brightness(.9)}
++}
+diff --git a/app/js/01-i18n.js b/app/js/01-i18n.js
+index a79d84f..0f1e872 100644
+--- a/app/js/01-i18n.js
++++ b/app/js/01-i18n.js
+@@ -1,7 +1,7 @@
+ /* Tazvera wallet · 01-i18n.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+ "use strict";
+ var L={en:{lkTitle:"450M TZV locked",lkSub:"45% of all TZV is in verified lock contracts. No one, not even us, can take it out early.",lkF:"Founder",lkT:"Treasury",lkL:"Liquidity",lk15:"150M TZV",lkFd:"Locked until 2 Nov 2027, then slowly till 2030",lkTd:"Locked until 1 May 2027, then slowly till 2030",lkLd:"Locked until 31 Jan 2027",addMM:"Add TZV to MetaMask",mmAdded:"TZV added to MetaMask",mmFail:"Could not add. Open MetaMask and try again.",tzvP:"The official Tazvera token. Fixed supply, no owner, no minting. No sale yet.",supply:"Total supply",fakeWarn:"Only this TZV address is real. Anyone selling other 'Tazvera' coins is a scammer.",wallets:"Your wallets",newW:"New wallet",impW:"Import wallet",renameW:"Wallet name",removeW:"Remove",removeNote:"You can remove a wallet that is not in use. Keep its 12 words safe first.",removeQ:"Remove this wallet from the list? Without its 12 words it cannot come back.",samePin:"Your new wallet will use the same PIN",pinFp:"PIN & fingerprint",words12:"12 secret words",
+-c1:"Wallet set up",c1a:"Tazvera wallet on this phone",c2:"12 words written on paper",c2a:"The only way to recover your wallet",c3a:"Like a UPI PIN",c4a:"Faster and safer unlock",chkT:"Security checkup",allSafe:"All safe",allSafe2:"Your wallet is well protected.",almost:"Almost safe",fixN:"Fix %n item(s) to be fully safe.",fixIt:"Fix",tipDay:"Tip of the day",
++c1:"Wallet set up",c1a:"Tazvera wallet on this phone",c2:"12 words written on paper",c2a:"The only way to recover your wallet",c3a:"Like a UPI PIN",c4a:"Faster and safer unlock",chkT:"Security checkup",allSafe:"All safe",allSafe2:"Your wallet is well protected.",almost:"Almost safe",fixN:"Fix %n item(s) to be fully safe.",fixN1:"Fix 1 item to be fully safe.",fixIt:"Fix",tipDay:"Tip of the day",
+ helpC:"Help center",srchHelp:"Search help",fbT:"Send feedback",fbS:"Tell us what to fix",tztT:"About TZV & TZT",tztS:"Official and test token",scT:"Stablecoin guide",scS:"What is USDT?",legT:"Privacy & Terms",legS:"Short and clear",faqT:"Common questions",fbP:"Found a problem or have an idea? Write to us. Never send your 12 words or PIN.",fbMail:"Email us",tztP:"A free test token on Shardeum Testnet for practice. It has no money value.",value:"Value",contract:"Contract",
+ scP1:"A stablecoin is a crypto coin that tries to stay at a fixed price, usually 1 US dollar (like USDT or USDC).",scP2:"It is useful for payments because its price does not jump up and down like SHM or Bitcoin.",scP3:"Always check the network: USDT on one network cannot be sent to another network.",legP:"Tazvera does not keep your keys or money. Your 12 words stay on your phone. Read the full policy and terms below.",
+ bkupT:"Backup & restore",bkupP:"Save your contacts, alarms, token list and settings to a file. Your 12 words and keys are NOT in this file; keep them on paper.",bkupE:"Download backup",bkupI:"Restore from file",danger:"Danger zone",rmW:"Remove wallet from this phone",rmNote:"Only do this if your 12 words are safely on paper.",rmQ:"Last check: remove this wallet from this phone? Without the 12 words your money is lost.",restored:"Restored",badFile:"This is not a Tazvera backup file.",
+@@ -27,7 +27,7 @@ tools:"Wallet tools",prices:"Market prices",srch:"Search tools and coins",alarm:
+ sec:"Security",pinSend:"PIN for every send",test12:"Test my 12 words",lockNow:"Lock wallet now",pref:"Preferences",lang:"Language",theme:"Theme",auto:"Auto",light:"Light",dark:"Dark",help:"Help",helpF:"Help & feedback",about:"About Tazvera",locked:"Wallet locked",
+ t12T:"Test my 12 words",t12P:"Type your 12 words from paper. They are checked on this phone only, never saved or sent.",check:"Check",t12ok:"✓ Correct. These words bring back this wallet.",t12no:"These words make a different wallet.",t12bad:"Not valid. Check each word and the order.",mmOnly:"Connected with MetaMask"},
+ hi:{lkTitle:"45 करोड़ TZV ताले में",lkSub:"45% TZV verified ताला-कॉन्ट्रैक्ट में हैं। कोई भी, हम भी, समय से पहले नहीं निकाल सकता।",lkF:"संस्थापक",lkT:"ख़ज़ाना",lkL:"लिक्विडिटी",lk15:"15 करोड़ TZV",lkFd:"2 नवंबर 2027 तक बंद, फिर 2030 तक धीरे-धीरे",lkTd:"1 मई 2027 तक बंद, फिर 2030 तक धीरे-धीरे",lkLd:"31 जनवरी 2027 तक बंद",addMM:"TZV को MetaMask में जोड़ें",mmAdded:"TZV MetaMask में जुड़ गया",mmFail:"नहीं जुड़ा। MetaMask खोलकर फिर कोशिश कीजिए।",tzvP:"Tazvera का आधिकारिक टोकन। तय संख्या, कोई मालिक-अधिकार नहीं, नए नहीं बन सकते। अभी कोई बिक्री नहीं।",supply:"कुल संख्या",fakeWarn:"सिर्फ़ यही TZV पता असली है। कोई और 'Tazvera' सिक्का बेचे, तो वह ठग है।",wallets:"आपके वॉलेट",newW:"नया वॉलेट",impW:"वॉलेट जोड़ें",renameW:"वॉलेट का नाम",removeW:"हटाएँ",removeNote:"जो वॉलेट इस्तेमाल में नहीं, उसे हटा सकते हैं। पहले उसके 12 शब्द सुरक्षित रखिए।",removeQ:"इस वॉलेट को सूची से हटाएँ? 12 शब्दों के बिना यह वापस नहीं आएगा।",samePin:"नया वॉलेट भी इसी PIN से चलेगा",pinFp:"PIN और फ़िंगरप्रिंट",words12:"12 गुप्त शब्द",
+-c1:"वॉलेट बना हुआ",c1a:"इस फ़ोन में Tazvera वॉलेट",c2:"12 शब्द काग़ज़ पर लिखे",c2a:"वॉलेट वापस लाने का एक ही तरीक़ा",c3a:"UPI PIN की तरह",c4a:"तेज़ और सुरक्षित खोलना",chkT:"सुरक्षा जाँच",allSafe:"पूरी तरह सुरक्षित",allSafe2:"आपका वॉलेट अच्छी तरह सुरक्षित है।",almost:"लगभग सुरक्षित",fixN:"पूरी सुरक्षा के लिए %n चीज़ ठीक कीजिए।",fixIt:"ठीक करें",tipDay:"आज की सलाह",
++c1:"वॉलेट बना हुआ",c1a:"इस फ़ोन में Tazvera वॉलेट",c2:"12 शब्द काग़ज़ पर लिखे",c2a:"वॉलेट वापस लाने का एक ही तरीक़ा",c3a:"UPI PIN की तरह",c4a:"तेज़ और सुरक्षित खोलना",chkT:"सुरक्षा जाँच",allSafe:"पूरी तरह सुरक्षित",allSafe2:"आपका वॉलेट अच्छी तरह सुरक्षित है।",almost:"लगभग सुरक्षित",fixN:"पूरी सुरक्षा के लिए %n चीज़ ठीक कीजिए।",fixN1:"पूरी तरह सुरक्षित होने के लिए 1 आइटम ठीक करें।",fixIt:"ठीक करें",tipDay:"आज की सलाह",
+ helpC:"मदद केंद्र",srchHelp:"मदद खोजें",fbT:"सुझाव भेजें",fbS:"बताइए क्या सुधारें",tztT:"TZV और TZT",tztS:"असली और टेस्ट टोकन",scT:"स्टेबलकॉइन गाइड",scS:"USDT क्या है?",legT:"प्राइवेसी और नियम",legS:"छोटे और साफ़",faqT:"आम सवाल",fbP:"कोई दिक़्क़त या नया विचार? हमें लिखिए। अपने 12 शब्द या PIN कभी मत भेजिए।",fbMail:"ईमेल कीजिए",tztP:"Shardeum Testnet पर अभ्यास के लिए मुफ़्त टेस्ट टोकन। इसकी कोई क़ीमत नहीं।",value:"क़ीमत",contract:"कॉन्ट्रैक्ट",
+ scP1:"स्टेबलकॉइन ऐसा क्रिप्टो सिक्का है जिसकी क़ीमत लगभग एक जैसी रहती है, अक्सर 1 अमेरिकी डॉलर (जैसे USDT, USDC)।",scP2:"भुगतान के लिए उपयोगी है, क्योंकि इसकी क़ीमत SHM या Bitcoin की तरह ऊपर-नीचे नहीं होती।",scP3:"हमेशा नेटवर्क जाँचिए: एक नेटवर्क का USDT दूसरे नेटवर्क पर नहीं भेजा जा सकता।",legP:"Tazvera आपकी चाबी या पैसा अपने पास नहीं रखता। आपके 12 शब्द आपके फ़ोन में रहते हैं। पूरी नीति और नियम नीचे पढ़िए।",
+ bkupT:"बैकअप और वापसी",bkupP:"संपर्क, अलार्म, टोकन सूची और सेटिंग्स एक फ़ाइल में सेव कीजिए। इस फ़ाइल में 12 शब्द और चाबी नहीं होतीं; उन्हें काग़ज़ पर रखिए।",bkupE:"बैकअप डाउनलोड",bkupI:"फ़ाइल से वापस लाएँ",danger:"ख़तरे वाला हिस्सा",rmW:"इस फ़ोन से वॉलेट हटाएँ",rmNote:"सिर्फ़ तभी, जब 12 शब्द काग़ज़ पर सुरक्षित हों।",rmQ:"आख़िरी बार पूछ रहे हैं: इस फ़ोन से वॉलेट हटाएँ? 12 शब्दों के बिना पैसा खो जाएगा।",restored:"वापस आ गया",badFile:"यह Tazvera की बैकअप फ़ाइल नहीं है।",
+diff --git a/app/js/02-core.js b/app/js/02-core.js
+index 7ce8510..4c18b20 100644
+--- a/app/js/02-core.js
++++ b/app/js/02-core.js
+@@ -16,7 +16,7 @@ function theme(){var th=raw("tz_theme","");if(th!=="dark"&&th!=="light")th=(wind
+ async function rpc1(url,m,p){var ac=new AbortController(),tm=setTimeout(function(){ac.abort()},9000);try{var r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:m,params:p}),signal:ac.signal});var j=await r.json();if(j.error)throw j.error;return j.result}finally{clearTimeout(tm)}}
+ async function rpc(url,m,p){var list=[url].concat((typeof RPCB!=="undefined"&&RPCB[url])||[]),err;for(var u of list){try{return await rpc1(u,m,p)}catch(e){err=e;if(e&&e.code!==undefined&&e.message&&!/timeout|network|fetch|abort/i.test(e.message))throw e}}throw err}
+ function N(){return NETS[S.net]}
+-async function load(){var n=N();if(!S.addr)return;try{var h=await rpc(n.rpc,"eth_getBalance",[S.addr,"latest"]);var bw=BigInt(h),nb=Number(bw)/1e18;S.balW=bw;var ck="v2_bal_"+S.net+"_"+S.addr.toLowerCase(),prev=ls(ck,null);if(prev&&prev.bal!=null&&nb>prev.bal+1e-9&&prev.t&&Date.now()-prev.t<864e5)(notify(t("gotMoney"),"+"+fmt(nb-prev.bal,4)+" "+n.sym+" · "+n.name),typeof tzSound==="function"&&tzSound("in"));S.bal=nb;S.balErr=false;lss(ck,{bal:nb,t:Date.now()})}catch(e){S.balErr=true}
++async function load(){var n=N();if(!S.addr)return;try{var h=await rpc(n.rpc,"eth_getBalance",[S.addr,"latest"]);var bw=BigInt(h),nb=Number(bw)/1e18;S.balW=bw;var ck="v2_bal_"+S.net+"_"+S.addr.toLowerCase(),prev=ls(ck,null);if(prev&&prev.bal!=null&&nb>prev.bal+1e-9&&prev.t&&Date.now()-prev.t<864e5)(notify(t("gotMoney"),n.name),typeof tzSound==="function"&&tzSound("in"));S.bal=nb;S.balErr=false;lss(ck,{bal:nb,t:Date.now()})}catch(e){S.balErr=true}
+  if(n.tzt){try{var d="0x70a08231"+S.addr.slice(2).toLowerCase().padStart(64,"0");var r=await rpc(n.rpc,"eth_call",[{to:n.tzt,data:d},"latest"]);S.tztW=BigInt(r||"0x0");S.tzt=Number(S.tztW)/1e18}catch(e){}}else S.tzt=null;
+  if(n.tzv){try{var dv="0x70a08231"+S.addr.slice(2).toLowerCase().padStart(64,"0");var rv=await rpc(n.rpc,"eth_call",[{to:n.tzv,data:dv},"latest"]);S.tzvW=BigInt(rv||"0x0");S.tzv=Number(S.tzvW)/1e18}catch(e){}}else S.tzv=null;
+  try{await loadCustoms()}catch(e){}
+diff --git a/app/js/10-send.js b/app/js/10-send.js
+index d27291b..971627c 100644
+--- a/app/js/10-send.js
++++ b/app/js/10-send.js
+@@ -13,22 +13,22 @@ function sendHTML(){var k=curTok(),n=N(),cs=contacts().slice(0,4);var inrMode=S.
+  (cs.length?'<div class="chips">'+cs.map(function(c,i){return '<button class="chip2" data-pickc="'+esc(c.a)+'"><span class="av" style="background:linear-gradient(135deg,'+COLORS[i%4]+')">'+esc((c.n||"?").slice(0,1).toUpperCase())+'</span>'+esc(c.n)+'</button>'}).join("")+'</div>':'')+
+  '<div class="big3">'+(inrMode?'<span class="rs">₹</span><input id="sAmt" inputmode="decimal" placeholder="0" value="'+esc(S.snd.rs)+'">':'<input id="sAmt" inputmode="decimal" placeholder="0" value="'+esc(S.snd.amt)+'"><span>'+esc(k.sym)+'</span>')+'</div>'+
+  '<div class="sub3"><span id="sInr">'+amtInr()+'</span>'+(rsOK()?'<button class="max" data-cur="1">'+(inrMode?esc(k.sym):"₹")+'</button>':'')+'<button class="max" data-max="1">MAX</button></div>'+
+- '<div class="fee"><span>'+esc(t("fee"))+'</span><b id="sFee">'+feeTxt()+'</b></div><div id="sWarn">'+feeWarn()+'</div><div class="err" id="sErr">'+esc(S.snd.err)+'</div>'+
++ '<div class="fee"><span>'+esc(t("fee"))+'</span><b id="sFee">'+feeTxt()+'</b></div><div id="sWarn">'+feeWarn()+'</div><div class="err" id="sErr" aria-live="polite">'+esc(S.snd.err)+'</div>'+
+  '<div class="bar"><button class="btn" data-cont="1"'+(lowFee()?' disabled':'')+'>'+esc(t("cont"))+'</button></div>'}
+ function lowFee(){if(S.bal==null||S.balW==null||S.snd.feeW==null)return false;return S.snd.feeW>S.balW}
+ var FEE_WARN_SHM=5; // सीमा: इससे ज़्यादा fee पर चेतावनी (placeholder, बदली जा सकती है)
+ function highFee(){return S.snd.fee!=null&&S.snd.fee>FEE_WARN_SHM}
+-function feeWarn(){var lo=feeWarnLow();if(!highFee())return lo;return lo+'<div class="err" style="color:#f5a623">नेटवर्क fee असामान्य रूप से ज़्यादा है। भेजने से पहले Explorer पर जाँचें।</div>'}
++function feeWarn(){var lo=feeWarnLow();if(!highFee())return lo;return lo+'<div class="err" style="color:#f5a623">'+esc(t("feeHi"))+'</div>'}
+ function feeWarnLow(){if(!lowFee())return"";var n=N(),f=S.snd.fee;var link=S.net==="shardeum-testnet"?'<a href="https://docs.shardeum.org" target="_blank" rel="noopener">'+esc(t("getTestShm"))+' ›</a>':S.net==="shardeum"?'<a href="#" data-fourth="1">'+esc(t("addShm"))+' ›</a>':'<a href="#" data-fourth="1">'+esc(t("testCoins"))+' ›</a>';
+  return '<div class="warn3">'+ic("info",18)+'<span>'+esc(t("needFee").replace("%f",ffee(f)).replace("%s",n.sym).replace("%b",fmt(S.bal,4)).replace("%s",n.sym))+' '+link+'</span></div>'}
+ function ffee(f){if(f==null)return"…";if(f>=1)return fmt(f,2);if(f>=0.0001)return fmt(f,6);return Number(f).toPrecision(2)}
+ function rsOK(){var n=N();return !n.test&&S.inr>0&&S.snd.tok==="native"&&curC()==="inr"}
+ function amtInr(){var n=N(),a=parseFloat(S.snd.amt);var px=dpx();if(n.test||!px||!a||S.snd.tok!=="native")return"";return (S.snd.cur==="inr"&&rsOK())?"= "+fmt(a,4)+" "+n.sym:"≈ "+money(a*px)}
+ function feeTxt(){var n=N();if(S.snd.fee==null)return"…";var f=S.snd.fee;if(!n.test&&dpx())return"≈ "+money(f*dpx())+" ("+ffee(f)+" "+n.sym+")";return"≈ "+ffee(f)+" "+n.sym}
+-async function estFee(){var n=N(),k=curTok();try{var gp=BigInt(await rpc(n.rpc,"eth_gasPrice",[]));var gas=BigInt(k.id==="native"?21000:65000);
++async function estFee(){var n=N(),k=curTok();S.snd.feeW=null;try{var gp=BigInt(await rpc(n.rpc,"eth_gasPrice",[]));var gas=BigInt(k.id==="native"?21000:65000);
+  try{var to=/^0x[0-9a-fA-F]{40}$/.test(S.snd.to)?S.snd.to:S.addr;var wei=amtWei(S.snd.amt,k.dec||18)||0n;var tx=k.id==="native"?{from:S.addr,to:to,value:"0x"+wei.toString(16)}:{from:S.addr,to:k.addr,data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+wei.toString(16).padStart(64,"0")};var g=BigInt(await rpc(n.rpc,"eth_estimateGas",[tx]));if(g>0n)gas=g*11n/10n}catch(e){}
+- S.snd.feeW=gp*gas;S.snd.fee=Number(gp*gas)/1e18}catch(e){S.snd.fee=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}
+-function readSend(){var a=$("sTo"),b=$("sAmt");if(a)S.snd.to=a.value.trim();if(b){var v=b.value.replace(/,/g,"").trim();if(S.snd.cur==="inr"&&rsOK()){S.snd.rs=v;var r=parseFloat(v);S.snd.amt=r>0?String(Math.floor(r/S.inr*1e6)/1e6):""}else S.snd.amt=v.charAt(0)==="."?"0"+v:v}}
++ S.snd.feeW=gp*gas;S.snd.fee=Number(gp*gas)/1e18}catch(e){S.snd.fee=null;S.snd.feeW=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}
++function readSend(){var a=$("sTo"),b=$("sAmt");if(a)S.snd.to=a.value.trim();if(b){var v=b.value.replace(/,/g,"").trim();if(S.snd.cur==="inr"&&rsOK()){S.snd.rs=v;var r=parseFloat(v);S.snd.amt=r>0?String(Math.round(r/S.inr*1e8)/1e8):""}else S.snd.amt=v.charAt(0)==="."?"0"+v:v}}
+ function feeHigh(){var a=parseFloat(S.snd.amt);return S.snd.tok==="native"&&S.snd.fee>0&&a>0&&S.snd.fee>a}
+ /* amount text -> exact smallest units; null if it is not a clean positive number with at most "dec" decimals */
+ function amtWei(v,dec){v=String(v==null?"":v).trim();if(!/^(\d+(\.\d*)?|\.\d+)$/.test(v))return null;if(((v.split(".")[1])||"").length>dec)return null;try{var w=ethers.parseUnits(v.charAt(0)==="."?"0"+v:v,dec);return w>0n?w:null}catch(e){return null}}
+diff --git a/app/js/22-wallets-help-backup.js b/app/js/22-wallets-help-backup.js
+index 074c0f0..def8f3b 100644
+--- a/app/js/22-wallets-help-backup.js
++++ b/app/js/22-wallets-help-backup.js
+@@ -26,16 +26,23 @@ function wBackup(ph){var w=ph.split(" "),shown=false;function d(){sheet('<div cl
+  var r=$("wRev2");if(r)r.onclick=function(){shown=true;d()};var c=$("wOk");c.onchange=function(){$("wDn").disabled=!(c.checked&&shown)};$("wDn").onclick=function(){if(this.disabled)return;var ww=w;w=null;ph=null;closeSheet();verifyScreen(ww)}}d()}
+ /* settings sub-sheets */
+ function pinSheet(){var pinOn=raw("tz_pinsend","1")!=="0";function r(icn,label,right,attr){return '<button class="srow" '+attr+'><span class="si">'+ic(icn,19)+'</span><b>'+esc(label)+'</b>'+right+'</button>'}var chev=ic("right",18);
+- sheet('<div class="grab"></div><div class="sht">'+esc(t("pinFp"))+'</div><div class="card" style="margin:10px 0 0">'+r("lock",t("pinSend"),'<span class="sw'+(pinOn?" on":"")+'"></span>','data-pinsw2="1"')+r("shield",t("fp"),'<span class="sw'+(BIO.on()?" on":"")+'"></span>','data-fp="1"')+r("key",t("chPin"),chev,'data-chpin="1"')+r("act",t("alock"),'<em>'+amin()+' '+esc(t("min"))+'</em>'+chev,'data-alock="1"')+r("lock",t("lockNow"),chev,'data-lock="1"')+'</div>')}
++ var gate=BIO.on()&&!BIO.full();
++ sheet('<div class="grab"></div><div class="sht">'+esc(t("pinFp"))+'</div><div class="card" style="margin:10px 0 0">'+r("lock",t("pinSend"),'<span class="sw'+(pinOn?" on":"")+'"></span>','data-pinsw2="1"')+r("shield",t("fp"),'<span class="sw'+(BIO.on()?" on":"")+'"></span>','data-fp="1"')+r("key",t("chPin"),chev,'data-chpin="1"')+r("act",t("alock"),'<em>'+amin()+' '+esc(t("min"))+'</em>'+chev,'data-alock="1"')+r("lock",t("lockNow"),chev,'data-lock="1"')+'</div>'+
++ (gate?'<div class="note2" style="margin:12px 4px 0;color:#B45309;font-weight:600">'+esc(t("fpGateNote"))+'</div>':'')+
++ '<div class="note2" style="margin:12px 4px 0">'+esc(t("pinHonest"))+'</div>')}
+ function wordsSheet(){sheet('<div class="grab"></div><div class="sht">'+esc(t("words12"))+'</div><div class="sc warn" style="margin-top:10px">'+ic("warn",20)+'<div><small style="font-size:13px;font-weight:600">'+esc(t("bkW"))+'</small></div></div><div class="card" style="margin:12px 0 0"><button class="srow" data-s12="1"><span class="si">'+ic("eye",19)+'</span><b>'+esc(t("show12"))+'</b>'+ic("right",18)+'</button><button class="srow" data-t12="1"><span class="si">'+ic("check",19)+'</span><b>'+esc(t("test12"))+'</b>'+ic("right",18)+'</button></div>')}
+ /* security checkup */
+ var TIPS_EN=["Tazvera never asks for your 12 words. Anyone who does is a scammer.","Check the first 6 and last 4 letters of an address before sending.","Never install 'support' apps that someone sends you.","Keep your 12 words on paper, not in photos or chats.","Send a small test amount first to a new address."];
+ var TIPS_HI=["Tazvera कभी आपके 12 शब्द नहीं माँगता। जो माँगे, वह ठग है।","भेजने से पहले पते के पहले 6 और आख़िरी 4 अक्षर मिलाइए।","कोई 'सपोर्ट' ऐप भेजे, तो कभी इंस्टॉल मत कीजिए।","12 शब्द काग़ज़ पर रखिए, फ़ोटो या चैट में नहीं।","नए पते पर पहले छोटी रकम भेजकर जाँचिए।"];
+-function checks(){var has=S.mode==="inapp",pin=raw("tz_pinsend","1")!=="0",bk=bkDone(S.addr),fp=BIO.on(),am=amin()<=5;
+- return [{ok:!!S.addr,t:t("c1"),s:has?t("c1a"):t("mmOnly")},{ok:!has||bk,t:t("c2"),s:t("c2a"),fx:"t12"},{ok:!has||pin,t:t("pinSend"),s:t("c3a"),fx:"pin"},{ok:!has||fp,t:t("fp"),s:t("c4a"),fx:"fp"},{ok:am,t:t("alock"),s:amin()+" "+t("min"),fx:"alock"}]}
++/* Fingerprint is a convenience, not a check: on phones without WebAuthn PRF support it only opens the
++   screen and the key still needs the PIN, and on phones that do not have it at all the user cannot
++   finish it. Either way a checkup that can never reach 100% is a nag, not a warning. It stays as a
++   setting (Settings > PIN & fingerprint) and is no longer counted here. */
++function checks(){var has=S.mode==="inapp",pin=raw("tz_pinsend","1")!=="0",bk=bkDone(S.addr),am=amin()<=5;
++ return [{ok:!!S.addr,t:t("c1"),s:has?t("c1a"):t("mmOnly")},{ok:!has||bk,t:t("c2"),s:t("c2a"),fx:"t12"},{ok:!has||pin,t:t("pinSend"),s:t("c3a"),fx:"pin"},{ok:am,t:t("alock"),s:amin()+" "+t("min"),fx:"alock"}]}
+ function chkHTML(){var c=checks(),n=c.filter(function(x){return x.ok}).length,pc=n/c.length*100;var tips=S.lang==="hi"?TIPS_HI:TIPS_EN,tip=tips[new Date().getDate()%tips.length];
+  return '<div class="tb"><button class="ib" data-tab="set" aria-label="back">'+ic("back",20)+'</button><b>'+esc(t("chkT"))+'</b></div>'+
+- '<div class="hero" style="display:flex;align-items:center;gap:16px"><div style="width:74px;height:74px;border-radius:50%;background:conic-gradient(#37DE64 0 '+pc+'%,rgba(255,255,255,.15) '+pc+'% 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="width:60px;height:60px;border-radius:50%;background:#12284A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px">'+n+'/'+c.length+'</span></div><div><b style="font-size:17px">'+esc(n===c.length?t("allSafe"):t("almost"))+'</b><div class="lb" style="margin-top:4px">'+esc(n===c.length?t("allSafe2"):t("fixN").replace("%n",c.length-n))+'</div></div></div>'+
++ '<div class="hero" style="display:flex;align-items:center;gap:16px"><div style="width:74px;height:74px;border-radius:50%;background:conic-gradient(#37DE64 0 '+pc+'%,rgba(255,255,255,.15) '+pc+'% 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="width:60px;height:60px;border-radius:50%;background:#12284A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px">'+n+'/'+c.length+'</span></div><div><b style="font-size:17px">'+esc(n===c.length?t("allSafe"):t("almost"))+'</b><div class="lb" style="margin-top:4px">'+esc(n===c.length?t("allSafe2"):t(c.length-n===1?"fixN1":"fixN").replace("%n",c.length-n))+'</div></div></div>'+
+  '<div class="card" style="margin-top:14px">'+c.map(function(x){return '<div class="it"><span class="ci" style="width:30px;height:30px;background:'+(x.ok?'var(--pill)':'#FFF7E6')+';color:'+(x.ok?'var(--green)':'#B45309')+'">'+ic(x.ok?"check":"warn",16,2.4)+'</span><div class="m"><b style="font-size:14.5px">'+esc(x.t)+'</b><small>'+esc(x.s)+'</small></div>'+(x.ok?'':'<button class="max" style="background:var(--green);color:var(--greenTx)" data-fix="'+x.fx+'">'+esc(t("fixIt"))+'</button>')+'</div>'}).join("")+'</div>'+
+  '<div class="tip" style="background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:14px 20px 0;color:var(--tx)">'+ic("shield",22)+'<span><b>'+esc(t("tipDay"))+'</b><br>'+esc(tip)+'</span></div>'}
+ /* help center */
+diff --git a/app/js/26-v8-trust.js b/app/js/26-v8-trust.js
+index 4eccb72..c461133 100644
+--- a/app/js/26-v8-trust.js
++++ b/app/js/26-v8-trust.js
+@@ -5,7 +5,7 @@
+    home security card · empty-wallet card · big amount double check · "before you start" screen ·
+    "exit the app?" check on the phone Back button */
+ Object.assign(L.en,{ver:"Verified",unv:"Not verified",nhOk:"Network OK",nhSlow:"Network slow",nhDown:"Network down",
+- secOk:"Your wallet is protected",secLeft:"%n safety step(s) left",secFix:"Fix",secAll:"Backup done · PIN on",
++ secOk:"Your wallet is protected",secLeft:"%n safety steps left",secLeft1:"1 safety step left",secFix:"Fix",secAll:"Backup done · PIN on",
+  emptyT:"Your wallet is ready",emptyS:"Receive your first coins to get started.",
+  bigT:"Big amount",bigS:"You are sending %a. Check the address once more.",bigTick:"I checked. Send this big amount.",
+  annT:"News & alerts",annNone:"No news yet",
+@@ -13,7 +13,7 @@ Object.assign(L.en,{ver:"Verified",unv:"Not verified",nhOk:"Network OK",nhSlow:"
+  tdBal:"Balance",tdContract:"Contract",tdHist:"History",tdNoHist:"No transactions with this coin yet.",tdVerS:"Official coin, checked by Tazvera",tdUnvW:"You added this token yourself. Tazvera has not checked it. Fake airdrop tokens are a common scam: never 'claim' them on a website.",tdExp:"Explorer",
+  exitT:"Leave Tazvera?",exitS:"Your wallet stays safe on this phone.",exitY:"Yes, leave",exitN:"Stay"});
+ Object.assign(L.hi,{ver:"सत्यापित",unv:"सत्यापित नहीं",nhOk:"नेटवर्क ठीक",nhSlow:"नेटवर्क धीमा",nhDown:"नेटवर्क बंद",
+- secOk:"आपका वॉलेट सुरक्षित है",secLeft:"%n सुरक्षा काम बाक़ी",secFix:"ठीक करें",secAll:"बैकअप पूरा · PIN चालू",
++ secOk:"आपका वॉलेट सुरक्षित है",secLeft:"%n सुरक्षा कदम बाक़ी",secLeft1:"1 सुरक्षा कदम बाक़ी है।",secFix:"ठीक करें",secAll:"बैकअप पूरा · PIN चालू",
+  emptyT:"आपका वॉलेट तैयार है",emptyS:"शुरू करने के लिए पहले सिक्के पाइए।",
+  bigT:"बड़ी रकम",bigS:"आप %a भेज रहे हैं। पता एक बार फिर जाँच लीजिए।",bigTick:"मैंने जाँच लिया। यह बड़ी रकम भेजें।",
+  annT:"ख़बरें और चेतावनियाँ",annNone:"अभी कोई ख़बर नहीं",
+@@ -39,7 +39,7 @@ setInterval(function(){if(!document.hidden)checkNet()},60000);setTimeout(checkNe
+ /* ----- home cards ----- */
+ function secCard(){if(S.mode!=="inapp")return "";var c;try{c=checks()}catch(e){return ""}var miss=c.filter(function(x){return !x.ok}).length;
+  if(!miss)return "";
+- return '<button class="secc warn" data-tab="chk"><span class="si">'+ic("warn",20)+'</span><span class="sm"><b>'+esc(t("secLeft").replace("%n",miss))+'</b></span><span class="sf">'+esc(t("secFix"))+'</span></button>'}
++ return '<button class="secc warn" data-tab="chk"><span class="si">'+ic("warn",20)+'</span><span class="sm"><b>'+esc(t(miss===1?"secLeft1":"secLeft").replace("%n",miss))+'</b></span><span class="sf">'+esc(t("secFix"))+'</span></button>'}
+ function emptyCard(){if(!(S.bal===0)||(S.tzt>0)||(S.tzv>0)||txs().length)return "";var n=N();
+  return '<div class="emptyc"><b>'+esc(t("emptyT"))+' 🎉</b><small>'+esc(t("emptyS"))+'</small><div class="eb"><button class="btn" data-go="recv">'+ic("recv",18)+esc(t("recv"))+'</button>'+(n.tzt?'<button class="btnw" data-fourth="1">'+esc(t("getTzt"))+'</button>':'')+'</div></div>'}
+ 
+diff --git a/app/js/features/pin-change-wallets.js b/app/js/features/pin-change-wallets.js
+index 11f62df..6f61fe4 100644
+--- a/app/js/features/pin-change-wallets.js
++++ b/app/js/features/pin-change-wallets.js
+@@ -6,7 +6,7 @@ async function pinRelockAll(oldPin,newPin){var l=wList(),cur=raw("cp3_inapp_keys
+  for(var i=0;i<l.length;i++){if(act&&l[i].id===act.id){l[i].ks=cur;continue}
+   try{var w=await ethers.Wallet.fromEncryptedJson(l[i].ks,oldPin);l[i].ks=await w.encrypt(newPin)}catch(e){miss++}}
+  wSave(l);return miss}
+-Object.assign(L.en,{pinOkPart:"PIN changed. %n wallet(s) still use an older PIN.",tokFake:"\"%s\" pretends to be an official coin, but the address is different. It is probably fake, so it was not added.",
++Object.assign(L.en,{fpGateNote:"This browser cannot lock the key with a fingerprint, so the fingerprint only opens this screen. Your PIN still protects the money.",pinHonest:"Your 6-digit PIN is a quick lock for this phone. Your 12 secret words are the real protection — keep them on paper.",pinOkPart:"PIN changed. %n wallet(s) still use an older PIN.",tokFake:"\"%s\" pretends to be an official coin, but the address is different. It is probably fake, so it was not added.",
+  rmNoBkT:"These 12 words were never checked",rmNoBkS:"\"%w\" was never confirmed as backed up. If you remove it without its 12 words, any money in it is lost forever.",rmNoBkTick:"I have its 12 words on paper, or it is empty"});
+-Object.assign(L.hi,{pinOkPart:"PIN बदल गया। %n वॉलेट अभी भी पुराने PIN पर हैं।",tokFake:"\"%s\" आधिकारिक सिक्के जैसा नाम रखता है, पर पता अलग है। यह शायद नक़ली है, इसलिए जोड़ा नहीं गया।",
++Object.assign(L.hi,{fpGateNote:"यह ब्राउज़र फिंगरप्रिंट से कुंजी को लॉक नहीं कर सकता, इसलिए फिंगरप्रिंट केवल इस स्क्रीन को खोलता है। आपका पिन अभी भी आपके पैसों की सुरक्षा करता है।",pinHonest:"आपका 6-अंकीय पिन इस फोन के लिए एक त्वरित लॉक है। आपके 12 गुप्त शब्द असली सुरक्षा हैं — उन्हें कागज़ पर रखें।",pinOkPart:"PIN बदल गया। %n वॉलेट अभी भी पुराने PIN पर हैं।",tokFake:"\"%s\" आधिकारिक सिक्के जैसा नाम रखता है, पर पता अलग है। यह शायद नक़ली है, इसलिए जोड़ा नहीं गया।",
+  rmNoBkT:"इसके 12 शब्द कभी जाँचे नहीं गए",rmNoBkS:"\"%w\" का बैकअप कभी पक्का नहीं हुआ। 12 शब्दों के बिना हटाया, तो इसमें रखा पैसा हमेशा के लिए चला जाएगा।",rmNoBkTick:"इसके 12 शब्द मेरे पास काग़ज़ पर हैं, या यह ख़ाली है"});
+diff --git a/app/js/features/send-safety.js b/app/js/features/send-safety.js
+index c7aef1e..afd606f 100644
+--- a/app/js/features/send-safety.js
++++ b/app/js/features/send-safety.js
+@@ -27,7 +27,12 @@ function netReset(){
+   /* before sending: confirm the wallet is on the network the app shows. For MetaMask, try to switch once. Fail closed. */
+   function provFor(){return S.mode==="mm"?window.ethereum:(window.tazveraProvider||window.ethereum)}
+   async function chainNow(p){var c=await p.request({method:"eth_chainId"});return String(c||"").toLowerCase()}
+-  function stopSend(msg){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(msg)+'</div><button class="btn" onclick="closeSheet()">OK</button></div>',true)}
++  /* the OK button is bound in JS, not with an inline onclick="…": the app's own CSP (script-src 'self')
++     blocks inline event handlers, which left this sheet impossible to close. */
++  function stopSend(msg){
++    sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(msg)+'</div><button class="btn" id="stopOk">'+esc(t("doneB"))+'</button></div>',true);
++    var b=$("stopOk");if(b)b.onclick=closeSheet;
++  }
+   doSend=async function(a){
+     if(S.sending)return;
+     S.sending=true;S._goLock=true;
+diff --git a/index.html b/index.html
+index 6ce251d..3b6a649 100644
+--- a/index.html
++++ b/index.html
+@@ -5,7 +5,13 @@
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://assets.coingecko.com; font-src 'self' data:; connect-src 'self' https://api-mezame.shardeum.org https://api.shardeum.org https://explorer-mezame.shardeum.org https://explorer.shardeum.org https://data-seed-prebsc-1-s1.bnbchain.org:8545 https://bsc-testnet-rpc.publicnode.com https://ethereum-sepolia-rpc.publicnode.com https://sepolia.drpc.org https://api.coingecko.com https://open.er-api.com; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'">
+ <title>Tazvera · Simple crypto wallet</title>
+-<meta name="theme-color" content="#F5F7FA">
++<meta name="color-scheme" content="light dark">
++<meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
++<meta name="theme-color" content="#0B0E13" media="(prefers-color-scheme: dark)">
++<meta name="apple-mobile-web-app-capable" content="yes">
++<meta name="mobile-web-app-capable" content="yes">
++<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
++<meta name="apple-mobile-web-app-title" content="Tazvera">
+ <link rel="icon" href="icon-192.png">
+ <link rel="manifest" href="manifest.webmanifest">
+ <link rel="apple-touch-icon" href="icon-192.png">
+diff --git a/sw.js b/sw.js
+index 911923b..3f052be 100644
+--- a/sw.js
++++ b/sw.js
+@@ -3,7 +3,7 @@
+    (and saved for next time); only when offline does it fall back to the saved copy.
+    Never stores /api/ answers or anything from other websites. Keys and wallet data are not touched here. */
+ "use strict";
+-var CACHE = "tazvera-v9-6";
++var CACHE = "tazvera-v9-9";
+ var CORE = ["/", "/index.html", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/ethers.min.js", "/wallet.js", "/qrcode.min.js", "/jsqr.js",
+   "/app/css/fonts.css", "/app/css/app.css",
+   "/app/js/05-splash.js", "/app/js/00-config.js", "/app/js/01-i18n.js", "/app/js/02-core.js", "/app/js/10-send.js", "/app/js/11-scan.js", "/app/js/12-request.js",
+diff --git a/vercel.json b/vercel.json
+index 42561c0..353b4f0 100644
+--- a/vercel.json
++++ b/vercel.json
+@@ -11,6 +11,22 @@
+           "key": "X-Frame-Options",
+           "value": "DENY"
+         },
++        {
++          "key": "Strict-Transport-Security",
++          "value": "max-age=31536000; includeSubDomains"
++        },
++        {
++          "key": "Cross-Origin-Opener-Policy",
++          "value": "same-origin-allow-popups"
++        },
++        {
++          "key": "Cross-Origin-Resource-Policy",
++          "value": "same-origin"
++        },
++        {
++          "key": "Content-Security-Policy",
++          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://assets.coingecko.com; font-src 'self' data:; connect-src 'self' https://api-mezame.shardeum.org https://api.shardeum.org https://explorer-mezame.shardeum.org https://explorer.shardeum.org https://data-seed-prebsc-1-s1.bnbchain.org:8545 https://bsc-testnet-rpc.publicnode.com https://ethereum-sepolia-rpc.publicnode.com https://sepolia.drpc.org https://api.coingecko.com https://open.er-api.com; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
++        },
+         {
+           "key": "Referrer-Policy",
+           "value": "no-referrer"

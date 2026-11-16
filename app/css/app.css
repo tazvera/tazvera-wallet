@@ -460,3 +460,22 @@ html[lang="hi"] .btn,html[lang="hi"] .btnw,html[lang="hi"] .opt b,html[lang="hi"
 
 /* 4. Long Hindi/Marathi button labels must wrap, never spill outside the button. */
 .btn,.btnw,.b2{white-space:normal;word-break:break-word;text-align:center}
+
+/* ---------- press feedback, and no long-press image menu (added 2026-11) ---------- */
+
+/* On Android a long press on any picture opens "Copy image / Download image / Share image /
+   Open in Chrome". Inside a wallet that menu is noise, and it looks broken. Decorative images and
+   icons must not be selectable, draggable or long-pressable: taps go to the button around them. */
+body{-webkit-tap-highlight-color:transparent}
+img{-webkit-touch-callout:none;-webkit-user-drag:none;user-select:none;-moz-user-select:none;pointer-events:none}
+svg{-webkit-touch-callout:none;user-select:none}
+/* long press on text must not start a text selection either (except where the user may copy) */
+.btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.it,.m,.sht,.lb,.lb2,.lb3,.note2,.err,.kv span,.kv b{-webkit-user-select:none;user-select:none}
+.cpbox,.addr,input,textarea{-webkit-user-select:text;user-select:text}
+
+/* real press feedback: the button sinks a little, so a tap feels answered even with vibration off */
+.btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.tab{transition:transform .09s ease,filter .09s ease}
+.btn:active,.btnw:active,.b2:active,.opt:active,.srow:active,.chip2:active,.max:active,.ib:active,.k:active,.tab:active{transform:scale(.97);filter:brightness(.94)}
+@media (prefers-reduced-motion: reduce){
+  .btn:active,.btnw:active,.b2:active,.opt:active,.srow:active,.chip2:active,.max:active,.ib:active,.k:active,.tab:active{transform:none;filter:brightness(.9)}
+}
