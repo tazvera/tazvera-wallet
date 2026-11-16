@@ -1,0 +1,8 @@
+/* Poppins (OFL). One file per weight. The last two carry a Devanagari unicode-range,
+   so Hindi text is served from its own small file and Latin text is not slowed by it. */
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(fonts/poppins-7d93459d86.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(fonts/poppins-cd36de204a.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(fonts/poppins-f4e80d9dfd.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(fonts/poppins-9338e65fc0.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;unicode-range:U+0900-097F,U+200C-200D,U+20B9,U+25CC;src:url(fonts/poppins-6b986471df.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;unicode-range:U+0900-097F,U+200C-200D,U+20B9,U+25CC;src:url(fonts/poppins-58dba357cb.woff2) format('woff2')}
