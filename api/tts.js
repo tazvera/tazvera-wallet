@@ -28,23 +28,16 @@ function detect(t) {
   let best = null, bn = 0;
   for (const [code, re] of SCRIPTS) { const n = (t.match(re) || []).length; if (n > bn) { bn = n; best = code; } }
   if (bn > dev && bn > 0) return best;
-  if (dev > 0 && dev >= lat / 2) return (t.match(HI) || []).length > (t.match(MR) || []).length ? "hi-IN" : "mr-IN";
+  if (dev > 0 && dev >= lat / 2) {
+    /* Devanagari: Hindi is the default. Marathi only when Marathi words are actually there —
+       otherwise short Hindi text with none of the words below was read out in a Marathi voice. */
+    const hi = (t.match(HI) || []).length, mr = (t.match(MR) || []).length;
+    return mr > hi ? "mr-IN" : "hi-IN";
+  }
   return "en-IN";
 }
 
 function send(res, status, obj) { res.statusCode = status; res.setHeader("Content-Type", "application/json; charset=utf-8"); res.end(JSON.stringify(obj)); }
-const hits = new Map();
-function limited(ip, max, win) {
-  const now = Date.now(), a = (hits.get(ip) || []).filter(function (x) { return now - x < win; });
-  if (a.length >= max) { hits.set(ip, a); return true; }
-  a.push(now); hits.set(ip, a);
-  if (hits.size > 5000) { for (const [k, v] of hits) { if (!v.length || now - v[v.length - 1] > win) hits.delete(k); } }
-  return false;
-}
-function clientIp(req) {
-  const x = String((req.headers && req.headers["x-forwarded-for"]) || "").split(",")[0].trim();
-  return x || (req.socket && req.socket.remoteAddress) || "";
-}
 async function gfetch(url, init) {
   const ac = new AbortController(), tm = setTimeout(function () { ac.abort(); }, 15000);
   try {

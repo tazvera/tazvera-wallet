@@ -1,0 +1,270 @@
+#!/usr/bin/env node
+/* Tazvera wallet · test/run.js
+   A dependency-free test runner. It loads the real app files into a small sandbox and
+   checks the parts that decide money: amount parsing, fee maths, the Shield address
+   checks, the backup password rules and the translation table. It also runs a static
+   audit of the repository (references, CSP, inline handlers, key parity).
+
+   Run it with:  node test/run.js
+   Exit code 0 = everything passed. Non-zero = something is broken, and it says what. */
+
+"use strict";
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+
+const ROOT = path.resolve(__dirname, "..");
+let pass = 0, fail = 0, failures = [];
+
+function ok(name, cond, detail) {
+  if (cond) { pass++; return; }
+  fail++; failures.push(name + (detail ? "  → " + detail : ""));
+}
+function eq(name, got, want) {
+  ok(name, Object.is(got, want) || String(got) === String(want), `got ${JSON.stringify(got)}, want ${JSON.stringify(want)}`);
+}
+
+/* ------------------------------------------------------------------ sandbox */
+function makeContext() {
+  const store = {};
+  const el = () => ({
+    style: {}, dataset: {}, classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+    appendChild() {}, remove() {}, setAttribute() {}, getAttribute: () => null,
+    querySelector: () => null, querySelectorAll: () => [], addEventListener() {},
+    insertAdjacentHTML() {}, focus() {}, select() {}, after() {}, value: "", innerHTML: "", textContent: ""
+  });
+  const ctx = {
+    console, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
+    Promise, Math, Date, JSON, BigInt, Number, String, Object, Array, RegExp, Error,
+    Uint8Array, TextEncoder: global.TextEncoder, URLSearchParams, Intl,
+  };
+  ctx.window = ctx; ctx.self = ctx; ctx.globalThis = ctx;
+  ctx.localStorage = { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } };
+  ctx.sessionStorage = { getItem: () => null, setItem() {}, removeItem() {} };
+  ctx.navigator = { onLine: true, language: "en-IN" };
+  ctx.location = { hostname: "localhost", protocol: "https:", search: "" };
+  ctx.document = {
+    documentElement: { setAttribute() {}, lang: "en" },
+    body: { appendChild() {}, classList: { add() {}, remove() {} } },
+    createElement: el, getElementById: () => null, querySelector: () => null,
+    querySelectorAll: () => [], addEventListener() {}, hidden: false,
+  };
+  ctx.fetch = () => Promise.reject(new Error("offline in tests"));
+  ctx.matchMedia = () => ({ matches: false });
+  ctx.addEventListener = () => {};
+  ctx.removeEventListener = () => {};
+  ctx.dispatchEvent = () => true;
+  ctx.scrollTo = () => {};
+  ctx.open = () => null;
+  /* stand-ins for the two ethers helpers the amount code needs. Kept deliberately small:
+     the tests check Tazvera's own logic, not ethers itself. */
+  ctx.ethers = {
+    parseUnits: (v, d) => {
+      const [i, f = ""] = String(v).split(".");
+      if (f.length > d) throw new Error("too many decimals");
+      return BigInt((i || "0") + f.padEnd(d, "0"));
+    },
+    formatUnits: (w, d) => {
+      const s = w.toString().padStart(d + 1, "0");
+      const i = s.slice(0, s.length - d), f = s.slice(s.length - d).replace(/0+$/, "");
+      return f ? `${i}.${f}` : i;
+    },
+    getAddress: a => a,
+  };
+  vm.createContext(ctx);
+  return ctx;
+}
+
+/* load only the files that define pure logic; UI and boot files are skipped */
+const FILES = [
+  "app/js/00-config.js", "app/js/01-i18n.js", "app/js/02-core.js", "app/js/10-send.js",
+  "app/js/20-faucet-security.js", "app/js/22-wallets-help-backup.js",
+  "app/js/26-v8-trust.js", "app/js/28-backup.js", "app/js/features/pin-change-wallets.js",
+];
+const ctx = makeContext();
+/* a few files wrap a function that another file defines (createFlow lives in 13-lock-onboarding,
+   welHTML in 30-render-boot). Those two files boot the UI, so we stub the names instead. */
+for (const name of ["createFlow", "importFlow", "welHTML", "homeHTML", "lockScreen", "pinScreen",
+                    "bkSheet", "wSheet", "wSwitch", "doSend", "go", "openConfirm", "shield",
+                    "pinPad2", "askPin", "newPinFlow", "checkNet", "render", "load"])
+  ctx[name] = function () {};
+const loaded = [];
+for (const f of FILES) {
+  try {
+    vm.runInContext(fs.readFileSync(path.join(ROOT, f), "utf8"), ctx, { filename: f });
+    loaded.push(f);
+  } catch (e) {
+    ok("load " + f, false, e.message);
+  }
+}
+
+/* ------------------------------------------------------------------ 1. amounts */
+const amtWei = ctx.amtWei, exactAmt = ctx.exactAmt;
+ok("amtWei exists", typeof amtWei === "function");
+if (typeof amtWei === "function") {
+  eq("1 SHM in wei", amtWei("1", 18).toString(), "1000000000000000000");
+  eq("0.5 SHM in wei", amtWei("0.5", 18).toString(), "500000000000000000");
+  eq("leading dot .5", amtWei(".5", 18).toString(), "500000000000000000");
+  eq("18 decimals exactly", amtWei("0.000000000000000001", 18).toString(), "1");
+  eq("19 decimals is refused", amtWei("0.0000000000000000001", 18), null);
+  eq("letters refused", amtWei("1a", 18), null);
+  eq("empty refused", amtWei("", 18), null);
+  eq("zero refused", amtWei("0", 18), null);
+  eq("negative refused", amtWei("-1", 18), null);
+  eq("spaces around are fine", amtWei(" 2 ", 18).toString(), "2000000000000000000");
+  eq("6-decimal token", amtWei("1.123456", 6).toString(), "1123456");
+  eq("7 decimals on a 6-decimal token refused", amtWei("1.1234567", 6), null);
+}
+
+if (typeof exactAmt === "function") {
+  eq("exactAmt keeps the number", exactAmt("1234.5").replace(/\u200f|\u200e/g, "").includes("1,234"), true, exactAmt("1234.5"));
+  eq("exactAmt drops trailing zeros", exactAmt("1.500").includes("1.5"), true, exactAmt("1.500"));
+}
+
+/* ------------------------------------------------------------------ 2. Shield */
+const shield = ctx.shield;
+if (typeof shield === "function") {
+  ctx.S.snd.to = "0x0000000000000000000000000000000000000000";
+  eq("burn address is blocked", shield().lvl, "bad");
+  ctx.S.snd.to = "0x000000000000000000000000000000000000dEaD";
+  eq("dead address is blocked", shield().lvl, "bad");
+  ctx.S.snd.to = "0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73";
+  eq("token contract is blocked", shield().lvl, "bad");
+  ctx.S.snd.to = ctx.S.addr || "0x1111111111111111111111111111111111111111";
+  ctx.S.addr = ctx.S.snd.to;
+  eq("own address warns", shield().lvl, "warn");
+  ctx.S.snd.to = "0x2222222222222222222222222222222222222222";
+  eq("unknown address warns", shield().lvl, "warn");
+}
+
+/* ------------------------------------------------------------------ 3. backup password */
+const wbkLevel = ctx.wbkLevel, wbkWhy = ctx.wbkWhy;
+if (typeof wbkLevel === "function") {
+  eq("short password refused", wbkLevel("abc"), 0);
+  eq("digits only refused", wbkLevel("1234567890"), 0);
+  eq("password containing the PIN refused", wbkLevel("123456abcd", "123456"), 0);
+  ok("long mixed password accepted", wbkLevel("Kite-River-92") >= 2, "level " + wbkLevel("Kite-River-92"));
+  ok("14+ mixed is strong", wbkLevel("Kite-River-92-X") === 3, "level " + wbkLevel("Kite-River-92-X"));
+}
+if (typeof wbkWhy === "function") {
+  eq("mismatch is reported", wbkWhy("Kite-River-92", "Kite-River-93", ""), ctx.t("wbkSame"));
+  eq("matching passwords pass", wbkWhy("Kite-River-92", "Kite-River-92", ""), "");
+}
+
+/* ------------------------------------------------------------------ 4. translations */
+const L = ctx.L;
+if (L) {
+  const en = Object.keys(L.en), hi = L.hi ? Object.keys(L.hi) : [];
+  const missingHi = en.filter(k => !(k in L.hi));
+  eq("every English key has a Hindi key", missingHi.length, 0, missingHi.slice(0, 5).join(", "));
+  eq("English and Hindi key counts match", en.length, hi.length);
+  const emptyEn = en.filter(k => !String(L.en[k]).trim());
+  eq("no empty English strings", emptyEn.length, 0, emptyEn.slice(0, 5).join(", "));
+}
+
+/* collect the translation keys from EVERY app file, not only the ones loaded above:
+   many files add their strings with Object.assign(L.en, {...}) at the top. */
+function assignBlocks(src) {
+  const out = [];
+  const re = /Object\.assign\(\s*L\.(en|hi)\s*,\s*\{/g;
+  let m;
+  while ((m = re.exec(src))) {
+    let i = re.lastIndex, depth = 1;
+    while (i < src.length && depth > 0) {
+      const c = src[i];
+      if (c === '"' || c === "'") { const q = c; i++; while (i < src.length && src[i] !== q) { if (src[i] === "\\") i++; i++; } i++; continue; }
+      if (c === "{") depth++; else if (c === "}") depth--;
+      i++;
+    }
+    out.push({ lang: m[1], body: src.slice(re.lastIndex, i - 1) });
+  }
+  return out;
+}
+for (const [file, src] of walk(path.join(ROOT, "app")).map(f => [f, fs.readFileSync(f, "utf8")])) {
+  for (const b of assignBlocks(src)) {
+    try { vm.runInContext("Object.assign(L." + b.lang + ",{" + b.body + "})", ctx); }
+    catch (e) { ok("read strings from " + path.basename(file), false, e.message); }
+  }
+}
+
+/* every t("key") used in the app must exist */
+const usedKeys = new Set();
+function walk(dir, out = []) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) walk(p, out);
+    else if (/\.js$/.test(e.name) && !/min\.js$|jsqr|qrcode/.test(e.name)) out.push(p);
+  }
+  return out;
+}
+for (const f of walk(path.join(ROOT, "app"))) {
+  for (const m of fs.readFileSync(f, "utf8").matchAll(/\bt\(\s*"([A-Za-z_$][\w$]*)"\s*\)/g)) usedKeys.add(m[1]);
+}
+const missingKeys = [...usedKeys].filter(k => L && !(k in L.en));
+eq("every t() key used in the app is defined", missingKeys.length, 0, missingKeys.slice(0, 6).join(", "));
+
+/* ------------------------------------------------------------------ 5. static audit */
+const appHtml = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
+const webHtml = fs.readFileSync(path.join(ROOT, "web/index.html"), "utf8");
+const appJs = walk(path.join(ROOT, "app")).map(f => [f, fs.readFileSync(f, "utf8")]);
+const allApp = appHtml + appJs.map(x => x[1]).join("\n") + fs.readFileSync(path.join(ROOT, "wallet.js"), "utf8");
+
+ok("app page has a Content-Security-Policy", /Content-Security-Policy/i.test(appHtml));
+ok("app CSP forbids inline script", /script-src 'self'(?!\s*'unsafe-inline')/.test(appHtml));
+const allCode = allApp.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+eq("no inline onclick/onchange in the app", (allCode.match(/\son(?:click|change|submit)="/g) || []).length, 0);
+eq("no eval in the app", (allApp.match(/\beval\s*\(|new Function\s*\(/g) || []).length, 0);
+eq("no third-party script tags", (appHtml.match(/<script[^>]+src="https?:/g) || []).length, 0);
+
+const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, "vercel.json"), "utf8"));
+const hdrNames = vercel.headers[0].headers.map(h => h.key.toLowerCase());
+for (const need of ["content-security-policy", "strict-transport-security", "x-content-type-options", "x-frame-options", "referrer-policy"])
+  ok("vercel.json sends " + need, hdrNames.includes(need));
+
+const webVercel = JSON.parse(fs.readFileSync(path.join(ROOT, "web/vercel.json"), "utf8"));
+const webHdr = webVercel.headers[0].headers.map(h => h.key.toLowerCase());
+for (const need of ["content-security-policy", "strict-transport-security"])
+  ok("web/vercel.json sends " + need, webHdr.includes(need));
+
+/* every local file the pages ask for must exist */
+function missingRefs(html, base) {
+  const out = [];
+  for (const m of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
+    const r = m[1];
+    if (/^(https?:|data:|#|mailto:)/.test(r)) continue;
+    if (!fs.existsSync(path.join(base, r.split("?")[0]))) out.push(r);
+  }
+  return out;
+}
+eq("app page references only files that exist", missingRefs(appHtml, ROOT).length, 0, missingRefs(appHtml, ROOT).join(", "));
+eq("web page references only files that exist", missingRefs(webHtml, path.join(ROOT, "web")).length, 0, missingRefs(webHtml, path.join(ROOT, "web")).join(", "));
+
+/* the app's scripts must be loaded in dependency order: config, i18n, core before the rest */
+const order = [...appHtml.matchAll(/<script src="([^"]+)"/g)].map(m => m[1]);
+const idx = f => order.indexOf(f);
+ok("app/js/00-config.js loads before 01-i18n.js", idx("app/js/00-config.js") < idx("app/js/01-i18n.js"));
+ok("app/js/02-core.js loads before 10-send.js", idx("app/js/02-core.js") < idx("app/js/10-send.js"));
+ok("features/send-safety.js loads after 10-send.js", idx("app/js/features/send-safety.js") > idx("app/js/10-send.js"));
+ok("features/strong-lock.js loads after 13-lock-onboarding.js", idx("app/js/features/strong-lock.js") > idx("app/js/13-lock-onboarding.js"));
+
+/* the service worker must cache every app script, or offline breaks silently */
+const sw = fs.readFileSync(path.join(ROOT, "sw.js"), "utf8");
+const core = JSON.parse((sw.match(/var CORE = (\[[\s\S]*?\]);/) || [])[1] || "[]");
+const notCached = order.filter(f => !core.includes("/" + f));
+eq("service worker caches every script the page loads", notCached.length, 0, notCached.join(", "));
+
+/* the landing page must not go back to inlining megabytes */
+const webKB = Math.round(Buffer.byteLength(webHtml) / 1024);
+ok("landing page stays under 150 KB", webKB < 150, webKB + " KB");
+eq("landing page has no inlined images", (webHtml.match(/data:image/g) || []).length, 0);
+eq("landing page has no inlined fonts", (webHtml.match(/data:font/g) || []).length, 0);
+
+/* ------------------------------------------------------------------ report */
+console.log(`\n${pass} passed, ${fail} failed  (${loaded.length}/${FILES.length} modules loaded)\n`);
+if (fail) {
+  console.log("FAILURES");
+  for (const f of failures) console.log("  ✗ " + f);
+  console.log("");
+  process.exit(1);
+}
+console.log("All good.\n");

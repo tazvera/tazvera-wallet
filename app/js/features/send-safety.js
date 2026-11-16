@@ -7,10 +7,10 @@ Object.assign(L.hi,{eSum:"इस पते में टाइपिंग क�
 /* ----- Version 8.7 ----- */
 Object.assign(L.en,{scanFail:"The scanner could not load. Check the internet, or paste the address.",cancelled:"Cancelled",mmOther:"MetaMask has a different account selected. Choose this wallet's account in MetaMask and try again.",eTok:"This token has no valid contract address.",
  shCon:"This is a smart-contract address",shCon2:"Coins sent to a contract are often lost forever unless it was made to receive them. Send only if you are sure."});
-Object.assign(L.en,{chkFail:"Could not confirm whether this address is a contract. Send with care.",chkFail2:"The network check did not answer. Make sure the address is right before you send."});
+Object.assign(L.en,{chkFail:"Could not confirm whether this address is a contract. Send with care.",chkFail2:"The network check did not answer. Make sure the address is right before you send.",noProv:"The wallet did not open in this browser, so nothing was sent. Reload the page and try again."});
 Object.assign(L.en,{chainBad:"You are on the wrong network, so nothing was sent. Choose the right network and try again."});
 Object.assign(L.hi,{chainBad:"आप गलत नेटवर्क पर हैं, इसलिए कुछ भी नहीं भेजा गया। सही नेटवर्क चुनकर फिर कोशिश कीजिए।"});
-Object.assign(L.hi,{chkFail:"कॉन्ट्रैक्ट की पुष्टि नहीं हो सकी। सावधानी से भेजें।",chkFail2:"नेटवर्क ने जवाब नहीं दिया। भेजने से पहले पता अच्छे से जाँच लीजिए।"});
+Object.assign(L.hi,{chkFail:"कॉन्ट्रैक्ट की पुष्टि नहीं हो सकी। सावधानी से भेजें।",chkFail2:"नेटवर्क ने जवाब नहीं दिया। भेजने से पहले पता अच्छे से जाँच लीजिए।",noProv:"यह वॉलेट इस ब्राउज़र में नहीं खुला, इसलिए कुछ भी नहीं भेजा गया। पेज को फिर से लोड करें और फिर से प्रयास करें।"});
 Object.assign(L.hi,{scanFail:"स्कैनर नहीं खुला। इंटरनेट देखिए, या पता चिपकाइए।",cancelled:"रद्द किया",mmOther:"MetaMask में दूसरा खाता चुना है। MetaMask में इसी वॉलेट का खाता चुनकर फिर कोशिश कीजिए।",eTok:"इस टोकन का सही कॉन्ट्रैक्ट पता नहीं है।",
  shCon:"यह स्मार्ट-कॉन्ट्रैक्ट का पता है",shCon2:"कॉन्ट्रैक्ट पर भेजे सिक्के अक्सर हमेशा के लिए खो जाते हैं, जब तक वह पाने के लिए न बना हो। पूरी तरह पक्का हों, तभी भेजें।"});
 
@@ -25,9 +25,11 @@ function netReset(){
 (function(){
   var _ds=doSend,_go=go;
   /* before sending: confirm the wallet is on the network the app shows. For MetaMask, try to switch once. Fail closed. */
-  function provFor(){return S.mode==="mm"?window.ethereum:(window.tazveraProvider||window.ethereum)}
+  /* fail closed: in in-app mode we use only our own provider. If it is missing (wallet.js did not
+     load), we stop instead of quietly routing the send through MetaMask. */
+  function provFor(){return S.mode==="mm"?window.ethereum:window.tazveraProvider}
   async function chainNow(p){var c=await p.request({method:"eth_chainId"});return String(c||"").toLowerCase()}
-  /* the OK button is bound in JS, not with an inline onclick="…": the app's own CSP (script-src 'self')
+  /* the OK button is bound in JS, not with an inline handler attribute: the app's own CSP (script-src 'self')
      blocks inline event handlers, which left this sheet impossible to close. */
   function stopSend(msg){
     sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(msg)+'</div><button class="btn" id="stopOk">'+esc(t("doneB"))+'</button></div>',true);
@@ -38,6 +40,7 @@ function netReset(){
     S.sending=true;S._goLock=true;
     try{
       var want=String(N().chainId||"").toLowerCase(),p=provFor(),have=null;
+      if(!p||typeof p.request!=="function"){stopSend(t("noProv"));return}
       try{have=p&&p.request?await chainNow(p):null}catch(e){have=null}
       if(have!==want&&S.mode==="mm"&&p&&p.request){
         try{await p.request({method:"wallet_switchEthereumChain",params:[{chainId:N().chainId}]});have=await chainNow(p)}catch(e){}

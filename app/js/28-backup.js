@@ -51,8 +51,8 @@ async function wbkBuild(pin,pw){var l=wList(),out=[];
 
 /* ---- open the file (new phone, or add to this phone) ---- */
 function wbkRestore(){var inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";inp.style.display="none";document.body.appendChild(inp);
- inp.onchange=function(){var f=inp.files&&inp.files[0];inp.remove();if(!f)return;var r=new FileReader();r.onload=function(){var o=null;try{o=JSON.parse(r.result)}catch(e){}
-  if(!o||o.app!=="Tazvera"||o.type!==WBK_TYPE||!Array.isArray(o.wallets)||!o.wallets.length||o.wallets.length>20||!o.wallets.every(function(x){return x&&typeof x.ks==="string"})){toast(t("wbkBad"));return}wbkPwAsk(o)};r.readAsText(f)};inp.click()}
+ inp.onchange=function(){var f=inp.files&&inp.files[0];inp.remove();if(!f)return;if(f.size>2e6){toast(t("wbkBad"));return} /* a real backup is a few KB; anything huge is not ours */var r=new FileReader();r.onload=function(){var o=null;try{o=JSON.parse(r.result)}catch(e){}
+  if(!o||o.app!=="Tazvera"||o.type!==WBK_TYPE||!Array.isArray(o.wallets)||!o.wallets.length||o.wallets.length>20||!o.wallets.every(function(x){return x&&typeof x.ks==="string"&&x.ks.length<20000})){toast(t("wbkBad"));return}wbkPwAsk(o)};r.readAsText(f)};inp.click()}
 function wbkPwAsk(o){
  sheet('<div class="grab"></div><div class="sht">'+esc(t("wbkRestore"))+'</div><div class="note2" style="margin:4px 0 0">'+esc(t("wbkFound").replace("%n",o.wallets.length))+'</div>'+
  '<div class="lbl2" style="margin:14px 2px 6px">'+esc(t("wbkPw"))+'</div><div class="box inp" style="margin:0"><input id="wbR" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false"></div><div class="err" id="wbRE" style="margin:8px 2px 0"></div>'+

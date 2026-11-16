@@ -3,5 +3,8 @@
   "private": true,
   "dependencies": {
     "ethers": "6.17.0"
+  },
+  "scripts": {
+    "test": "node test/run.js"
   }
 }
