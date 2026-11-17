@@ -8,8 +8,8 @@ Object.assign(L.hi,{eSum:"इस पते में टाइपिंग क�
 Object.assign(L.en,{scanFail:"The scanner could not load. Check the internet, or paste the address.",cancelled:"Cancelled",mmOther:"MetaMask has a different account selected. Choose this wallet's account in MetaMask and try again.",eTok:"This token has no valid contract address.",
  shCon:"This is a smart-contract address",shCon2:"Coins sent to a contract are often lost forever unless it was made to receive them. Send only if you are sure."});
 Object.assign(L.en,{chkFail:"Could not confirm whether this address is a contract. Send with care.",chkFail2:"The network check did not answer. Make sure the address is right before you send.",noProv:"The wallet did not open in this browser, so nothing was sent. Reload the page and try again."});
-Object.assign(L.en,{chainBad:"You are on the wrong network, so nothing was sent. Choose the right network and try again."});
-Object.assign(L.hi,{chainBad:"आप गलत नेटवर्क पर हैं, इसलिए कुछ भी नहीं भेजा गया। सही नेटवर्क चुनकर फिर कोशिश कीजिए।"});
+Object.assign(L.en,{chainBad:"You are on the wrong network, so nothing was sent. Choose the right network and try again.",chainBad2:"The network is answering on a different chain than the one shown, so nothing was sent. Choose the network again or try later."});
+Object.assign(L.hi,{chainBad:"आप गलत नेटवर्क पर हैं, इसलिए कुछ भी नहीं भेजा गया। सही नेटवर्क चुनकर फिर कोशिश कीजिए।",chainBad2:"नेटवर्क दिखाए गए चेन से अलग चेन पर उत्तर दे रहा है, इसलिए कुछ भी नहीं भेजा गया। नेटवर्क फिर से चुनें या बाद में प्रयास करें।"});
 Object.assign(L.hi,{chkFail:"कॉन्ट्रैक्ट की पुष्टि नहीं हो सकी। सावधानी से भेजें।",chkFail2:"नेटवर्क ने जवाब नहीं दिया। भेजने से पहले पता अच्छे से जाँच लीजिए।",noProv:"यह वॉलेट इस ब्राउज़र में नहीं खुला, इसलिए कुछ भी नहीं भेजा गया। पेज को फिर से लोड करें और फिर से प्रयास करें।"});
 Object.assign(L.hi,{scanFail:"स्कैनर नहीं खुला। इंटरनेट देखिए, या पता चिपकाइए।",cancelled:"रद्द किया",mmOther:"MetaMask में दूसरा खाता चुना है। MetaMask में इसी वॉलेट का खाता चुनकर फिर कोशिश कीजिए।",eTok:"इस टोकन का सही कॉन्ट्रैक्ट पता नहीं है।",
  shCon:"यह स्मार्ट-कॉन्ट्रैक्ट का पता है",shCon2:"कॉन्ट्रैक्ट पर भेजे सिक्के अक्सर हमेशा के लिए खो जाते हैं, जब तक वह पाने के लिए न बना हो। पूरी तरह पक्का हों, तभी भेजें।"});
@@ -41,6 +41,7 @@ function netReset(){
     try{
       var want=String(N().chainId||"").toLowerCase(),p=provFor(),have=null;
       if(!p||typeof p.request!=="function"){stopSend(t("noProv"));return}
+      if(S.badChain){stopSend(t("chainBad2"));return}
       try{have=p&&p.request?await chainNow(p):null}catch(e){have=null}
       if(have!==want&&S.mode==="mm"&&p&&p.request){
         try{await p.request({method:"wallet_switchEthereumChain",params:[{chainId:N().chainId}]});have=await chainNow(p)}catch(e){}
