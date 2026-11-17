@@ -11,3 +11,20 @@ jobs:
         with:
           node-version: "20"
       - run: node test/run.js
+  vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ethers.min.js must match the published 6.17.0 build
+        run: |
+          set -eu
+          curl -sSfL -o /tmp/ethers.tgz https://registry.npmjs.org/ethers/-/ethers-6.17.0.tgz
+          mkdir -p /tmp/ethers && tar -xzf /tmp/ethers.tgz -C /tmp/ethers
+          a=$(sha256sum ethers.min.js | cut -d' ' -f1)
+          b=$(sha256sum /tmp/ethers/package/dist/ethers.umd.min.js | cut -d' ' -f1)
+          echo "repository: $a"
+          echo "published:  $b"
+          if [ "$a" != "$b" ]; then
+            echo "::error::ethers.min.js does not match the published ethers 6.17.0 build"
+            exit 1
+          fi
