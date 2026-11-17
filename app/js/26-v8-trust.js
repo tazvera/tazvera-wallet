@@ -35,7 +35,7 @@ async function checkNet(){if(!S.addr)return;var n=N(),t0=Date.now(),st;
  /* A node that answers on a different chain than the one we show must never be used for a send.
     This is the one check the wallet cannot do locally, because a bad RPC looks healthy otherwise. */
  if(st==="down"){S.badChain=false}
- else{try{var cid=await rpc(n.rpc,"eth_chainId",[]);S.badChain=parseInt(cid,16)!==parseInt(n.chainId,16)}catch(e){S.badChain=false}}
+ else{try{var cid=await rpc(n.rpc,"eth_chainId",[]);S.badChain=parseInt(cid,16)!==parseInt(n.chainId,16)}catch(e){/* keep the last answer: do not clear a known mismatch */}}
  if(st!==S.nh){S.nh=st;if(safeRerender())render()}}
 function nhChip(){if(!S.nh)return "";var k=S.nh==="ok"?"nhOk":S.nh==="slow"?"nhSlow":"nhDown";return '<span class="nh '+S.nh+'"><i></i>'+esc(t(k))+'</span>'}
 setInterval(function(){if(!document.hidden)checkNet()},60000);setTimeout(checkNet,1500);
