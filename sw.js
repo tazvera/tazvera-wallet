@@ -3,7 +3,7 @@
    (and saved for next time); only when offline does it fall back to the saved copy.
    Never stores /api/ answers or anything from other websites. Keys and wallet data are not touched here. */
 "use strict";
-var CACHE = "tazvera-v9-16";
+var CACHE = "tazvera-v9-17";
 var CORE = ["/", "/index.html", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/ethers.min.js", "/wallet.js", "/qrcode.min.js", "/jsqr.js",
   "/app/css/fonts.css", "/app/css/app.css",
   "/app/fonts/poppins-400-latin.woff2", "/app/fonts/poppins-500-latin.woff2",
