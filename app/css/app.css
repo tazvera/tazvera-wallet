@@ -479,3 +479,41 @@ svg{-webkit-touch-callout:none;user-select:none}
 @media (prefers-reduced-motion: reduce){
   .btn:active,.btnw:active,.b2:active,.opt:active,.srow:active,.chip2:active,.max:active,.ib:active,.k:active,.tab:active{transform:none;filter:brightness(.9)}
 }
+
+/* ---------- bottom bar + assistant, redrawn (2026-11-17) ---------- */
+/* Before: three items in a wide pill, the active one a solid dark block, and the assistant bubble
+   sitting on top of the bar's right end. Now: a tighter pill, a soft green pill behind the active
+   icon, and the assistant floating clear above the bar so nothing overlaps. */
+.nav.n3{
+  max-width:320px!important;min-width:288px!important;
+  height:64px!important;padding:0 10px!important;
+  border:1px solid var(--line)!important;border-radius:22px!important;
+  background:var(--card)!important;
+  box-shadow:0 12px 34px rgba(11,29,58,.16)!important;
+  backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important;
+}
+.nav.n3 .nv{gap:4px;font-size:11.5px;font-weight:600;letter-spacing:.1px;color:var(--mu);height:52px;border-radius:16px;margin:0}
+.nav.n3 .nv svg{width:22px;height:22px;background:none!important;color:inherit!important;border-radius:0!important;padding:0!important;box-sizing:content-box;stroke-width:2}
+.nav.n3 .nv.on{color:var(--green);font-weight:700}
+.nav.n3 .nv.on svg{background:var(--pill)!important;color:var(--green)!important;border-radius:12px!important;padding:6px!important;box-sizing:border-box!important;width:34px!important;height:34px!important}
+.nav.n3 .nv:active{background:var(--soft)}
+
+/* the assistant floats above the bar, never on it */
+.aifab{bottom:calc(94px + env(safe-area-inset-bottom,0px))!important;right:max(10px,calc(50% - 158px))!important;width:46px!important;height:46px!important}
+.aifab svg{width:40px!important;height:40px!important}
+
+/* ---------- home header: the three round buttons, made consistent (2026-11-17) ---------- */
+/* scan, news and settings were 42px squares with an 8px gap, and the wallet name block was
+   loose. Now: one size, one gap, a quiet background, and a press that answers. */
+.hd{padding:14px 18px 0!important}
+.hd>div:last-child{gap:10px!important;align-items:center}
+.hd .ib{width:40px!important;height:40px!important;border-radius:13px!important;background:var(--soft)!important;
+  border:1px solid var(--line)!important;box-shadow:none!important;color:var(--tx)!important;
+  transition:transform .12s ease,background .12s ease}
+.hd .ib:active{transform:scale(.95);background:var(--pill)!important}
+.hd .ib svg{width:20px!important;height:20px!important;stroke-width:1.9}
+.hd .bdot{top:7px;right:7px;box-shadow:0 0 0 2px var(--soft)}
+.who{gap:11px}
+.who>img{width:42px!important;height:42px!important;border-radius:13px}
+.who b{font-size:15.5px;letter-spacing:-.1px}
+.who small{font-size:12px;letter-spacing:.15px;opacity:.9}
