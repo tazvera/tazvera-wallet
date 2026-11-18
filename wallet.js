@@ -3,7 +3,7 @@
 var E=window.ethers;if(!E)return;
 var KS="cp3_inapp_keystore",W=null;
 /* Test networks; Shardeum Mainnet is added in nets() unless switched off */
-var NETS={"0x1fb7":{id:8119,r:["https://api-mezame.shardeum.org"]},"0x61":{id:97,r:["https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://bsc-testnet-rpc.publicnode.com"]},"0xaa36a7":{id:11155111,r:["https://ethereum-sepolia-rpc.publicnode.com","https://sepolia.drpc.org"]}};
+var NETS={"0x38":{id:56,r:["https://bsc-rpc.publicnode.com"]},"0x1":{id:1,r:["https://ethereum-rpc.publicnode.com"]},"0x1fb7":{id:8119,r:["https://api-mezame.shardeum.org"]},"0x61":{id:97,r:["https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://bsc-testnet-rpc.publicnode.com"]},"0xaa36a7":{id:11155111,r:["https://ethereum-sepolia-rpc.publicnode.com","https://sepolia.drpc.org"]}};
 /* Shardeum Mainnet is on unless the user switched it off in About (cp3_mainnet_beta = "0") */
 function nets(){var n={};for(var k in NETS)n[k]=NETS[k];try{if(localStorage.getItem("cp3_mainnet_beta")!=="0")n["0x1fb6"]={id:8118,r:["https://api.shardeum.org"]}}catch(e){}return n}
 var CHAIN="0x1fb7";try{var sc=localStorage.getItem("cp3_inapp_chain");if(sc&&nets()[sc])CHAIN=sc}catch(e){}
