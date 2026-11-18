@@ -39,7 +39,7 @@ to{opacity:1;transform:none}
 
 .net{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 12px 6px 10px;border-radius:20px;background:rgba(255,255,255,.12);font-size:12.5px;font-weight:600;color:#fff}
 .net i{width:7px;height:7px;border-radius:50%;background:#5BE88A}
-.net.real i{background:#FF8A8A}
+.net.real i{background:#FFD23F}
 
 .acts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 20px 0}
 .a{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;font-weight:500}
