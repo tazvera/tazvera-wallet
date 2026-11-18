@@ -50,7 +50,9 @@ function secCard(){if(S.mode!=="inapp")return "";var c;try{c=checks()}catch(e){r
  if(!miss)return "";
  return '<button class="secc warn" data-tab="chk"><span class="si">'+ic("warn",20)+'</span><span class="sm"><b>'+esc(t(miss===1?"secLeft1":"secLeft").replace("%n",miss))+'</b></span><span class="sf">'+esc(t("secFix"))+'</span></button>'}
 function emptyCard(){if(!(S.bal===0)||(S.tzt>0)||(S.tzv>0)||txs().length)return "";var n=N();
- return '<div class="emptyc"><b>'+esc(t("emptyT"))+' 🎉</b><small>'+esc(t("emptyS"))+'</small><div class="eb"><button class="btn" data-go="recv">'+ic("recv",18)+esc(t("recv"))+'</button>'+(n.tzt?'<button class="btnw" data-fourth="1">'+esc(t("getTzt"))+'</button>':'')+'</div></div>'}
+ /* it is a first-time hint, not a permanent banner: once dismissed for a network, it stays away */
+ if(raw("tz_ready_"+S.net,"")==="1")return "";
+ return '<div class="emptyc" style="position:relative"><button data-rdismiss="1" aria-label="dismiss" style="position:absolute;top:10px;right:12px;background:none;border:0;color:var(--mu);font-size:20px;line-height:1;padding:4px">×</button><b>'+esc(t("emptyT"))+' 🎉</b><small>'+esc(t("emptyS"))+'</small><div class="eb"><button class="btn" data-go="recv">'+ic("recv",18)+esc(t("recv"))+'</button>'+(n.tzt?'<button class="btnw" data-fourth="1">'+esc(t("getTzt"))+'</button>':'')+'</div></div>'}
 
 /* ----- big amount check (used by openConfirm) ----- */
 function isBig(a,k){var x=parseFloat(a);if(!(x>0)||!k)return false;var n=N();if(n.test)return false;
