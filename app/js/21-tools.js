@@ -2,7 +2,7 @@
 "use strict";
 /* ---------- PART 2: tools, add token, CSV ---------- */
 var COINS=["SHM","BTC","ETH","BNB","USDT"];
-function priceOf(s){var mk=S.mk||{};if(s==="SHM")return (S.shm&&S.shm.inr)||S.inr;var k={BTC:"bitcoin",ETH:"ethereum",BNB:"binancecoin",USDT:"tether"}[s];return mk[k]&&mk[k].inr}
+function priceOf(s){var mk=S.mk||{};if(s==="SHM")return S.inr;var k={BTC:"bitcoin",ETH:"ethereum",BNB:"binancecoin",USDT:"tether"}[s];return mk[k]&&mk[k].inr}
 function coinLogo(c){return c==="SHM"?SHMLOGO:(CG[c]||"")}
 function coinSel(id,cur){return '<div class="chips cc2" style="padding:0;flex-wrap:wrap" id="'+id+'">'+COINS.map(function(c){return '<button class="chip2" data-c="'+c+'" style="padding:5px 12px 5px 5px;'+(c===cur?'border-color:var(--green);color:var(--green);background:var(--pill)':'')+'"><img src="'+coinLogo(c)+'" alt="">'+c+'</button>'}).join("")+'</div>'}
 function bindCoins(id,cb){[].forEach.call(document.querySelectorAll("#"+id+" [data-c]"),function(b){b.onclick=function(){cb(b.getAttribute("data-c"))}})}

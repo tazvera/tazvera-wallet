@@ -1,7 +1,7 @@
 /* Tazvera wallet · 24-explore.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* ---------- EXPLORE ---------- */
-async function loadMk(){if(S.mk&&Date.now()-(S.mkt||0)<60000)return;S.mkt=Date.now();try{var r=await fetch("/api/market");S.mk=await r.json()}catch(e){S.mk={}}if(S.tab==="exp")render()}
+async function loadMk(){if(S.mk&&Date.now()-(S.mkt||0)<60000)return;S.mkt=Date.now();try{var r=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,tether&vs_currencies=inr,usd&include_24hr_change=true");S.mk=await r.json()}catch(e){S.mk={}}if(S.tab==="exp")render()}
 function expHTML(){var tl=[["bell","alarm","tAlarm"],["conv","conv","tConv"],["book","book","tBook"],["split","split","tSplit"],["pl","pl","tPl"],["drop","nfee","tFee"]];var mk=S.mk||{};var q=(S.q||"").trim().toLowerCase();
  function row(img,name,sym,p,ch,extra){var up=(ch||0)>=0;return '<div class="it" data-mkc="'+esc(sym)+'" style="cursor:pointer">'+(img?'<span class="ci"><img src="'+img+'" alt=""></span>':'<span class="ci" style="font-weight:700;font-size:13px">'+esc(sym.slice(0,1))+'</span>')+'<div class="m"><b>'+esc(name)+'</b><small>'+esc(sym)+(extra?' · '+esc(extra):'')+'</small></div><div class="r"><b>'+(p?esc(money(p)):"—")+'</b><small class="'+(ch==null?"":(up?"up2":"dn2"))+'">'+(ch==null?"":(up?"+":"")+fmt(ch,2)+"%")+'</small></div></div>'}
  var tiles=tl.filter(function(x){return !q||t(x[1]).toLowerCase().indexOf(q)>=0||t(x[2]).toLowerCase().indexOf(q)>=0||String(L.en[x[2]]).toLowerCase().indexOf(q)>=0});
