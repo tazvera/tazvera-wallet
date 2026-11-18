@@ -62,7 +62,7 @@ function wbkPwAsk(o){
   catch(e){btn.disabled=false;btn.textContent=t("wbkOpen");$("wbRE").textContent=t("wbkWrong");return}
   $("wbR").value="";closeSheet();
   if(S.addr&&S.mode==="inapp"){askPin(t("pinT"),t("samePin"),async function(pin,fail){try{await CPW.unlock(pin)}catch(e){return fail(t("pinBad"))}await wbkSave(ws,pin,false)})}
-  else newPinFlow(function(pin){wbkSave(ws,pin,true)})}}
+  else if(wList().length){askPin(t("pinT"),t("samePin"),async function(pin,fail){try{await CPW.unlock(pin)}catch(e){return fail(t("pinBad"))}await wbkSave(ws,pin,false)})}else newPinFlow(function(pin){wbkSave(ws,pin,true)})}}
 async function wbkSave(ws,pin,fresh){
  var busy='<div class="wel"><img src="'+LOGO+'" alt=""><h1 style="font-size:20px">'+esc(t("making"))+'</h1></div>';if(fresh)$("app").innerHTML=busy;else sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);
  try{try{wSyncActive()}catch(e){}var l=fresh?[]:wList(),have={},added=0,first=null;l.forEach(function(x){have[String(x.addr).toLowerCase()]=1});

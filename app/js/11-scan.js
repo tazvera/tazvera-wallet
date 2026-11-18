@@ -20,7 +20,7 @@ function parseQR(s){s=String(s||"").trim();var m;
  if((m=s.match(/^ethereum:(0x[0-9a-fA-F]{40})(?:@(\d+))?(?:\?(.*))?$/i))){var q2=new URLSearchParams(m[3]||"");return{to:m[1],tok:"native",amt:qrAmt(q2.get("value"),18),chain:m[2]?+m[2]:null}}
  if((m=s.match(/^0x[0-9a-fA-F]{40}$/)))return{to:m[0],tok:"",amt:"",chain:null};return null}
 
-function useQR(pr){S.snd.to=pr.to;if(pr.amt)S.snd.amt=pr.amt;if(pr.tok)S.snd.tok=pr.tok;else if(pr.token){var n=N(),k=pr.token.toLowerCase();S.snd.tok=(n.tzt&&k===n.tzt.toLowerCase())?"tzt":(n.tzv&&k===n.tzv.toLowerCase())?"tzv":"native"}S.tab="send";render();estFee()}
+function useQR(pr){if(pr.token&&!pr.tok){var nq=N(),kq=pr.token.toLowerCase();if(!((nq.tzt&&kq===nq.tzt.toLowerCase())||(nq.tzv&&kq===nq.tzv.toLowerCase()))){toast("यह token QR समर्थित नहीं है। QR रद्द किया गया।");return}}S.snd.to=pr.to;if(pr.amt)S.snd.amt=pr.amt;if(pr.tok)S.snd.tok=pr.tok;else if(pr.token){var n=N(),k=pr.token.toLowerCase();S.snd.tok=(n.tzt&&k===n.tzt.toLowerCase())?"tzt":(n.tzv&&k===n.tzv.toLowerCase())?"tzv":"native"}S.tab="send";render();estFee()}
 /* the QR is for another network: say so clearly, and offer to switch (Mainnet still asks its real-money check first) */
 function qrNetSheet(pr){var key=Object.keys(NETS).filter(function(k){return NETS[k].dec===pr.chain})[0],cur=N();
  if(!key){sheet('<div class="grab"></div><div class="sht">'+esc(t("qrNetT"))+'</div><div class="sc bad">'+ic("warn",22)+'<div><small style="font-size:13.5px;font-weight:600">'+esc(t("qrNetNo").replace("%c",pr.chain))+'</small></div></div>');return}
