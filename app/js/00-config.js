@@ -3,6 +3,12 @@
 var APPVER="9.9"; /* shown in About and Settings; bump here only */
 var SHMLOGO="app/img/shm.png",LOGO="icon-192.png",TZVLOGO="brand/tzv/tzv-logo-128.png";
 var CG={BTC:"https://assets.coingecko.com/coins/images/1/small/bitcoin.png",ETH:"https://assets.coingecko.com/coins/images/279/small/ethereum.png",BNB:"https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png",USDT:"https://assets.coingecko.com/coins/images/325/small/Tether.png"};
+/* The token is called BNB; "BNB Chain" is the network. Never show the network name as a coin. */
+function coinName(n){var y=String(n&&n.sym||"").toLowerCase();
+  if(y==="shm")return "Shardeum";
+  if(y==="bnb"||y==="tbnb")return "BNB";
+  if(y==="eth"||y==="sepoliaeth")return "Ethereum";
+  return (n&&n.sym)||""}
 function netLogo(k){return (k==="bsc"||k==="bsc-testnet")?CG.BNB:(k==="ethereum"||k==="sepolia")?CG.ETH:SHMLOGO}
 var NETS={"shardeum-testnet":{name:"Shardeum Testnet",chainId:"0x1fb7",dec:8119,sym:"SHM",rpc:"https://api-mezame.shardeum.org",exp:"https://explorer-mezame.shardeum.org",test:true,tzt:"0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0"},
 "bsc-testnet":{name:"BNB Testnet",chainId:"0x61",dec:97,sym:"tBNB",rpc:"https://data-seed-prebsc-1-s1.bnbchain.org:8545",exp:"https://testnet.bscscan.com",test:true},

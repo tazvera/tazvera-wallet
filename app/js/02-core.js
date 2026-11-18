@@ -21,11 +21,14 @@ async function load(){var n=N();if(!S.addr)return;try{var h=await rpc(n.rpc,"eth
  if(n.tzv){try{var dv="0x70a08231"+S.addr.slice(2).toLowerCase().padStart(64,"0");var rv=await rpc(n.rpc,"eth_call",[{to:n.tzv,data:dv},"latest"]);S.tzvW=BigInt(rv||"0x0");S.tzv=Number(S.tzvW)/1e18}catch(e){}}else S.tzv=null;
  try{await loadCustoms()}catch(e){}
  loadRemote();checkPending();
- if(n.sym==="SHM"&&(S.inr==null||Date.now()-(S.pt||0)>30000)){try{var pr=await fetch("/api/price");if(pr.ok){var pj=await pr.json();if(pj.inr>0)S.inr=pj.inr;if(pj.usd>0)S.usd=pj.usd;if(pj.chg!=null&&!isNaN(pj.chg))S.chg=+pj.chg;S.pt=Date.now();try{localStorage.setItem("cp3_v2_shm",JSON.stringify({inr:S.inr,usd:S.usd,chg:S.chg,t:S.pt}))}catch(e){}}}catch(e){}}
+ /* SHM's price is a market price, so it is fetched on every network (Explore shows it), but it is
+    only used for the balance when the coin really is SHM. */
+ if(!S.shm||Date.now()-(S.shm.pt||0)>30000){try{var pr=await fetch("/api/price");if(pr.ok){var pj=await pr.json();var q=S.shm||{};if(pj.inr>0)q.inr=pj.inr;if(pj.usd>0)q.usd=pj.usd;if(pj.chg!=null&&!isNaN(pj.chg))q.chg=+pj.chg;q.pt=Date.now();S.shm=q;try{localStorage.setItem("cp3_v2_shm",JSON.stringify({inr:q.inr,usd:q.usd,chg:q.chg,t:q.pt}))}catch(e){}}}catch(e){}}
  /* the saved price belongs to SHM. On any other network it would show the wrong rupee value
     and the wrong percentage, so it is only restored when the coin really is SHM. */
- if(n.sym==="SHM"&&S.inr==null){try{var c0=JSON.parse(localStorage.getItem("cp3_v2_shm")||"null");if(c0&&c0.inr>0){S.inr=c0.inr;S.usd=c0.usd||null;S.chg=c0.chg;S.pt=c0.t}}catch(e){}}
- if(n.sym!=="SHM"){S.inr=null;S.usd=null;S.chg=null}
+ if(!S.shm){try{var c0=JSON.parse(localStorage.getItem("cp3_v2_shm")||"null");if(c0&&c0.inr>0)S.shm={inr:c0.inr,usd:c0.usd||null,chg:c0.chg,pt:c0.t}}catch(e){}}
+ if(n.sym==="SHM"&&S.shm){S.inr=S.shm.inr;S.usd=S.shm.usd;S.chg=S.shm.chg;S.pt=S.shm.pt}
+ else{S.inr=null;S.usd=null;S.chg=null}
  if(S.tab==="home"||S.tab==="recv")render();if(S.tab==="send")estFee()}
 var REMOTE={};
 async function loadRemote(){var n=N();var ex=S.net==="shardeum-testnet"?"https://explorer-mezame.shardeum.org":S.net==="shardeum"?"https://explorer.shardeum.org":"";if(!ex||!S.addr)return;var me=S.addr.toLowerCase(),out=[];
@@ -40,7 +43,7 @@ function rowTx(x){var i=isIn(x),d=new Date(x.time||Date.now()),tm=d.toLocaleTime
 function nav(){function tb(k,icn,lb){var on=S.tab===k;return '<button class="nv'+(on?" on":"")+'" data-tab="'+k+'">'+ic(icn,22)+'<span>'+esc(lb||t(k))+'</span></button>'}
  return '<nav class="nav n3">'+tb("home","home")+tb("helpc","learn",t("navLearn"))+tb("exp","compass")+'</nav>'+
  ((S.tab==="home"||S.tab==="exp"||S.tab==="helpc")?'<button class="aifab" data-ai="1" aria-label="'+esc(t("aiFab"))+'">'+(typeof AI_SVG==="string"?AI_SVG:BOT)+'</button>':'')}
-function tokens(){var n=N(),a=[{id:"native",sym:n.sym,name:n.sym==="SHM"?"Shardeum":n.name,bal:S.bal,raw:S.bal==null||S.balW==null?null:S.balW,img:netLogo(S.net),dec:18}];if(n.tzt)a.push({id:"tzt",sym:"TZT",name:t("tzName"),bal:S.tzt,raw:S.tzt==null||S.tztW==null?null:S.tztW,img:LOGO,addr:n.tzt,dec:18});if(n.tzv)a.push({id:"tzv",sym:"TZV",name:"Tazvera",bal:S.tzv,raw:S.tzv==null||S.tzvW==null?null:S.tzvW,img:TZVLOGO,addr:n.tzv,dec:18});
+function tokens(){var n=N(),a=[{id:"native",sym:n.sym,name:coinName(n),bal:S.bal,raw:S.bal==null||S.balW==null?null:S.balW,img:netLogo(S.net),dec:18}];if(n.tzt)a.push({id:"tzt",sym:"TZT",name:t("tzName"),bal:S.tzt,raw:S.tzt==null||S.tztW==null?null:S.tztW,img:LOGO,addr:n.tzt,dec:18});if(n.tzv)a.push({id:"tzv",sym:"TZV",name:"Tazvera",bal:S.tzv,raw:S.tzv==null||S.tzvW==null?null:S.tzvW,img:TZVLOGO,addr:n.tzv,dec:18});
  (S.cust||[]).forEach(function(c){a.push({id:"c:"+c.addr.toLowerCase(),sym:c.symbol||"TOKEN",name:c.symbol||"Token",bal:c.bal,raw:c.raw==null?null:c.raw,img:c.img||"",addr:c.addr,dec:c.dec||18,custom:true})});return a}
 function customs(){var l=ls("customTokens",[]);if(!Array.isArray(l))return[];var n=N();return l.map(function(x){return typeof x==="string"?{addr:x,symbol:"TOKEN"}:x}).filter(function(x){return x&&(!x.net||x.net===S.net)&&/^0x[0-9a-fA-F]{40}$/.test(x.addr||"")&&!(n.tzt&&x.addr.toLowerCase()===n.tzt.toLowerCase())&&!(n.tzv&&x.addr.toLowerCase()===n.tzv.toLowerCase())})}
 async function loadCustoms(){var n=N(),out=[];for(var c of customs()){try{var d="0x70a08231"+S.addr.slice(2).toLowerCase().padStart(64,"0");var r=await rpc(n.rpc,"eth_call",[{to:c.addr,data:d},"latest"]);if(!r||r==="0x")continue;var dec=c.decimals||18;try{var dr=await rpc(n.rpc,"eth_call",[{to:c.addr,data:"0x313ce567"},"latest"]);if(dr&&dr!=="0x"){var dd=parseInt(dr,16);dec=(dd>=0&&dd<=36)?dd:18}}catch(e){}out.push({addr:c.addr,symbol:c.symbol,dec:dec,raw:BigInt(r),bal:Number(BigInt(r))/Math.pow(10,dec),img:""})}catch(e){}}S.cust=out}
