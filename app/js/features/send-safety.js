@@ -17,6 +17,8 @@ Object.assign(L.hi,{scanFail:"स्कैनर नहीं खुला। �
 /* clear every number that belongs to the old network / wallet */
 function netReset(){
   S.bal=null;S.balW=null;S.tzt=null;S.tztW=null;S.tzv=null;S.tzvW=null;S.cust=[];S.balErr=false;S.nh="";
+  /* the rupee price belongs to the coin of the network we were on; never carry it across */
+  S.inr=null;S.usd=null;S.chg=null;S.pt=0;
   if(S.snd){S.snd.fee=null;S.snd.feeW=null;S.snd.codeFor=null;S.snd.isC=false}
   setTimeout(function(){if(typeof checkNet==="function")checkNet()},60);
 }
