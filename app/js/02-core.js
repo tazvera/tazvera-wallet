@@ -22,7 +22,10 @@ async function load(){var n=N();if(!S.addr)return;try{var h=await rpc(n.rpc,"eth
  try{await loadCustoms()}catch(e){}
  loadRemote();checkPending();
  if(n.sym==="SHM"&&(S.inr==null||Date.now()-(S.pt||0)>30000)){try{var pr=await fetch("/api/price");if(pr.ok){var pj=await pr.json();if(pj.inr>0)S.inr=pj.inr;if(pj.usd>0)S.usd=pj.usd;if(pj.chg!=null&&!isNaN(pj.chg))S.chg=+pj.chg;S.pt=Date.now();try{localStorage.setItem("cp3_v2_shm",JSON.stringify({inr:S.inr,usd:S.usd,chg:S.chg,t:S.pt}))}catch(e){}}}catch(e){}}
- if(S.inr==null){try{var c0=JSON.parse(localStorage.getItem("cp3_v2_shm")||"null");if(c0&&c0.inr>0){S.inr=c0.inr;S.usd=c0.usd||null;S.chg=c0.chg;S.pt=c0.t}}catch(e){}}
+ /* the saved price belongs to SHM. On any other network it would show the wrong rupee value
+    and the wrong percentage, so it is only restored when the coin really is SHM. */
+ if(n.sym==="SHM"&&S.inr==null){try{var c0=JSON.parse(localStorage.getItem("cp3_v2_shm")||"null");if(c0&&c0.inr>0){S.inr=c0.inr;S.usd=c0.usd||null;S.chg=c0.chg;S.pt=c0.t}}catch(e){}}
+ if(n.sym!=="SHM"){S.inr=null;S.usd=null;S.chg=null}
  if(S.tab==="home"||S.tab==="recv")render();if(S.tab==="send")estFee()}
 var REMOTE={};
 async function loadRemote(){var n=N();var ex=S.net==="shardeum-testnet"?"https://explorer-mezame.shardeum.org":S.net==="shardeum"?"https://explorer.shardeum.org":"";if(!ex||!S.addr)return;var me=S.addr.toLowerCase(),out=[];

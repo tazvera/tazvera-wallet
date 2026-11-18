@@ -87,7 +87,7 @@ function stepsHTML(stage,amtTxt,toName,hash){var n=N();var steps=[[S.mode==="mm"
  '<div class="kv" style="margin-top:0"><div><span>'+esc(t("from"))+'</span><b>'+esc(wName()+" · "+sh(S.addr))+'</b></div><div><span>'+esc(t("fee"))+'</span><b>'+esc(feeTxt())+'</b></div></div>'+
  '<div style="margin-top:14px">'+(hash?'<a class="btnw" href="'+n.exp+'/tx/'+esc(hash)+'" target="_blank" rel="noopener" style="text-decoration:none;color:var(--tx);margin:0 0 10px">'+esc(t("view"))+' ↗</a>':'')+(stage==="wait"?'':'<button class="btn" id="dOk">'+esc(t("doneB"))+'</button>')+'</div>'}
 /* rpc fallback */
-var RPCB={"https://data-seed-prebsc-1-s1.bnbchain.org:8545":["https://bsc-testnet-rpc.publicnode.com"],"https://ethereum-sepolia-rpc.publicnode.com":["https://sepolia.drpc.org"]};
+var RPCB={"https://data-seed-prebsc-1-s1.bnbchain.org:8545":["https://bsc-testnet-rpc.publicnode.com"],"https://ethereum-sepolia-rpc.publicnode.com":["https://sepolia.drpc.org"],"https://bsc-rpc.publicnode.com":["https://bsc-dataseed.binance.org","https://binance.llamarpc.com"],"https://ethereum-rpc.publicnode.com":["https://eth.llamarpc.com","https://rpc.ankr.com/eth"]};
 
 
 /* add TZV to MetaMask (desktop/browser wallets) */
