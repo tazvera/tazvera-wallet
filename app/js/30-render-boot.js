@@ -30,7 +30,7 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.pinsheet){pinSheet();return}
  if(d.pinsw2){var on2=raw("tz_pinsend","1")!=="0";rawSet("tz_pinsend",on2?"0":"1");pinSheet();return}
  if(d.words){wordsSheet();return}
- if(d.fix){var f=d.fix;if(f==="t12")t12();else if(f==="pin"){rawSet("tz_pinsend","1");render()}else if(f==="fp")toggleFp();else if(f==="alock")choose(t("alock"),[["1","1 "+t("min")],["2","2 "+t("min")],["5","5 "+t("min")]],String(amin()),function(v){lss("xt_am",+v)});return}
+ if(d.fix){var f=d.fix;if(f==="t12")t12();else if(f==="bk")bkSheet();else if(f==="pin"){rawSet("tz_pinsend","1");render()}else if(f==="fp")toggleFp();else if(f==="alock")choose(t("alock"),[["1","1 "+t("min")],["2","2 "+t("min")],["5","5 "+t("min")]],String(amin()),function(v){lss("xt_am",+v)});return}
  if(d.hc){hcOpen(d.hc);return}
  if(d.hq){S.hopen=S.hopen===+d.hq?0:+d.hq;render();return}
  if(d.bk){bkSheet();return}

@@ -45,6 +45,7 @@ async function wbkBuild(pin,pw){var l=wList(),out=[];
  try{for(var i=0;i<l.length;i++){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("wbkWork"))+'</div><div class="ps">'+(i+1)+' / '+l.length+'</div></div>',true);
    var w=await ethers.Wallet.fromEncryptedJson(l[i].ks,pin);out.push({name:l[i].name,addr:w.address,ks:await w.encrypt(pw)})}
   var day=new Date().toISOString().slice(0,10),name="tazvera-wallet-backup-"+day+".json",o={app:"Tazvera",type:WBK_TYPE,v:1,time:new Date().toISOString(),note:"Locked with your backup password (standard Ethereum keystore). Keep it private.",wallets:out};
+  out.forEach(function(x){try{wbkMark(x.addr)}catch(e){}});
   var b=new Blob([JSON.stringify(o,null,1)],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},1500);
   closeSheet();setTimeout(function(){sheet('<div class="grab"></div><div class="done" style="padding-top:8px"><div class="sht" style="margin:0">✅ '+esc(t("wbkDone"))+'</div><p style="color:var(--mu);margin:8px 0 0;line-height:1.55">'+esc(t("wbkDoneS").replace("%f",name))+'</p></div><div style="margin-top:14px"><button class="btn" data-sx="1">'+esc(t("done2"))+'</button></div>')},300)}
  catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}}
