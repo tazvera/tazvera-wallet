@@ -4,7 +4,7 @@
    verified badges · token detail sheet · news bell (announcements.json) · network health chip ·
    home security card · empty-wallet card · big amount double check · "before you start" screen ·
    "exit the app?" check on the phone Back button */
-Object.assign(L.en,{ver:"Verified",unv:"Not verified",nhOk:"Network OK",nhSlow:"Network slow",nhDown:"Network down",
+Object.assign(L.en,{ver:"Verified",unv:"Not verified",nhOk:"Network OK",nhSlow:"Network slow",nhDown:"Offline",nhTry:"Connecting…",safeN:"Your money is safe. Nothing has been sent.",lastSeen:"Last seen",
  secOk:"Your wallet is protected",secLeft:"%n safety steps left",secLeft1:"1 safety step left",secFix:"Fix",secAll:"Backup done · PIN on",
  emptyT:"Your wallet is ready",emptyS:"Receive your first coins to get started.",
  bigT:"Big amount",bigS:"You are sending %a. Check the address once more.",bigTick:"I checked. Send this big amount.",
@@ -12,7 +12,7 @@ Object.assign(L.en,{ver:"Verified",unv:"Not verified",nhOk:"Network OK",nhSlow:"
  riskT:"Before you start",risk1:"Your keys stay only on this phone. Tazvera cannot see or recover them.",risk2:"Your 12 secret words are the only backup. Never share them with anyone, not even Tazvera.",risk3:"Crypto sent to a wrong address can be lost. Always check before sending.",riskTick:"I understand",riskGo:"Continue",
  tdBal:"Balance",tdContract:"Contract",tdHist:"History",tdNoHist:"No transactions with this coin yet.",tdVerS:"Official coin, checked by Tazvera",tdUnvW:"You added this token yourself. Tazvera has not checked it. Fake airdrop tokens are a common scam: never 'claim' them on a website.",tdExp:"Explorer",
  exitT:"Leave Tazvera?",exitS:"Your wallet stays safe on this phone.",exitY:"Yes, leave",exitN:"Stay"});
-Object.assign(L.hi,{ver:"सत्यापित",unv:"सत्यापित नहीं",nhOk:"नेटवर्क ठीक",nhSlow:"नेटवर्क धीमा",nhDown:"नेटवर्क बंद",
+Object.assign(L.hi,{ver:"सत्यापित",unv:"सत्यापित नहीं",nhOk:"नेटवर्क ठीक",nhSlow:"नेटवर्क धीमा",nhDown:"कनेक्शन नहीं",nhTry:"जुड़ रहे हैं…",safeN:"आपका पैसा सुरक्षित है। कुछ भी नहीं भेजा गया।",lastSeen:"अंतिम बार देखा",
  secOk:"आपका वॉलेट सुरक्षित है",secLeft:"%n सुरक्षा कदम बाक़ी",secLeft1:"1 सुरक्षा कदम बाक़ी है।",secFix:"ठीक करें",secAll:"बैकअप पूरा · PIN चालू",
  emptyT:"आपका वॉलेट तैयार है",emptyS:"शुरू करने के लिए पहले सिक्के पाइए।",
  bigT:"बड़ी रकम",bigS:"आप %a भेज रहे हैं। पता एक बार फिर जाँच लीजिए।",bigTick:"मैंने जाँच लिया। यह बड़ी रकम भेजें।",
@@ -31,13 +31,18 @@ function safeRerender(){return S.tab==="home"&&!!document.querySelector("#app .n
 /* ----- network health ----- */
 S.nh=S.nh||"";
 async function checkNet(){if(!S.addr)return;var n=N(),t0=Date.now(),st;
- try{await Promise.race([rpc(n.rpc,"eth_blockNumber",[]),new Promise(function(_,rj){setTimeout(function(){rj(new Error("slow"))},8000)})]);st=(Date.now()-t0)<2500?"ok":"slow"}catch(e){st=(Date.now()-t0)>=7900?"slow":"down"}
+ /* never open on a red warning: show "connecting" until a real answer arrives */
+ if(S.nh!=="ok"&&S.nh!=="slow"){if(S.nh!=="trying"){S.nh="trying";if(safeRerender())render()}}
+ try{await Promise.race([rpcFast(n.rpc,"eth_blockNumber",[],4000),new Promise(function(_,rj){setTimeout(function(){rj(new Error("slow"))},14000)})]);st=(Date.now()-t0)<2500?"ok":"slow"}catch(e){st=(Date.now()-t0)>=13900?"slow":"down"}
+ /* one quiet retry before we tell anyone the network is gone */
+ if(st==="down"){await new Promise(function(r){setTimeout(r,3000)});t0=Date.now();
+   try{await rpcFast(n.rpc,"eth_blockNumber",[],4000);st="slow"}catch(e){st="down"}}
  /* A node that answers on a different chain than the one we show must never be used for a send.
     This is the one check the wallet cannot do locally, because a bad RPC looks healthy otherwise. */
  if(st==="down"){S.badChain=false}
- else{try{var cid=await rpc(n.rpc,"eth_chainId",[]);S.badChain=parseInt(cid,16)!==parseInt(n.chainId,16)}catch(e){/* keep the last answer: do not clear a known mismatch */}}
+ else{try{var cid=await rpcFast(n.rpc,"eth_chainId",[],4000);S.badChain=parseInt(cid,16)!==parseInt(n.chainId,16)}catch(e){/* keep the last answer: do not clear a known mismatch */}}
  if(st!==S.nh){S.nh=st;if(safeRerender())render()}}
-function nhChip(){if(!S.nh)return "";var k=S.nh==="ok"?"nhOk":S.nh==="slow"?"nhSlow":"nhDown";return '<span class="nh '+S.nh+'"><i></i>'+esc(t(k))+'</span>'}
+function nhChip(){if(!S.nh)return "";var k=S.nh==="ok"?"nhOk":S.nh==="slow"?"nhSlow":S.nh==="trying"?"nhTry":"nhDown";return '<span class="nh '+S.nh+'"><i></i>'+esc(t(k))+'</span>'}
 setInterval(function(){if(!document.hidden)checkNet()},60000);setTimeout(checkNet,1500);
 
 /* ----- home cards ----- */

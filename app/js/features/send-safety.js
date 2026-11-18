@@ -50,8 +50,8 @@ function netReset(){
         var cid=null;
         try{
           cid=await Promise.race([
-            rpc(N().rpc,"eth_chainId",[]),
-            new Promise(function(_,rj){setTimeout(function(){rj(new Error("timeout"))},5000)})
+            rpcFast(N().rpc,"eth_chainId",[],4000),
+            new Promise(function(_,rj){setTimeout(function(){rj(new Error("timeout"))},14000)})
           ]);
         }catch(e){cid=null}
         if(cid==null){stopSend(t("chainNo"));return}
