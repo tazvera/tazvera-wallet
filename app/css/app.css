@@ -39,7 +39,7 @@ to{opacity:1;transform:none}
 
 .net{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 12px 6px 10px;border-radius:20px;background:rgba(255,255,255,.12);font-size:12.5px;font-weight:600;color:#fff}
 .net i{width:7px;height:7px;border-radius:50%;background:#5BE88A}
-.net.real i{background:#FF8A8A}
+.net.real i{background:#FFD23F}
 
 .acts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 20px 0}
 .a{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;font-weight:500}
@@ -187,7 +187,7 @@ to{opacity:1;transform:none}
 
 .who2{display:flex;align-items:center;gap:8px}
 
-.addr{margin-top:12px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.2px;letter-spacing:-.2px;color:var(--mu);line-height:1.5;word-break:break-all}
+.addr{margin-top:12px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;letter-spacing:.2px;color:var(--mu);line-height:1.6;word-break:break-all}
 .addr em{font-style:normal;color:var(--green);font-weight:700;font-size:13.5px}
 
 .sc{margin-top:12px;display:flex;gap:12px;align-items:flex-start;border-radius:16px;padding:12px 14px}
@@ -437,3 +437,83 @@ html[data-theme=dark] .aim.u .aib{background:linear-gradient(135deg,#14C8A8,#0EA
 #splash.calm .pc,#splash.calm .sp-tile,#splash.calm .sp-word i,#splash.calm .sp-tag,#splash.calm .sp-glow{opacity:1!important;transform:none!important}
 #splash.calm .sp-glow{transform:translate(-50%,-50%)!important}
 #splash.calm .sp-ring,#splash.calm .sp-shine{opacity:0!important}
+
+/* ---------- accessibility & polish (added 2026-11) ---------- */
+
+/* 1. Respect "reduce motion": the OS setting is an accessibility need, not a preference.
+      Every animation and transition in this file becomes instant, nothing else changes. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .anim{animation:none!important}
+}
+
+/* 2. Visible keyboard focus. Without this, a Bluetooth keyboard, a switch device or a screen reader
+      user has no idea which button is selected. Mouse and touch taps are not affected. */
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:12px}
+.k:focus-visible,.kp .k:focus-visible{border-radius:50%;outline-offset:3px}
+
+/* 3. Hindi needs more room: Devanagari matras sit above and below the baseline and clip at tight
+      line heights. Only headings, buttons and sheet titles — body text already has enough. */
+html[lang="hi"] h1,html[lang="hi"] h3,html[lang="hi"] .sht,html[lang="hi"] .pt,
+html[lang="hi"] .btn,html[lang="hi"] .btnw,html[lang="hi"] .opt b,html[lang="hi"] .srow b{line-height:1.5}
+
+/* 4. Long Hindi/Marathi button labels must wrap, never spill outside the button. */
+.btn,.btnw,.b2{white-space:normal;word-break:break-word;text-align:center}
+
+/* ---------- press feedback, and no long-press image menu (added 2026-11) ---------- */
+
+/* On Android a long press on any picture opens "Copy image / Download image / Share image /
+   Open in Chrome". Inside a wallet that menu is noise, and it looks broken. Decorative images and
+   icons must not be selectable, draggable or long-pressable: taps go to the button around them. */
+body{-webkit-tap-highlight-color:transparent}
+img{-webkit-touch-callout:none;-webkit-user-drag:none;user-select:none;-moz-user-select:none;pointer-events:none}
+svg{-webkit-touch-callout:none;user-select:none}
+/* long press on text must not start a text selection either (except where the user may copy) */
+.btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.it,.m,.sht,.lb,.lb2,.lb3,.note2,.err,.kv span,.kv b{-webkit-user-select:none;user-select:none}
+.cpbox,.addr,input,textarea{-webkit-user-select:text;user-select:text}
+
+/* real press feedback: the button sinks a little, so a tap feels answered even with vibration off */
+.btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.tab{transition:transform .09s ease,filter .09s ease}
+.btn:active,.btnw:active,.b2:active,.opt:active,.srow:active,.chip2:active,.max:active,.ib:active,.k:active,.tab:active{transform:scale(.97);filter:brightness(.94)}
+@media (prefers-reduced-motion: reduce){
+  .btn:active,.btnw:active,.b2:active,.opt:active,.srow:active,.chip2:active,.max:active,.ib:active,.k:active,.tab:active{transform:none;filter:brightness(.9)}
+}
+
+/* ---------- bottom bar + assistant, redrawn (2026-11-17) ---------- */
+/* Before: three items in a wide pill, the active one a solid dark block, and the assistant bubble
+   sitting on top of the bar's right end. Now: a tighter pill, a soft green pill behind the active
+   icon, and the assistant floating clear above the bar so nothing overlaps. */
+.nav.n3{
+  max-width:320px!important;min-width:288px!important;
+  height:64px!important;padding:0 10px!important;
+  border:1px solid var(--line)!important;border-radius:22px!important;
+  background:var(--card)!important;
+  box-shadow:0 12px 34px rgba(11,29,58,.16)!important;
+  backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important;
+}
+.nav.n3 .nv{gap:4px;font-size:11.5px;font-weight:600;letter-spacing:.1px;color:var(--mu);height:52px;border-radius:16px;margin:0}
+.nav.n3 .nv svg{width:22px;height:22px;background:none!important;color:inherit!important;border-radius:0!important;padding:0!important;box-sizing:content-box;stroke-width:2}
+.nav.n3 .nv.on{color:var(--green);font-weight:700}
+.nav.n3 .nv.on svg{background:var(--pill)!important;color:var(--green)!important;border-radius:12px!important;padding:6px!important;box-sizing:border-box!important;width:34px!important;height:34px!important}
+.nav.n3 .nv:active{background:var(--soft)}
+
+/* the assistant floats above the bar, never on it */
+.aifab{bottom:calc(94px + env(safe-area-inset-bottom,0px))!important;right:max(10px,calc(50% - 158px))!important;width:46px!important;height:46px!important}
+.aifab svg{width:40px!important;height:40px!important}
+
+/* ---------- home header: the three round buttons, made consistent (2026-11-17) ---------- */
+/* scan, news and settings were 42px squares with an 8px gap, and the wallet name block was
+   loose. Now: one size, one gap, a quiet background, and a press that answers. */
+.hd{padding:14px 18px 0!important}
+.hd>div:last-child{gap:10px!important;align-items:center}
+.hd .ib{width:40px!important;height:40px!important;border-radius:13px!important;background:var(--soft)!important;
+  border:1px solid var(--line)!important;box-shadow:none!important;color:var(--tx)!important;
+  transition:transform .12s ease,background .12s ease}
+.hd .ib:active{transform:scale(.95);background:var(--pill)!important}
+.hd .ib svg{width:20px!important;height:20px!important;stroke-width:1.9}
+.hd .bdot{top:7px;right:7px;box-shadow:0 0 0 2px var(--soft)}
+.who{gap:11px}
+.who>img{width:42px!important;height:42px!important;border-radius:13px}
+.who b{font-size:15.5px;letter-spacing:-.1px}
+.who small{font-size:12px;letter-spacing:.15px;opacity:.9}
