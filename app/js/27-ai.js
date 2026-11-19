@@ -21,7 +21,9 @@ var AI_SVG='<svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="h
 /* same test as the server: 12+ plain words in a row, or 64 hex characters */
 var BIP={};try{var WL=ethers.wordlists.en;for(var bi=0;bi<2048;bi++)BIP[WL.getWord(bi)]=1}catch(e){BIP=null}
 /* true only for 12+ words in a row from the real 12-word list (BIP39), or a 64-character private key; normal long questions in Hinglish pass */
-function aiSecret(s){if(/(?:0x)?[0-9a-fA-F]{64}/.test(s))return true;var w=s.toLowerCase().replace(/[^a-z\s]/g," ").split(/\s+/).filter(Boolean),run=0;for(var i=0;i<w.length;i++){if(BIP?BIP[w[i]]:/^[a-z]{3,8}$/.test(w[i])){run++;if(run>=12)return true}else run=0}return false}
+/* 10 or more real BIP39 words inside any 14 words: catches a seed with one or two typos or extra words */
+function nearSeed(w){var sum=0,c=w.map(function(x){return BIP[x]?1:0});for(var i=0;i<c.length;i++){sum+=c[i];if(i>=14)sum-=c[i-14];if(sum>=10)return true}return false}
+function aiSecret(s){if(/(?:0x)?[0-9a-fA-F]{64}/.test(s))return true;var w=s.toLowerCase().replace(/[^a-z\s]/g," ").split(/\s+/).filter(Boolean),run=0;for(var i=0;i<w.length;i++){if(BIP?BIP[w[i]]:/^[a-z]{3,8}$/.test(w[i])){run++;if(run>=12)return true}else run=0}if(BIP&&nearSeed(w))return true;return false}
 /* ---- Marathi voice (api/tts.js). Female is the default; the choice is remembered on this phone only. ---- */
 function aiGender(){return "FEMALE"}
 function aiSetGender(g){try{localStorage.setItem("tz_aivoice",g)}catch(e){}[].forEach.call(document.querySelectorAll("#sheet [data-aig]"),function(b){var on=b.getAttribute("data-aig")===g;b.style.borderColor=on?"var(--green)":"transparent";b.style.color=on?"var(--green)":"var(--tx)";b.setAttribute("aria-pressed",on)})}
