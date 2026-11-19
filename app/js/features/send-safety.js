@@ -77,9 +77,11 @@ function netReset(){
         rpc(N().rpc,"eth_getCode",[S.snd.to,"latest"]),
         new Promise(function(_,rj){setTimeout(function(){rj(0)},6000)})
       ]).then(function(c){
+        if(S.snd.codeFor!==key)return;
         S.snd.isC=!!c&&c!=="0x"&&c!=="0x0";
         S.snd.chkFail=false;
       }).catch(function(){
+        if(S.snd.codeFor!==key)return;
         S.snd.isC=false;S.snd.chkFail=true;
       }).then(show);
       return;
