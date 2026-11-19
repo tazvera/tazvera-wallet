@@ -15,6 +15,9 @@ var NETS={"shardeum-testnet":{name:"Shardeum Testnet",chainId:"0x1fb7",dec:8119,
 "bsc":{name:"BNB Chain",chainId:"0x38",dec:56,sym:"BNB",rpc:"https://bsc-rpc.publicnode.com",exp:"https://bscscan.com",test:false},
 "ethereum":{name:"Ethereum",chainId:"0x1",dec:1,sym:"ETH",rpc:"https://ethereum-rpc.publicnode.com",exp:"https://etherscan.io",test:false},
 "shardeum":{name:"Shardeum Mainnet",chainId:"0x1fb6",dec:8118,sym:"SHM",rpc:"https://api.shardeum.org",exp:"https://explorer.shardeum.org",test:false,beta:true,tzv:"0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73"}};
+/* Token contracts per network. Add an address only after checking it on the official source and the explorer.
+   USDC (Ethereum): Circle developer docs. WBNB (BSC): found on several explorer aggregators; check it on bscscan.com before relying on it. */
+var CHAIN_TOKENS={"ethereum":[{sym:"USDC",name:"USD Coin",addr:"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",dec:6,src:"circle-docs"}],"bsc":[{sym:"WBNB",name:"Wrapped BNB",addr:"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",dec:18,src:"unverified-aggregator"}]};
 var KNOWN_CONTRACTS=["0x4cc2d29b65e6a2cd788a144a81e5e99bd892de73","0xc75149e5c95a41b0a4c9e3378d5fc6aaac2cc5f0","0x02b9e35cd82e5c781097d2188b4334c2485438bc","0x623a0e7628f281236d1d81ca1aceecedcc30443e","0xca3a736464f6e0d5ab5d9675fe26b878e6a0eb08","0x9f1da8bc7083e73f1ce93ea14afe7f22bbaf3c6b","0x4cb4a91694b0cdde83fe68ec34376f3ac1f1b790"];
 function ls(k,d){try{var v=localStorage.getItem("cp3_"+k);return v===null?d:JSON.parse(v)}catch(e){return d}}
 function lss(k,v){try{localStorage.setItem("cp3_"+k,JSON.stringify(v))}catch(e){}}
