@@ -27,7 +27,7 @@ function netReset(){
   /* before sending: confirm the wallet is on the network the app shows. For MetaMask, try to switch once. Fail closed. */
   function provFor(){return S.mode==="mm"?window.ethereum:(window.tazveraProvider||window.ethereum)}
   async function chainNow(p){var c=await p.request({method:"eth_chainId"});return String(c||"").toLowerCase()}
-  function stopSend(msg){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(msg)+'</div><button class="btn" onclick="closeSheet()">OK</button></div>',true)}
+  function stopSend(msg){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(msg)+'</div><button class="btn" data-pwclose="1">OK</button></div>',true)}
   doSend=async function(a){
     if(S.sending)return;
     S.sending=true;S._goLock=true;
@@ -121,3 +121,4 @@ Object.assign(L.hi,{mmUse:"MetaMask खाता",mmUseS:"MetaMask में ज
     }catch(err){toast(String((err&&err.message)||err))}
   });
 })();
+document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&e.target.closest("[data-pwclose]");if(b)closeSheet()});
