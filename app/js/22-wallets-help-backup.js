@@ -1,6 +1,4 @@
 /* Tazvera wallet · 22-wallets-help-backup.js · MIT License · https://github.com/tazvera/tazvera-wallet */
-Object.assign(L.en,{fpGateNote:"Fingerprint is off. Turn it on first, or set a longer PIN.",pinHonest:"Your PIN protects this phone. Keep it private; we cannot reset it for you."});
-Object.assign(L.hi,{fpGateNote:"फ़िंगरप्रिंट बंद है। पहले इसे चालू करें, या लंबा PIN रखें।",pinHonest:"आपका PIN इस फ़ोन की सुरक्षा करता है। इसे किसी को न बताएँ; हम इसे आपके लिए रीसेट नहीं कर सकते।"});
 "use strict";
 /* ---------- PART 3: wallets, settings groups, checkup, help center, backup, tx status, notifications ---------- */
 function wList(){var l=ls("v2_wallets",null);if(!Array.isArray(l)||!l.length){var ks=raw("cp3_inapp_keystore","");if(!ks)return[];var a="";try{a=CPW.address()}catch(e){}l=[{id:"w1",name:t("wallet"),ks:ks,addr:a}];lss("v2_wallets",l);rawSet("cp3_v2_active","w1")}return l}
@@ -28,10 +26,7 @@ function wBackup(ph){var w=ph.split(" "),shown=false;function d(){sheet('<div cl
  var r=$("wRev2");if(r)r.onclick=function(){shown=true;d();var mine=$("sheet").innerHTML;setTimeout(function(){if($("sheet").innerHTML===mine)closeSheet()},180000)};var c=$("wOk");c.onchange=function(){$("wDn").disabled=!(c.checked&&shown)};$("wDn").onclick=function(){if(this.disabled)return;var ww=w;w=null;ph=null;closeSheet();verifyScreen(ww)}}d()}
 /* settings sub-sheets */
 function pinSheet(){var pinOn=raw("tz_pinsend","1")!=="0";function r(icn,label,right,attr){return '<button class="srow" '+attr+'><span class="si">'+ic(icn,19)+'</span><b>'+esc(label)+'</b>'+right+'</button>'}var chev=ic("right",18);
- var gate=BIO.on()&&!BIO.full();
- sheet('<div class="grab"></div><div class="sht">'+esc(t("pinFp"))+'</div><div class="card" style="margin:10px 0 0">'+r("lock",t("pinSend"),'<span class="sw'+(pinOn?" on":"")+'"></span>','data-pinsw2="1"')+r("shield",t("fp"),'<span class="sw'+(BIO.on()?" on":"")+'"></span>','data-fp="1"')+r("key",t("chPin"),chev,'data-chpin="1"')+r("act",t("alock"),'<em>'+amin()+' '+esc(t("min"))+'</em>'+chev,'data-alock="1"')+r("lock",t("lockNow"),chev,'data-lock="1"')+'</div>'+
- (gate?'<div class="note2" style="margin:12px 4px 0;color:#B45309;font-weight:600">'+esc(t("fpGateNote"))+'</div>':'')+
- '<div class="note2" style="margin:12px 4px 0">'+esc(t("pinHonest"))+'</div>')}
+ sheet('<div class="grab"></div><div class="sht">'+esc(t("pinFp"))+'</div><div class="card" style="margin:10px 0 0">'+r("lock",t("pinSend"),'<span class="sw'+(pinOn?" on":"")+'"></span>','data-pinsw2="1"')+r("shield",t("fp"),'<span class="sw'+(BIO.on()?" on":"")+'"></span>','data-fp="1"')+r("key",t("chPin"),chev,'data-chpin="1"')+r("act",t("alock"),'<em>'+amin()+' '+esc(t("min"))+'</em>'+chev,'data-alock="1"')+r("lock",t("lockNow"),chev,'data-lock="1"')+'</div>')}
 function wordsSheet(){sheet('<div class="grab"></div><div class="sht">'+esc(t("words12"))+'</div><div class="sc warn" style="margin-top:10px">'+ic("warn",20)+'<div><small style="font-size:13px;font-weight:600">'+esc(t("bkW"))+'</small></div></div><div class="card" style="margin:12px 0 0"><button class="srow" data-s12="1"><span class="si">'+ic("eye",19)+'</span><b>'+esc(t("show12"))+'</b>'+ic("right",18)+'</button><button class="srow" data-t12="1"><span class="si">'+ic("check",19)+'</span><b>'+esc(t("test12"))+'</b>'+ic("right",18)+'</button></div>')}
 /* security checkup */
 var TIPS_EN=["Tazvera never asks for your 12 words. Anyone who does is a scammer.","Check the first 6 and last 4 letters of an address before sending.","Never install 'support' apps that someone sends you.","Keep your 12 words on paper, not in photos or chats.","Send a small test amount first to a new address."];
