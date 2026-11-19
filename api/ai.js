@@ -42,6 +42,10 @@ function looksSecret(s) {
   const w = s.toLowerCase().replace(/[^a-z\s]/g, " ").split(/\s+/).filter(Boolean);
   let run = 0;
   for (const x of w) { if (BIP ? BIP.has(x) : /^[a-z]{3,8}$/.test(x)) { run++; if (run >= 12) return true; } else run = 0; }
+  if (BIP) { // 10+ real BIP39 words inside any 14 words: catches typos and extra words
+    const c = w.map(x => (BIP.has(x) ? 1 : 0)); let sum = 0;
+    for (let i = 0; i < c.length; i++) { sum += c[i]; if (i >= 14) sum -= c[i - 14]; if (sum >= 10) return true; }
+  }
   return false;
 }
 
