@@ -47,7 +47,7 @@ function emptyCard(){if(!(S.bal===0)||(S.tzt>0)||(S.tzv>0)||txs().length)return 
 function isBig(a,k){var x=parseFloat(a);if(!(x>0)||!k)return false;var n=N();if(n.test)return false;
  if(k.id==="native"&&S.inr&&x*S.inr>=1000)return true;
  if(k.bal>0&&x>=k.bal*0.5)return true;return false}
-function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&dpx())?money(parseFloat(a)*dpx()):exactAmt(a)+" "+k.sym;
+function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&npx())?money(parseFloat(a)*npx()):exactAmt(a)+" "+k.sym;
  return '<div class="sc warn" style="margin-top:10px">'+ic("warn",24)+'<div><b>'+esc(t("bigT"))+'</b><small>'+esc(t("bigS").replace("%a",txt))+'</small><label class="tick"><input type="checkbox" id="cBig">'+esc(t("bigTick"))+'</label></div></div>'}
 
 /* ----- news & alerts (announcements.json on the same site, so news can change without an app update) ----- */
@@ -60,7 +60,7 @@ function bellSheet(){lss("annSeen",annMax());render();var L2=S.lang==="hi"?"hi":
 
 /* ----- token detail ----- */
 function tokDetail(id){var k=tokens().find(function(x){return x.id===id});if(!k)return;var n=N();
- var val=(k.id==="native"&&dpx()&&!n.test&&k.bal!=null)?money(k.bal*dpx()):"";
+ var val=(k.id==="native"&&npx()&&!n.test&&k.bal!=null)?money(k.bal*npx()):"";
  var hist=txs().filter(function(x){return String(x.symbol||n.sym).toUpperCase()===String(k.sym).toUpperCase()}).slice(0,8);
  var extra=k.id==="tzt"?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("drop",18)+esc(t("getTzt"))+'</button>':(k.id==="native"&&S.net==="shardeum")?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("add",18)+esc(t("addShm"))+'</button>':(k.id==="native"&&n.test&&!n.tzt)?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("drop",18)+esc(t("testCoins"))+'</button>':'';
  sheet('<div class="grab"></div><div class="tdh"><span class="ci big'+(k.custom?' unv':'')+'">'+(k.img?'<img src="'+k.img+'" alt="">':'<b>'+esc(k.sym.slice(0,1))+'</b>')+'</span><div><b>'+esc(k.name)+tokBadge(k)+'</b><small>'+esc(k.sym+" · "+n.name)+'</small></div></div>'+
