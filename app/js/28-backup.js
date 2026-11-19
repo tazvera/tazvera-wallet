@@ -45,14 +45,15 @@ async function wbkBuild(pin,pw){var l=wList(),out=[];
  try{for(var i=0;i<l.length;i++){sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("wbkWork"))+'</div><div class="ps">'+(i+1)+' / '+l.length+'</div></div>',true);
    var w=await ethers.Wallet.fromEncryptedJson(l[i].ks,pin);out.push({name:l[i].name,addr:w.address,ks:await w.encrypt(pw)})}
   var day=new Date().toISOString().slice(0,10),name="tazvera-wallet-backup-"+day+".json",o={app:"Tazvera",type:WBK_TYPE,v:1,time:new Date().toISOString(),note:"Locked with your backup password (standard Ethereum keystore). Keep it private.",wallets:out};
+  out.forEach(function(x){try{wbkMark(x.addr)}catch(e){}});
   var b=new Blob([JSON.stringify(o,null,1)],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},1500);
   closeSheet();setTimeout(function(){sheet('<div class="grab"></div><div class="done" style="padding-top:8px"><div class="sht" style="margin:0">✅ '+esc(t("wbkDone"))+'</div><p style="color:var(--mu);margin:8px 0 0;line-height:1.55">'+esc(t("wbkDoneS").replace("%f",name))+'</p></div><div style="margin-top:14px"><button class="btn" data-sx="1">'+esc(t("done2"))+'</button></div>')},300)}
  catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}}
 
 /* ---- open the file (new phone, or add to this phone) ---- */
 function wbkRestore(){var inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";inp.style.display="none";document.body.appendChild(inp);
- inp.onchange=function(){var f=inp.files&&inp.files[0];inp.remove();if(!f)return;var r=new FileReader();r.onload=function(){var o=null;try{o=JSON.parse(r.result)}catch(e){}
-  if(!o||o.app!=="Tazvera"||o.type!==WBK_TYPE||!Array.isArray(o.wallets)||!o.wallets.length||o.wallets.length>20||!o.wallets.every(function(x){return x&&typeof x.ks==="string"})){toast(t("wbkBad"));return}wbkPwAsk(o)};r.readAsText(f)};inp.click()}
+ inp.onchange=function(){var f=inp.files&&inp.files[0];inp.remove();if(!f)return;if(f.size>2e6){toast(t("wbkBad"));return} /* a real backup is a few KB; anything huge is not ours */var r=new FileReader();r.onload=function(){var o=null;try{o=JSON.parse(r.result)}catch(e){}
+  if(!o||o.app!=="Tazvera"||o.type!==WBK_TYPE||!Array.isArray(o.wallets)||!o.wallets.length||o.wallets.length>20||!o.wallets.every(function(x){return x&&typeof x.ks==="string"&&x.ks.length<20000})){toast(t("wbkBad"));return}wbkPwAsk(o)};r.readAsText(f)};inp.click()}
 function wbkPwAsk(o){
  sheet('<div class="grab"></div><div class="sht">'+esc(t("wbkRestore"))+'</div><div class="note2" style="margin:4px 0 0">'+esc(t("wbkFound").replace("%n",o.wallets.length))+'</div>'+
  '<div class="lbl2" style="margin:14px 2px 6px">'+esc(t("wbkPw"))+'</div><div class="box inp" style="margin:0"><input id="wbR" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false"></div><div class="err" id="wbRE" style="margin:8px 2px 0"></div>'+
@@ -62,7 +63,7 @@ function wbkPwAsk(o){
   catch(e){btn.disabled=false;btn.textContent=t("wbkOpen");$("wbRE").textContent=t("wbkWrong");return}
   $("wbR").value="";closeSheet();
   if(S.addr&&S.mode==="inapp"){askPin(t("pinT"),t("samePin"),async function(pin,fail){try{await CPW.unlock(pin)}catch(e){return fail(t("pinBad"))}await wbkSave(ws,pin,false)})}
-  else if(wList().length){askPin(t("pinT"),t("samePin"),async function(pin,fail){try{await CPW.unlock(pin)}catch(e){return fail(t("pinBad"))}await wbkSave(ws,pin,false)})}else newPinFlow(function(pin){wbkSave(ws,pin,true)})}}
+  else newPinFlow(function(pin){wbkSave(ws,pin,true)})}}
 async function wbkSave(ws,pin,fresh){
  var busy='<div class="wel"><img src="'+LOGO+'" alt=""><h1 style="font-size:20px">'+esc(t("making"))+'</h1></div>';if(fresh)$("app").innerHTML=busy;else sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);
  try{try{wSyncActive()}catch(e){}var l=fresh?[]:wList(),have={},added=0,first=null;l.forEach(function(x){have[String(x.addr).toLowerCase()]=1});
