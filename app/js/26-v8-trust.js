@@ -30,10 +30,15 @@ function safeRerender(){return S.tab==="home"&&!!document.querySelector("#app .n
 
 /* ----- network health ----- */
 S.nh=S.nh||"";
+Object.assign(L.en,{nhTry:"Connecting…"});Object.assign(L.hi,{nhTry:"जुड़ रहे हैं…"});
 async function checkNet(){if(!S.addr)return;var n=N(),t0=Date.now(),st;
- try{await Promise.race([rpc(n.rpc,"eth_blockNumber",[]),new Promise(function(_,rj){setTimeout(function(){rj(new Error("slow"))},8000)})]);st=(Date.now()-t0)<2500?"ok":"slow"}catch(e){st=(Date.now()-t0)>=7900?"slow":"down"}
+ /* never open on a red warning: show "connecting" until a real answer arrives */
+ if(S.nh!=="ok"&&S.nh!=="slow"){if(S.nh!=="trying"){S.nh="trying";if(safeRerender())render()}}
+ try{await Promise.race([rpcFast(n.rpc,"eth_blockNumber",[],4000),new Promise(function(_,rj){setTimeout(function(){rj(new Error("slow"))},14000)})]);st=(Date.now()-t0)<2500?"ok":"slow"}catch(e){st=(Date.now()-t0)>=13900?"slow":"down"}
+ /* one quiet retry before we tell anyone the network is gone */
+ if(st==="down"){await new Promise(function(r){setTimeout(r,3000)});t0=Date.now();try{await rpcFast(n.rpc,"eth_blockNumber",[],4000);st="slow"}catch(e){st="down"}}
  if(st!==S.nh){S.nh=st;if(safeRerender())render()}}
-function nhChip(){if(!S.nh)return "";var k=S.nh==="ok"?"nhOk":S.nh==="slow"?"nhSlow":"nhDown";return '<span class="nh '+S.nh+'"><i></i>'+esc(t(k))+'</span>'}
+function nhChip(){if(!S.nh)return "";var k=S.nh==="ok"?"nhOk":S.nh==="slow"?"nhSlow":S.nh==="trying"?"nhTry":"nhDown";return '<span class="nh '+S.nh+'"><i></i>'+esc(t(k))+'</span>'}
 setInterval(function(){if(!document.hidden)checkNet()},60000);setTimeout(checkNet,1500);
 
 /* ----- home cards ----- */
