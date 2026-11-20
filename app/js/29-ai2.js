@@ -13,11 +13,11 @@ AI_SVG='<svg width="46" height="46" viewBox="0 0 64 64" fill="none" xmlns="http:
  '<linearGradient id="tzaiG2" x1="32" y1="2" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FDE047"/><stop offset="1" stop-color="#F59E0B"/></linearGradient>'+
  '<radialGradient id="tzaiG3" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) scale(4)"><stop stop-color="#fff"/><stop offset="1" stop-color="#A5F3FC"/></radialGradient></defs>'+
  '<ellipse cx="32" cy="58" rx="17" ry="3.2" fill="#000" opacity=".18"/>'+
- '<path d="M32 13V7.5" stroke="#0B1D3A" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="6" r="4" fill="url(#tzaiG2)"/><circle cx="30.8" cy="4.8" r="1.2" fill="#fff" opacity=".8"/>'+
+ '<path d="M32 13V7.5" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="6" r="4" fill="url(#tzaiG2)"/><circle cx="30.8" cy="4.8" r="1.2" fill="#fff" opacity=".8"/>'+
  '<rect x="4.5" y="27" width="6" height="14" rx="3" fill="#0EA5E9"/><rect x="53.5" y="27" width="6" height="14" rx="3" fill="#0EA5E9"/>'+
  '<rect x="9" y="13" width="46" height="41" rx="15" fill="url(#tzaiG1)"/>'+
  '<path d="M17 17.5c4-2.6 9.5-3.4 15-3.4s11 .8 15 3.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".45"/>'+
- '<rect x="15" y="22" width="34" height="24" rx="10" fill="#0B1D3A"/>'+
+ '<rect x="15" y="22" width="34" height="24" rx="10" fill="#000000"/>'+
  '<g transform="translate(24.5 32)"><rect x="-3.2" y="-4.6" width="6.4" height="9.2" rx="3.2" fill="url(#tzaiG3)"/></g>'+
  '<g transform="translate(39.5 32)"><rect x="-3.2" y="-4.6" width="6.4" height="9.2" rx="3.2" fill="url(#tzaiG3)"/></g>'+
  '<path d="M27 40.2c3 2.2 7 2.2 10 0" stroke="#5BE88A" stroke-width="2.4" stroke-linecap="round"/>'+

@@ -1,5 +1,5 @@
 /* Opening animation (splash). Edit the look here. Markup lives in index.html (#splash). */
-#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 44%,#14336A 0%,#0B1D3A 46%,#060F22 100%);transition:opacity .5s ease,transform .5s ease;overflow:hidden}
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 44%,#303030 0%,#000000 46%,#0E0E0E 100%);transition:opacity .5s ease,transform .5s ease;overflow:hidden}
 #splash.out{opacity:0;transform:scale(1.06);pointer-events:none}
 .sp-glow{position:absolute;width:420px;height:420px;border-radius:50%;left:50%;top:44%;transform:translate(-50%,-50%) scale(.6);background:radial-gradient(circle,rgba(55,222,100,.38),rgba(55,222,100,0) 65%);opacity:0;animation:spGlow 1.1s ease-out .05s forwards}
 .sp-logo{width:132px;height:132px;position:relative;margin-top:-30px}.sp-svg{width:100%;height:100%;overflow:visible}
@@ -20,7 +20,7 @@
 @keyframes spRing{0%{opacity:.75;transform:scale(.72)}100%{opacity:0;transform:scale(1.35)}}
 @keyframes spL{to{opacity:1;transform:none}}
 @keyframes spT{to{opacity:1}}
-.sp-glow{background:radial-gradient(circle,rgba(96,140,255,.22),rgba(96,140,255,0) 65%)!important;width:520px!important;height:520px!important}
+.sp-glow{background:radial-gradient(circle,rgba(76,240,122,.22),rgba(76,240,122,0) 65%)!important;width:520px!important;height:520px!important}
 .sp-logo{width:196px!important;height:196px!important;margin-top:-40px}
 .sp-tile{opacity:0;transform-origin:512px 512px;transform-box:view-box;animation:spTile .6s cubic-bezier(.2,1.2,.4,1) .9s forwards}
 .sp-svg{filter:drop-shadow(0 24px 50px rgba(0,0,0,.55))}

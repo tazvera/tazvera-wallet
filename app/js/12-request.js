@@ -10,4 +10,4 @@ function reqHTML(){var n=N(),k=tokens().find(function(x){return x.id===REQ.tok})
  '<div class="lbl2">'+esc(t("reqS"))+'</div><div class="box amtbox"><div class="amtin"><input id="rAmt" inputmode="decimal" placeholder="0" value="'+esc(REQ.amt)+'"><span>'+esc(k.sym)+'</span></div></div>'+
  '<div class="qrc" style="margin-top:14px"><div class="qr"><div id="qrbox"></div><img class="l" src="'+LOGO+'" alt=""></div><div class="note2">'+esc(t("reqNote"))+'</div></div>'+
  '<div class="two" style="grid-template-columns:1fr"><button class="b2 g" data-rshare="1">'+ic("share",19)+esc(t("shareReq"))+'</button></div>'}
-function drawReqQR(){var b=$("qrbox");if(!b)return;b.innerHTML="";try{new QRCode(b,{text:reqURI(),width:212,height:212,colorDark:"#0B1D3A",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})}catch(e){}}
+function drawReqQR(){var b=$("qrbox");if(!b)return;b.innerHTML="";try{new QRCode(b,{text:reqURI(),width:212,height:212,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})}catch(e){}}
