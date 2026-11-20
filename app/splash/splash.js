@@ -1,4 +1,4 @@
-/* Tazvera wallet · 05-splash.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · splash.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* Opening animation: shown once when the app opens, never blocks the app, skipped with a tap or "reduce motion". */
 (function(){var sp=document.getElementById("splash");if(!sp)return;
