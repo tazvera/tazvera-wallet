@@ -1,7 +1,7 @@
 /* Tazvera wallet · styles · MIT License */
-:root{--bg:#F5F7FA;--card:#fff;--tx:#0B1D3A;--mu:#56637A;--line:#E8ECF2;--soft:#F1F4F8;--green:#008055;--greenTx:#fff;--pill:#E7F6EE;--red:#D93A3A;--redSoft:#FDECEC;--hero1:#0B1D3A;--hero2:#16335F;--hero3:#1B4A70;--sh:0 1px 2px rgba(11,29,58,.04),0 4px 14px rgba(11,29,58,.05);--nav:rgba(255,255,255,.78);--navB:rgba(11,29,58,.08);--navI:#5E6B80;color-scheme:light}
 
-html[data-theme=dark]{--bg:#0B0E13;--card:#151A22;--tx:#F2F5F9;--mu:#8C96A8;--line:#222935;--soft:#1C222C;--green:#37DE64;--greenTx:#06210F;--pill:rgba(55,222,100,.14);--red:#FF6B6B;--redSoft:rgba(255,107,107,.12);--hero1:#16263F;--hero2:#12202F;--hero3:#0F1A24;--sh:none;--nav:rgba(28,34,44,.78);--navB:rgba(255,255,255,.08);--navI:#8C96A8;color-scheme:dark}
+
+
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:Poppins,system-ui,sans-serif}
