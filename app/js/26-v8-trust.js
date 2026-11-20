@@ -22,7 +22,7 @@ Object.assign(L.hi,{ver:"सत्यापित",unv:"सत्यापित
  exitT:"Tazvera से बाहर जाएँ?",exitS:"आपका वॉलेट इसी फ़ोन में सुरक्षित रहेगा।",exitY:"हाँ, बाहर जाएँ",exitN:"रुकें"});
 
 /* ----- token badges ----- */
-function isVer(k){return !!k&&(k.id==="native"||k.id==="tzt"||k.id==="tzv")}
+function isVer(k){return !!k&&(k.id==="native"||k.id==="tzt"||k.id==="tzv"||!!k.curated)}
 function tokBadge(k){if(isVer(k))return ' <span class="vb" title="'+esc(t("ver"))+'">'+ic("check",10,3.2)+'</span>';if(k&&k.custom)return ' <span class="ub">⚠ '+esc(t("unv"))+'</span>';return ""}
 
 /* ----- safe re-render: only on the main Home screen, never over the lock screen ----- */
