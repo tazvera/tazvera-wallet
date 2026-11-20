@@ -6,7 +6,7 @@ setLang(q==="hi"||q==="en"?q:(saved||"en"));
 var hd=document.querySelector("header");function sc(){hd.classList.toggle("scr",scrollY>10)}addEventListener("scroll",sc,{passive:true});sc();
 var ab=document.getElementById("adBar");if(ab&&Date.now()>Date.UTC(2026,10,15,18,30))ab.remove();
 document.getElementById("langBtn").onclick=function(){setLang(document.documentElement.lang==="hi"?"en":"hi")};
-function toast(t){var d=document.createElement("div");d.textContent=t;d.style.cssText="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#0B1D3A;color:#fff;padding:12px 18px;border-radius:14px;font:600 14px Poppins,sans-serif;z-index:99";document.body.appendChild(d);setTimeout(function(){d.remove()},2200)}
+function toast(t){var d=document.createElement("div");d.textContent=t;d.style.cssText="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#000000;color:#fff;padding:12px 18px;border-radius:14px;font:600 14px Poppins,sans-serif;z-index:99";document.body.appendChild(d);setTimeout(function(){d.remove()},2200)}
 var hi=function(){return document.documentElement.lang==="hi"};
 document.querySelector("[data-copy]").onclick=function(){try{navigator.clipboard.writeText(CA);toast(hi()?"पता कॉपी हो गया":"Address copied")}catch(e){}};
 document.querySelector("[data-mm]").onclick=async function(){var eth=window.ethereum;if(!eth){toast(hi()?"MetaMask नहीं मिला। कंप्यूटर पर MetaMask के साथ खोलिए।":"MetaMask not found. Open on a computer with MetaMask.");return}
