@@ -45,7 +45,7 @@ The app (Version 9) is plain HTML, CSS and JavaScript. No framework and no build
 | `app/js/features/` | One file per feature (load in the order listed in `index.html`): `currency`, `chart`, `quiz`, `strong-lock`, `lock-screen-fingerprint`, `sounds`, `send-safety`, `pin-wait`, `idle-lock`, `backup-check`, `pin-change-wallets`, `session-and-copy`, `offline-theme-mainnet`, `qr-network-privacy`, `bottom-bar-assistant-icon` |
 | `app/js/27-ai.js` | Tazvera Assistant (chat + voice) |
 | `app/js/29-ai2.js` | Assistant 2.0: private wallet answers, chat history, one-tap buttons |
-| `app/js/05-splash.js` | Opening animation |
+| `app/splash/splash.js` + `splash.css` | Opening animation (its own folder) |
 | `app/js/28-backup.js` | Encrypted wallet backup file |
 | `app/js/30-render-boot.js` | Screen switching and app start |
 | `sw.js` | Lets the installed app open without internet (always uses the newest files when online) |
