@@ -6,4 +6,4 @@
  var tag=document.getElementById("spTag");if(tag&&lang==="hi")tag.textContent="आपकी चाबी · आपका क्रिप्टो";
  var done=false;function out(){if(done)return;done=true;sp.classList.add("out");setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp)},520)}
  var calm=false;try{calm=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)}catch(e){}if(calm)sp.classList.add("calm");
- sp.addEventListener("pointerdown",out);setTimeout(out,calm?1400:2250)})();
+ sp.addEventListener("pointerdown",out);setTimeout(out,calm?1400:2700)})();
