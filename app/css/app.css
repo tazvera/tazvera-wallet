@@ -1,7 +1,7 @@
 /* Tazvera wallet · styles · MIT License */
-:root{--bg:#F5F7FA;--card:#fff;--tx:#0B1D3A;--mu:#56637A;--line:#E8ECF2;--soft:#F1F4F8;--green:#008055;--greenTx:#fff;--pill:#E7F6EE;--red:#D93A3A;--redSoft:#FDECEC;--hero1:#0B1D3A;--hero2:#16335F;--hero3:#1B4A70;--sh:0 1px 2px rgba(11,29,58,.04),0 4px 14px rgba(11,29,58,.05);--nav:rgba(255,255,255,.78);--navB:rgba(11,29,58,.08);--navI:#5E6B80;color-scheme:light}
+:root{--bg:#F5F7FA;--card:#fff;--tx:#000000;--mu:#5B6370;--line:#E8ECF2;--soft:#F1F4F8;--green:#008055;--greenTx:#fff;--pill:#E7F6EE;--red:#D93A3A;--redSoft:#FDECEC;--hero1:#000000;--hero2:#0E2A17;--hero3:#0F3D20;--sh:0 1px 2px rgba(11,29,58,.04),0 4px 14px rgba(11,29,58,.05);--nav:rgba(255,255,255,.78);--navB:rgba(11,29,58,.08);--navI:#6B7280;color-scheme:light}
 
-html[data-theme=dark]{--bg:#0B0E13;--card:#151A22;--tx:#F2F5F9;--mu:#8C96A8;--line:#222935;--soft:#1C222C;--green:#37DE64;--greenTx:#06210F;--pill:rgba(55,222,100,.14);--red:#FF6B6B;--redSoft:rgba(255,107,107,.12);--hero1:#16263F;--hero2:#12202F;--hero3:#0F1A24;--sh:none;--nav:rgba(28,34,44,.78);--navB:rgba(255,255,255,.08);--navI:#8C96A8;color-scheme:dark}
+html[data-theme=dark]{--bg:#0B0E13;--card:#151A22;--tx:#F2F5F9;--mu:#8C96A8;--line:#222935;--soft:#1C211D;--green:#37DE64;--greenTx:#06210F;--pill:rgba(55,222,100,.14);--red:#FF6B6B;--redSoft:rgba(255,107,107,.12);--hero1:#0B2014;--hero2:#0A1A10;--hero3:#07140C;--sh:none;--nav:rgba(28,34,44,.78);--navB:rgba(255,255,255,.08);--navI:#8C96A8;color-scheme:dark}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:Poppins,system-ui,sans-serif}
@@ -25,7 +25,7 @@ to{opacity:1;transform:none}
 .who small{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--mu);font-weight:500}
 
 .ib{width:42px;height:42px;border-radius:14px;background:var(--card);box-shadow:var(--sh);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--tx)}
-.ib.navy{background:linear-gradient(145deg,#16335F,#0B1D3A);border:0}
+.ib.navy{background:linear-gradient(145deg,#0E2A17,#000000);border:0}
 
 .hero{margin:14px 20px 0;border-radius:24px;padding:18px 20px 16px;background:linear-gradient(150deg,var(--hero1) 0%,var(--hero2) 60%,var(--hero3) 100%);color:#fff;position:relative;overflow:hidden}
 
@@ -248,7 +248,7 @@ html[data-theme=dark] .sc.warn{background:#2A2110;color:#FCD34D}
 .up2{color:var(--green)!important}
 .dn2{color:var(--red)!important}
 
-.wc{margin:14px 20px 0;border-radius:22px;padding:16px;background:linear-gradient(150deg,#0B1D3A,#16335F);color:#fff;display:flex;align-items:center;gap:12px;width:calc(100% - 40px);text-align:left}
+.wc{margin:14px 20px 0;border-radius:22px;padding:16px;background:linear-gradient(150deg,#000000,#0E2A17);color:#fff;display:flex;align-items:center;gap:12px;width:calc(100% - 40px);text-align:left}
 .wc img{width:44px;height:44px;border-radius:13px}
 .wc b{display:block;font-size:16px}
 .wc small{font-size:12.5px;color:rgba(255,255,255,.72)}
@@ -368,7 +368,7 @@ html[data-theme=dark] .aifab{box-shadow:none!important}
 .netp .tav{width:100%;height:100%;font-size:18px;background:var(--card)}
 
 /* ---- opening animation ---- */
-#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 44%,#14336A 0%,#0B1D3A 46%,#060F22 100%);transition:opacity .5s ease,transform .5s ease;overflow:hidden}
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 44%,#0E2A17 0%,#000000 46%,#000000 100%);transition:opacity .5s ease,transform .5s ease;overflow:hidden}
 #splash.out{opacity:0;transform:scale(1.06);pointer-events:none}
 .sp-glow{position:absolute;width:420px;height:420px;border-radius:50%;left:50%;top:44%;transform:translate(-50%,-50%) scale(.6);background:radial-gradient(circle,rgba(55,222,100,.38),rgba(55,222,100,0) 65%);opacity:0;animation:spGlow 1.1s ease-out .05s forwards}
 .sp-logo{width:132px;height:132px;position:relative;margin-top:-30px}.sp-svg{width:100%;height:100%;overflow:visible}
@@ -408,7 +408,7 @@ html[data-theme=dark] .aifab{box-shadow:none!important}
 .chhl{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--mu)}.chhl b{color:var(--tx)}
 
 /* ---- crypto quiz ---- */
-.qzc{display:flex;align-items:center;gap:12px;width:calc(100% - 40px);margin:14px 20px 0;padding:14px;border-radius:18px;background:linear-gradient(135deg,#0B1D3A,#1E3A6E);color:#fff;text-align:left}
+.qzc{display:flex;align-items:center;gap:12px;width:calc(100% - 40px);margin:14px 20px 0;padding:14px;border-radius:18px;background:linear-gradient(135deg,#000000,#1E3A6E);color:#fff;text-align:left}
 .qzc span{font-size:28px}.qzc div{flex:1}.qzc b{display:block;font-size:16px}.qzc small{display:block;color:#C7D2FE;font-size:12.5px}
 .qzbar{height:6px;border-radius:4px;background:var(--line);margin-top:10px;overflow:hidden}.qzbar i{display:block;height:100%;background:var(--green);border-radius:4px}
 .qzq{font-size:17px;font-weight:600;line-height:1.45;margin:14px 2px 10px}
@@ -428,7 +428,7 @@ html[data-theme=dark] .aifab{box-shadow:none!important}
 .aim{display:flex;gap:8px;align-items:flex-end;margin:10px 8px}.aim.u{justify-content:flex-end}
 .aiav{width:28px;height:28px;flex-shrink:0}.aiav svg{width:28px;height:28px}
 .aiw{max-width:82%}.aib{padding:10px 13px;border-radius:18px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;background:var(--card);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.06);border-bottom-left-radius:6px}
-.aim.u .aib{background:linear-gradient(135deg,#0B1D3A,#1E3A6E);color:#fff;border-bottom-left-radius:18px;border-bottom-right-radius:6px}
+.aim.u .aib{background:linear-gradient(135deg,#000000,#1E3A6E);color:#fff;border-bottom-left-radius:18px;border-bottom-right-radius:6px}
 html[data-theme=dark] .aim.u .aib{background:linear-gradient(135deg,#14C8A8,#0EA5E9);color:#04210F}
 .aib.e{color:var(--red,#DC2626)}
 .aiacts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.aiacts button{padding:7px 12px;border-radius:999px;background:linear-gradient(135deg,rgba(91,232,138,.18),rgba(14,165,233,.18));border:1px solid rgba(20,200,168,.45);color:var(--tx);font-size:13px;font-weight:700}
