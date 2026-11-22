@@ -79,7 +79,7 @@ function makeContext() {
 const FILES = [
   "app/js/features/networks.js", "app/js/00-config.js", "app/js/01-i18n.js", "app/js/02-core.js", "app/js/10-send.js",
   "app/js/20-faucet-security.js", "app/js/22-wallets-help-backup.js",
-  "app/js/26-v8-trust.js", "app/js/28-backup.js", "app/js/features/pin-change-wallets.js", "app/js/features/browser.js",
+  "app/js/26-v8-trust.js", "app/js/28-backup.js", "app/js/features/pin-change-wallets.js", "app/js/features/browser.js", "app/js/features/signing.js",
 ];
 const ctx = makeContext();
 /* a few files wrap a function that another file defines (createFlow lives in 13-lock-onboarding,
@@ -295,6 +295,89 @@ if (fs.existsSync(marketFile)) {
      Object.values(out).every(c => typeof c.inr_24h_change === "number" && typeof c.usd_24h_change === "number"), true);
   eq("no exchange and no CoinGecko means the row is dropped", m._shape([{}, {}], {}, 88).dogecoin, undefined);
 }
+
+/* ------------------------------------------------------------------ 7. five checks we were missing */
+/* Taken from a second review's suite: QR parsing, the assistant refusing recovery phrases, the
+   server guard's origin check, the quiz data, and a scan for secrets in the source. */
+function grabFn(file, name) {
+  const src = fs.readFileSync(path.join(ROOT, file), "utf8");
+  const start = src.indexOf("function " + name + "(");
+  if (start < 0) throw new Error(name + " not found in " + file);
+  let i = src.indexOf("{", start), depth = 0, q = null;
+  for (; i < src.length; i++) {
+    const c = src[i];
+    if (q) { if (c === "\\") i++; else if (c === q) q = null; continue; }
+    if (c === '"' || c === "'" || c === "`") { q = c; continue; }
+    if (c === "{") depth++; else if (c === "}") { depth--; if (depth === 0) { i++; break; } }
+  }
+  return src.slice(start, i);
+}
+function runAlone(parts, extra) {
+  const c = vm.createContext(Object.assign({ console, URLSearchParams }, extra || {}));
+  vm.runInContext(parts.join("\n"), c);
+  return c;
+}
+
+/* --- QR codes: what the scanner accepts --- */
+try {
+  const qr = runAlone(
+    [grabFn("app/js/11-scan.js", "qrWei"), grabFn("app/js/11-scan.js", "qrAmt"), grabFn("app/js/11-scan.js", "parseQR")],
+    { N: () => ({ tzt: "0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0", tzv: "0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73" }), t: k => k,
+      ethers: { formatUnits: (w, d) => { w = BigInt(w); d = d || 18; const x = w.toString().padStart(d + 1, "0");
+        const i = x.slice(0, x.length - d), fr = x.slice(x.length - d).replace(/0+$/, ""); return fr ? i + "." + fr : i; } } });
+  const A = "0x1234567890abcdef1234567890abcdef12345678";
+  eq("QR: a plain address is read", qr.parseQR(A) && qr.parseQR(A).to, A);
+  eq("QR: a private key is not an address", qr.parseQR("0x" + "ab".repeat(32)), null);
+  eq("QR: text with an address inside is refused", qr.parseQR("hello " + A + " world"), null);
+  ok("QR: an ethereum: link is understood", !!(qr.parseQR("ethereum:" + A + "@8118?value=2.5e18")));
+} catch (e) { ok("QR tests ran", false, e.message) }
+
+/* --- the assistant must refuse anything that looks like a secret --- */
+try {
+  const twelve = "abandon ability able about above absent absorb abstract absurd abuse access accident";
+  const BIP = {}; twelve.split(" ").forEach(w => { BIP[w] = 1 });
+  const ai = runAlone([grabFn("app/js/27-ai.js", "nearSeed"), grabFn("app/js/27-ai.js", "aiSecret")], { BIP });
+  eq("assistant: 12 recovery words are blocked", ai.aiSecret(twelve), true);
+  eq("assistant: a 64-character key is blocked", ai.aiSecret("0x" + "ab".repeat(32)), true);
+  eq("assistant: a long Hinglish question is allowed", ai.aiSecret("mera wallet kaise banaye aur paise kaise bheje mujhe samajh nahi aata please batao jaldi"), false);
+} catch (e) { ok("assistant tests ran", false, e.message) }
+
+/* --- the server guard: only our own app may call the paid endpoints --- */
+try {
+  const guard = require(path.join(ROOT, "lib/guard.js"));
+  const mk = (m, h) => ({ method: m, headers: h, socket: { remoteAddress: "9.9.9.9" } });
+  eq("guard: a script with no browser headers is refused", guard.originOk(mk("POST", { host: "app.tazvera.com" })), false);
+  eq("guard: another website is refused", guard.originOk(mk("POST", { host: "app.tazvera.com", "sec-fetch-site": "cross-site" })), false);
+  eq("guard: our own app is allowed", guard.originOk(mk("POST", { host: "app.tazvera.com", "sec-fetch-site": "same-origin" })), true);
+} catch (e) { ok("guard tests ran", false, e.message) }
+
+/* --- the quiz: ten questions, both languages, a valid answer each --- */
+try {
+  const src = fs.readFileSync(path.join(ROOT, "app/js/features/quiz.js"), "utf8");
+  const a = src.indexOf("var QZ=["), b = src.indexOf("];", a) + 2;
+  const QZ = runAlone([src.slice(a, b)]).QZ;
+  eq("quiz: ten questions", QZ.length, 10);
+  ok("quiz: every question has 3 options, a valid answer and both languages",
+     QZ.every(q => ["en", "hi"].every(l => q[l] && q[l][0] && q[l][1].length === 3 && q[l][2] >= 0 && q[l][2] <= 2 && q[l][3])));
+} catch (e) { ok("quiz tests ran", false, e.message) }
+
+/* --- no secrets committed to the source --- */
+try {
+  const bad = [];
+  (function walk(d) {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      if (["node_modules", ".git", "contracts"].includes(e.name)) continue;
+      const p = path.join(d, e.name);
+      if (e.isDirectory()) { walk(p); continue; }
+      if (e.name === ".env") { bad.push(p); continue; }
+      if (!/\.(js|json|html|md|yml|txt)$/.test(e.name)) continue;
+      if (/ethers\.min\.js|jsqr\.js|qrcode\.min\.js|package-lock/.test(e.name)) continue;
+      const t = fs.readFileSync(p, "utf8");
+      if (/AIza[0-9A-Za-z_-]{30,}/.test(t) || /(private ?key|PRIVATE_KEY)\s*[:=]\s*["']?0x[0-9a-fA-F]{64}/.test(t)) bad.push(p);
+    }
+  })(ROOT);
+  ok("no private key, Google key or .env file in the source", bad.length === 0, bad.join(", "));
+} catch (e) { ok("secret scan ran", false, e.message) }
 
 /* ------------------------------------------------------------------ report */
 console.log(`\n${pass} passed, ${fail} failed  (${loaded.length}/${FILES.length} modules loaded)\n`);
