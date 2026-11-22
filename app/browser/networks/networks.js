@@ -1,4 +1,4 @@
-/* Tazvera wallet · app/js/features/networks.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · app/browser/networks/networks.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* Everything about networks lives here. To add a chain, add one entry to NETS and, if it needs a
    second node, one line to RPCB in features/send-safety.js. Nothing else has to be touched. */

@@ -1,11 +1,16 @@
 /* Tazvera wallet · 25-settings.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
+/* PIN and strong-lock rows show on every device. They are live only for a Tazvera wallet made in this app;
+   on a device without one, the row says so and explains what to do, instead of disappearing. */
+Object.assign(L.en,{pinNeedW:"Create a Tazvera wallet first. The PIN and password protect that wallet."});
+Object.assign(L.hi,{pinNeedW:"पहले Tazvera वॉलेट बनाइए। PIN और पासवर्ड उसी वॉलेट पर लगते हैं।"});
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-needw]");if(b)toast(t("pinNeedW"))});
 /* ---------- SETTINGS ---------- */
 function setHTML(){var th=raw("tz_theme","");var thL=th==="dark"?t("dark"):th==="light"?t("light"):t("auto");var c=checks(),n=c.filter(function(x){return x.ok}).length;
  function r(icn,label,right,attr){return '<button class="srow" '+attr+'><span class="si">'+ic(icn,19)+'</span><b>'+esc(label)+'</b>'+right+'</button>'}
  var chev=ic("right",18),nw=S.mode==="inapp"?wList().length:0;
  return '<div class="tb"><button class="ib" data-tab="home" aria-label="back">'+ic("back",20)+'</button><b>'+esc(t("set"))+'</b></div><button class="wc" '+(S.mode==="inapp"?'data-wsheet="1"':'data-copy="1"')+'><img src="'+LOGO+'" alt=""><div style="flex:1"><b>'+esc(wName())+'</b><small>'+esc(sh(S.addr))+(S.mode==="mm"?" · "+esc(t("mmOnly")):(nw>1?" · "+nw+" "+esc(t("wallets")).toLowerCase():""))+'</small></div>'+ic(S.mode==="inapp"?"right":"copy",18)+'</button>'+
- '<div class="card" style="margin-top:14px">'+r("act",t("act"),chev,'data-tab="act"')+'</div>'+'<div class="day">'+esc(t("sec"))+'</div><div class="card">'+r("shield",t("chkT"),'<em style="color:'+(n===c.length?'var(--green)':'#B45309')+';font-weight:600">'+n+'/'+c.length+'</em>'+chev,'data-tab="chk"')+(S.mode==="inapp"?r("lock",t("pinFp"),chev,'data-pinsheet="1"')+r("key",t("slT"),'<em>'+esc(passOn()?t("slOn"):t("slOff"))+'</em>'+chev,'data-slock="1"')+r("key",t("words12"),chev,'data-words="1"'):'')+'</div>'+
+ '<div class="card" style="margin-top:14px">'+r("act",t("act"),chev,'data-tab="act"')+'</div>'+'<div class="day">'+esc(t("sec"))+'</div><div class="card">'+r("shield",t("chkT"),'<em style="color:'+(n===c.length?'var(--green)':'var(--tx)')+';font-weight:600">'+n+'/'+c.length+'</em>'+chev,'data-tab="chk"')+(S.mode==="inapp"?r("lock",t("pinFp"),chev,'data-pinsheet="1"')+r("key",t("slT"),'<em>'+esc(passOn()?t("slOn"):t("slOff"))+'</em>'+chev,'data-slock="1"')+r("key",t("words12"),chev,'data-words="1"'):r("lock",t("pinFp"),'<em>'+esc(t("pinNeedW"))+'</em>'+chev,'data-needw="1"')+r("key",t("slT"),'<em>'+esc(t("pinNeedW"))+'</em>'+chev,'data-needw="1"'))+'</div>'+
  '<div class="day">'+esc(t("pref"))+'</div><div class="card">'+r("globe",t("network"),'<em>'+esc(N().name)+'</em>'+chev,'data-net="1"')+r("lang",t("lang"),'<em>'+(S.lang==="hi"?"हिंदी":"English")+'</em>'+chev,'data-lang="1"')+r("conv",t("curT"),'<em>'+(curC()==="usd"?"$ USD":"₹ INR")+'</em>'+chev,'data-curset="1"')+r("moon",t("theme"),'<em>'+esc(thL)+'</em>'+chev,'data-thm="1"')+r("bell",t("notif"),'<span class="sw'+(notifOn()?" on":"")+'"></span>','data-notif="1"')+r("bell",t("sndT"),'<span class="sw'+(sndOn()?" on":"")+'"></span>','data-sndsw="1"')+'</div>'+
  '<div class="day">'+esc(t("dataHelp"))+'</div><div class="card">'+r("dl",t("bkupT"),chev,'data-bk="1"')+r("help",t("helpC"),chev,'data-tab="helpc"')+r("info",t("aboutT"),'<em>v9</em>'+chev,'data-about="1"')+'</div>'+
  '<div class="ver">Tazvera · Version 9</div>'}

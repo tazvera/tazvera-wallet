@@ -17,7 +17,7 @@ var AI_TX={en:{name:"Tazvera Assistant",hi:"Hello! I am the Tazvera Assistant. A
  listen:"सुनें ▶",stopb:"रोकें ■",eVoice:"आवाज़ उपलब्ध नहीं",copy:"कॉपी",copied:"कॉपी हो गया",share:"शेयर",like:"अच्छा जवाब",dislike:"खराब जवाब",again:"दोबारा",
  q:["पैसे कैसे भेजें?","नेटवर्क फ़ीस क्या है?","12 शब्द क्या हैं?","TZV क्या है?"]}};
 var AI_T={};function aiLang(){var L2=(S.lang==="hi")?"hi":"en";var src=AI_TX[L2];for(var k in src)AI_T[k]=src[k]}aiLang();
-var AI_SVG='<svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 30C14 19 22 10 32 10C42 10 50 19 50 30" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="8" y="26" width="6" height="15" rx="3" fill="#38BDF8"/><rect x="50" y="26" width="6" height="15" rx="3" fill="#38BDF8"/><path d="M52 38L44 48H36" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="35" cy="48" r="2.5" fill="#F59E0B"/><rect x="16" y="18" width="32" height="28" rx="9" fill="#282828" stroke="#38BDF8" stroke-width="2"/><circle cx="26" cy="28" r="3" fill="#38BDF8"/><circle cx="38" cy="28" r="3" fill="#38BDF8"/><line x1="26" y1="37" x2="38" y2="37" stroke="#64748B" stroke-width="2" stroke-linecap="round"/></svg>';
+var AI_SVG='<svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 30C14 19 22 10 32 10C42 10 50 19 50 30" stroke="#8C96A8" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="8" y="26" width="6" height="15" rx="3" fill="#4CF07A"/><rect x="50" y="26" width="6" height="15" rx="3" fill="#4CF07A"/><path d="M52 38L44 48H36" stroke="#4CF07A" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="35" cy="48" r="2.5" fill="#4CF07A"/><rect x="16" y="18" width="32" height="28" rx="9" fill="#282828" stroke="#4CF07A" stroke-width="2"/><circle cx="26" cy="28" r="3" fill="#4CF07A"/><circle cx="38" cy="28" r="3" fill="#4CF07A"/><line x1="26" y1="37" x2="38" y2="37" stroke="#5B6370" stroke-width="2" stroke-linecap="round"/></svg>';
 /* same test as the server: 12+ plain words in a row, or 64 hex characters */
 var BIP={};try{var WL=ethers.wordlists.en;for(var bi=0;bi<2048;bi++)BIP[WL.getWord(bi)]=1}catch(e){BIP=null}
 /* true only for 12+ words in a row from the real 12-word list (BIP39), or a 64-character private key; normal long questions in Hinglish pass */
@@ -87,7 +87,7 @@ function aiBtn(d,text){if(!d)return;
  /* like / dislike: only a mark on this phone, nothing is sent and nothing is saved */
  var up=mk("like",AI_T.like),dn=mk("dislike",AI_T.dislike);
  function mark(on,off,col){var was=on.getAttribute("aria-pressed")==="true";on.setAttribute("aria-pressed",!was);on.style.color=was?"var(--tx)":col;on.style.background=was?"var(--soft)":"var(--card)";off.setAttribute("aria-pressed","false");off.style.color="var(--tx)";off.style.background="var(--soft)"}
- up.onclick=function(){mark(up,dn,"var(--green)")};dn.onclick=function(){mark(dn,up,"var(--red,#DC2626)")};row.appendChild(up);row.appendChild(dn);
+ up.onclick=function(){mark(up,dn,"var(--green)")};dn.onclick=function(){mark(dn,up,"var(--red,#000000)")};row.appendChild(up);row.appendChild(dn);
  var rf=mk("again",AI_T.again);rf.setAttribute("data-airf","1");rf.onclick=function(){aiRegen(d)};row.appendChild(rf);
  [].forEach.call(document.querySelectorAll("#aiLog [data-airf]"),function(o){if(o!==rf&&o.parentNode)o.parentNode.removeChild(o)});
  d.appendChild(row)}
@@ -101,15 +101,15 @@ function aiFab(){if(!AI_FLOAT)return;var f=document.getElementById("aiFab"),show
   f.onclick=aiSheet;document.body.appendChild(f);aiCheck(function(on){if(!on)f.style.display="none"})}
  else f.style.display=show&&AI.on!==false?"":"none"}
 function aiAdd(role,text,err){var log=document.getElementById("aiLog");if(!log)return null;var d=document.createElement("div");
- d.style.cssText="max-width:86%;margin:8px 0;padding:10px 13px;border-radius:16px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;"+(role==="user"?"margin-left:auto;background:var(--tx);color:var(--bg)":"background:var(--bg);color:"+(err?"var(--red,#DC2626)":"var(--tx)"));
+ d.style.cssText="max-width:86%;margin:8px 0;padding:10px 13px;border-radius:16px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;"+(role==="user"?"margin-left:auto;background:var(--tx);color:var(--bg)":"background:var(--bg);color:"+(err?"var(--red,#000000)":"var(--tx)"));
  d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 function aiAsk(text){text=String(text||"").trim().slice(0,500);if(!text||AI.busy)return;var inp=document.getElementById("aiIn");
  if(aiSecret(text)){aiAdd("model",AI_T.eSecret,true);if(inp)inp.value="";return}
  AI.msgs.push({role:"user",text:text});aiAdd("user",text);if(inp)inp.value="";AI.busy=true;var w=aiAdd("model",AI_T.think);
  fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:AI.msgs.slice(-8),lang:S.lang==="hi"?"hi":"en"})}).then(function(r){return r.json().then(function(j){return{s:r.status,j:j}})}).then(function(x){AI.busy=false;
   if(x.s===200&&x.j&&typeof x.j.text==="string"){AI.msgs.push({role:"model",text:x.j.text});if(w){w.textContent=x.j.text;aiBtn(w,x.j.text)}}
-  else{AI.msgs.pop();var m=x.s===503?AI_T.eOff:x.s===429?AI_T.eSlow:x.s===422?AI_T.eSecret:AI_T.eNet;if(w){w.textContent=m;w.style.color="var(--red,#DC2626)"}}
-  var log=document.getElementById("aiLog");if(log)log.scrollTop=log.scrollHeight}).catch(function(){AI.busy=false;AI.msgs.pop();if(w){w.textContent=AI_T.eNet;w.style.color="var(--red,#DC2626)"}})}
+  else{AI.msgs.pop();var m=x.s===503?AI_T.eOff:x.s===429?AI_T.eSlow:x.s===422?AI_T.eSecret:AI_T.eNet;if(w){w.textContent=m;w.style.color="var(--red,#000000)"}}
+  var log=document.getElementById("aiLog");if(log)log.scrollTop=log.scrollHeight}).catch(function(){AI.busy=false;AI.msgs.pop();if(w){w.textContent=AI_T.eNet;w.style.color="var(--red,#000000)"}})}
 function aiSheet(){aiLang();var chips=AI_T.q.map(function(q,i){return '<button data-aiq="'+i+'" style="padding:8px 12px;border-radius:16px;background:var(--soft);font-size:13px;font-weight:600;color:var(--tx)">'+esc(q)+'</button>'}).join("");
  sheet('<div class="grab"></div><button class="ib" data-sx="1" aria-label="back" style="position:absolute;left:16px;top:14px">'+ic("back",20)+'</button><div class="sht">'+esc(AI_T.name)+'</div>'+
   '<div id="aiLog" style="height:min(46vh,360px);overflow-y:auto;padding:2px 2px 6px"></div>'+

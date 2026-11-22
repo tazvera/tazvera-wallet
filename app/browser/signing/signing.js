@@ -1,4 +1,4 @@
-/* Tazvera wallet · app/js/features/signing.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · app/browser/signing/signing.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* The signing sheet. This is the only door between a website and your keys: a site can ask, this
    screen decides, and nothing is signed anywhere else. Every request is shown as: who is asking,
@@ -21,7 +21,7 @@ function signSheet(req,cb){
   var n=N(),unl=!!r.unlimited&&r.action!=="connect";
   var rows=
     '<div class="srow"><span>'+esc(t("sgSite"))+'</span><b>'+esc(domain)+'</b></div>'+
-    '<div class="srow"><span>'+esc(t("sgGives"))+'</span><b'+(unl?' style="color:#FFD23F"':'')+'>'+esc(signGives(r))+'</b></div>'+
+    '<div class="srow"><span>'+esc(t("sgGives"))+'</span><b'+(unl?' style="color:#4CF07A"':'')+'>'+esc(signGives(r))+'</b></div>'+
     '<div class="srow"><span>'+esc(t("sgChain"))+'</span><b>'+esc(n.name)+'</b></div>'+
     (r.fee?('<div class="srow"><span>'+esc(t("sgFee"))+'</span><b>'+esc(r.fee)+'</b></div>'):'');
   var warn=unl?('<div class="sgwarn"><b>'+esc(t("sgUnlimited"))+'</b><span>'+esc(t("sgUnlimitedS"))+'</span></div>'):'';

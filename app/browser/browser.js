@@ -1,4 +1,4 @@
-/* Tazvera wallet · app/js/features/browser.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · app/browser/browser.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* The browser screen. Everything about it lives in this one file: the address bar, the start page,
    the shortcuts and the history. Opening a real site inside the app needs the Android shell; until

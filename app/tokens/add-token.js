@@ -1,4 +1,4 @@
-/* Tazvera wallet · app/js/features/add-token.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · app/tokens/add-token.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* Adding a token lives here on its own, so new token work never touches the rest of the app. */
 function addTokSheet(){sheet('<div class="grab"></div><div class="sht">'+esc(t("addTok"))+'</div><div class="note2">'+esc(N().name)+'</div>'+fld("tA",t("tokAddr"),"0x…","")+'<div class="err" id="tE" style="margin:8px 2px 0"></div><div style="margin-top:10px"><button class="btn" id="tGo">'+esc(t("tokFind"))+'</button></div>');

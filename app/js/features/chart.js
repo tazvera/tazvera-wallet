@@ -14,12 +14,12 @@ async function chData(sym,days){if(!CHID[sym])return null;var key=sym+"|"+days+"
 function chMode(){return raw("tz_chmode","line")==="candle"?"candle":"line"}
 var CW=340,CH=170,CP=6;
 function chLineSVG(p){var xs=p.map(function(x){return x[0]}),ys=p.map(function(x){return x[1]}),x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),lo=Math.min.apply(null,ys),hi=Math.max.apply(null,ys),sp=(hi-lo)||hi*0.01||1;
- var pts=p.map(function(q){return [CP+(q[0]-x0)/((x1-x0)||1)*(CW-2*CP),CP+(1-(q[1]-lo)/sp)*(CH-2*CP)]}),up=ys[ys.length-1]>=ys[0],col=up?"#00A86B":"#E5484D";
+ var pts=p.map(function(q){return [CP+(q[0]-x0)/((x1-x0)||1)*(CW-2*CP),CP+(1-(q[1]-lo)/sp)*(CH-2*CP)]}),up=ys[ys.length-1]>=ys[0],col=up?"#4CF07A":"#8C96A8";
  var line=pts.map(function(q,i){return (i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1)}).join(" "),area=line+" L"+(CW-CP)+" "+CH+" L"+CP+" "+CH+" Z",last=pts[pts.length-1];
  return '<svg viewBox="0 0 '+CW+' '+CH+'" class="chsvg" role="img" aria-label="'+esc(t("chT"))+'"><defs><linearGradient id="chg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+col+'" stop-opacity=".28"/><stop offset="1" stop-color="'+col+'" stop-opacity="0"/></linearGradient></defs><path d="'+area+'" fill="url(#chg)"/><path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="4.5" fill="'+col+'" stroke="var(--card)" stroke-width="2"/></svg>'}
 function chCandleSVG(k){var lo=Math.min.apply(null,k.map(function(x){return x[3]})),hi=Math.max.apply(null,k.map(function(x){return x[2]})),sp=(hi-lo)||hi*0.01||1,n=k.length,slot=(CW-2*CP)/n,bw=Math.max(2,Math.min(12,slot*0.62));
  function y(v){return CP+(1-(v-lo)/sp)*(CH-2*CP)}
- var g='';k.forEach(function(c,i){var up=c[4]>=c[1],col=up?"#00A86B":"#E5484D",cx=CP+slot*(i+.5),yo=y(c[1]),yc=y(c[4]),top=Math.min(yo,yc),h=Math.max(1.2,Math.abs(yc-yo));
+ var g='';k.forEach(function(c,i){var up=c[4]>=c[1],col=up?"#4CF07A":"#8C96A8",cx=CP+slot*(i+.5),yo=y(c[1]),yc=y(c[4]),top=Math.min(yo,yc),h=Math.max(1.2,Math.abs(yc-yo));
   g+='<line x1="'+cx.toFixed(1)+'" y1="'+y(c[2]).toFixed(1)+'" x2="'+cx.toFixed(1)+'" y2="'+y(c[3]).toFixed(1)+'" stroke="'+col+'" stroke-width="1.3"/><rect x="'+(cx-bw/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1" fill="'+col+'"/>'});
  return '<svg viewBox="0 0 '+CW+' '+CH+'" class="chsvg" role="img" aria-label="'+esc(t("chT"))+'">'+g+'</svg>'}
 async function chartSheet(sym,days){days=days||1;var name={SHM:"Shardeum",BTC:"Bitcoin",ETH:"Ethereum",BNB:"BNB",USDT:"Tether"}[sym]||sym;

@@ -13,7 +13,7 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-rel
 window.addEventListener("online",function(){if(!S.addr)return;toast(t("backOn"));S.balErr=false;load();checkNet()});
 window.addEventListener("offline",function(){S.nh="down";if(safeRerender())render()});
 /* phone status bar colour follows the theme; "Auto" follows the phone at once */
-(function(){var _th=theme;theme=function(){_th();try{var dark=document.documentElement.getAttribute("data-theme")==="dark",m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#0B0E13":"#F5F7FA")}catch(e){}};
+(function(){var _th=theme;theme=function(){_th();try{var dark=document.documentElement.getAttribute("data-theme")==="dark",m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#050805":"#F4F6F4")}catch(e){}};
  try{var mq=window.matchMedia("(prefers-color-scheme: dark)");var f=function(){if(!raw("tz_theme",""))theme()};if(mq.addEventListener)mq.addEventListener("change",f);else if(mq.addListener)mq.addListener(f)}catch(e){}
  theme()})();
 /* wrong-PIN wait: live countdown on any PIN screen */
