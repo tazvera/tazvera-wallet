@@ -1,7 +1,7 @@
 /* Tazvera wallet · 10-send.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* ---------- SEND ---------- */
-var COLORS=["#F59E0B,#EF4444","#6366F1,#06B6D4","#10B981,#84CC16","#EC4899,#8B5CF6"];
+var COLORS=["#4CF07A,#000000","#18923C,#4CF07A","#0F3D20,#4CF07A","#4CF07A,#000000"];
 function contacts(){var c=ls("contacts",[]);return Array.isArray(c)?c.filter(function(x){return x&&/^0x[0-9a-fA-F]{40}$/.test(x.a||"")}):[]}
 function sentList(){try{return JSON.parse(raw("tz_sent_to","[]"))}catch(e){return[]}}
 function nameOf(a){var lo=String(a).toLowerCase(),c=contacts().find(function(x){return x.a.toLowerCase()===lo});return c?c.n:""}
@@ -18,7 +18,7 @@ function sendHTML(){var k=curTok(),n=N(),cs=contacts().slice(0,4);var inrMode=S.
 function lowFee(){if(S.bal==null||S.balW==null||S.snd.feeW==null)return false;return S.snd.feeW>S.balW}
 var FEE_WARN_SHM=5; // सीमा: इससे ज़्यादा fee पर चेतावनी (placeholder, बदली जा सकती है)
 function highFee(){return S.snd.fee!=null&&S.snd.fee>FEE_WARN_SHM}
-function feeWarn(){var lo=feeWarnLow();if(!highFee())return lo;return lo+'<div class="err" style="color:#f5a623">'+esc(t("feeHi"))+'</div>'}
+function feeWarn(){var lo=feeWarnLow();if(!highFee())return lo;return lo+'<div class="err" style="color:#4CF07A">'+esc(t("feeHi"))+'</div>'}
 function feeWarnLow(){if(!lowFee())return"";var n=N(),f=S.snd.fee;var link=S.net==="shardeum-testnet"?'<a href="https://docs.shardeum.org" target="_blank" rel="noopener">'+esc(t("getTestShm"))+' ›</a>':S.net==="shardeum"?'<a href="#" data-fourth="1">'+esc(t("addShm"))+' ›</a>':'<a href="#" data-fourth="1">'+esc(t("testCoins"))+' ›</a>';
  return '<div class="warn3">'+ic("info",18)+'<span>'+esc(t("needFee").replace("%f",ffee(f)).replace("%s",n.sym).replace("%b",fmt(S.bal,4)).replace("%s",n.sym))+' '+link+'</span></div>'}
 function ffee(f){if(f==null)return"…";if(f>=1)return fmt(f,2);if(f>=0.0001)return fmt(f,6);return Number(f).toPrecision(2)}
@@ -54,7 +54,7 @@ function openConfirm(){readSend();var e=validate();S.snd.err=e;var el=$("sErr");
  var amtTxt=exactAmt(a)+" "+k.sym;var bigTxt=rsOK()?inr(parseFloat(a)*S.inr):amtTxt,subTxt=rsOK()?amtTxt:amtInr();
  var card='<div class="sc '+sd.lvl+'">'+ic(sd.lvl==="ok"?"shield":"warn",24)+'<div><b>'+esc(sd.t)+'</b>'+(sd.s?'<small>'+esc(sd.s)+'</small>':"")+(sd.lvl==="bad"?'<label class="tick"><input type="checkbox" id="cTick">'+esc(t("tickT"))+'</label>':"")+'</div></div>';
  var h='<div class="grab"></div><div class="sht">'+esc(t("confirm"))+'</div>'+(n.test?"":'<div class="note2" style="color:var(--red);font-weight:700;margin:0">'+esc(t("real"))+' · '+esc(n.name)+'</div>')+
- '<div class="camt">'+esc(bigTxt)+'</div><div class="camtr">'+esc(subTxt)+'</div>'+(feeHigh()?'<div class="note2" style="color:#B45309;font-weight:600">'+esc(t("feeHi"))+'</div>':'')+''+
+ '<div class="camt">'+esc(bigTxt)+'</div><div class="camtr">'+esc(subTxt)+'</div>'+(feeHigh()?'<div class="note2" style="color:var(--tx);font-weight:600">'+esc(t("feeHi"))+'</div>':'')+''+
  '<div class="addr"><em>'+esc(to.slice(0,6))+'</em>'+esc(to.slice(6,-4))+'<em>'+esc(to.slice(-4))+'</em></div>'+
  '<div class="kv"><div><span>'+esc(t("from"))+'</span><b>'+esc(wName()+" · "+sh(S.addr))+'</b></div><div><span>'+esc(t("to"))+'</span><b class="who2">'+(nm?'<span class="av" style="background:linear-gradient(135deg,'+COLORS[0]+')">'+esc(nm.slice(0,1).toUpperCase())+'</span>'+esc(nm):esc(t("newAddr")))+'</b></div><div><span>'+esc(t("network"))+'</span><b>'+esc(n.name)+'</b></div><div><span>'+esc(t("fee"))+'</span><b>'+esc(feeTxt())+'</b></div></div>'+
  card+

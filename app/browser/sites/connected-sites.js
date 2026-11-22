@@ -1,4 +1,4 @@
-/* Tazvera wallet · app/js/features/connected-sites.js · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · app/browser/sites/connected-sites.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
 /* Every site that is allowed to ask this wallet for a signature is listed here, and every one of them
    can be removed. A connection that cannot be undone is a trap, so this screen exists before the

@@ -1,0 +1,15 @@
+/* Tazvera wallet · app/layout/desktop/page.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop: the page frame. Every page sits in one centred column, with the same header and width. */
+@media (min-width: 900px){
+  #app{ max-width: none !important; margin: 0 !important; padding: 28px 40px 56px 136px !important; }
+  #app:not(:has(.nav)){ padding-left: 40px !important; }
+  #app > .scr{ max-width: 1040px !important; margin: 0 auto !important; }
+  /* forms read best in a narrower column */
+  .scr.tab-send, .scr.tab-recv, .scr.tab-req, .scr.tab-chk{ max-width: 640px !important; }
+  /* the Continue button sits under the form, not pinned to the bottom of a 1080px-tall window */
+  .bar{ position: static !important; transform: none !important; left: auto !important; bottom: auto !important;
+        width: 100% !important; max-width: 420px !important; margin: 28px auto 0 !important; }
+  .tb{ margin-bottom: 4px; }
+  .tb b{ font-size: 22px; letter-spacing: -.2px; }
+  .card{ border-radius: 20px; }
+}

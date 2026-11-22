@@ -1,0 +1,12 @@
+/* Tazvera wallet · app/layout/desktop/settings.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop: the Settings page. A plain sheet: rows sit on one surface and are separated by space, with no boxes. */
+@media (min-width: 900px){
+  .scr.tab-set{ max-width: 760px !important; }
+  .scr.tab-set .srow{ background: var(--card) !important; border: 0 !important; border-radius: 0 !important; margin: 0 !important; box-shadow: none !important; }
+  .scr.tab-set .sec, .scr.tab-set .day{ background: transparent !important; border: 0 !important; margin: 0 !important; box-shadow: none !important; }
+  .scr.tab-set .srow{ display: flex !important; align-items: center !important; gap: 14px !important; padding: 15px 20px !important; }
+  .scr.tab-set .sec, .scr.tab-set .day{ padding: 22px 20px 8px !important; font-size: 11px !important; letter-spacing: 1.5px !important; }
+  .scr.tab-set .srow b{ flex: 1 1 auto !important; text-align: left !important; margin: 0 !important; }
+  .scr.tab-set .srow em{ margin-left: auto !important; text-align: right !important; }
+  .scr.tab-set .srow .si{ flex: 0 0 36px !important; background: var(--soft) !important; }
+}
