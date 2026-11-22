@@ -49,3 +49,20 @@
   #app{ padding-top: 12px !important; }
   .k{ width: 56px !important; height: 56px !important; font-size: 19px !important; }
 }
+
+/* ---------- SETTINGS PAGE ---------- */
+/* On a wide screen the label was pushed to the far right, leaving a hand-span of empty space in
+   every row. The label now sits beside its icon, and each row is a card the eye can follow. */
+@media (min-width: 900px){
+  .scr.tab-set{ max-width: 780px !important; }
+  .scr.tab-set .srow{
+    display: flex !important; align-items: center !important; gap: 14px !important;
+    padding: 13px 16px !important; margin-bottom: 8px !important;
+    background: var(--card) !important; border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+  }
+  .scr.tab-set .srow b{ flex: 1 1 auto !important; text-align: left !important; margin: 0 !important; }
+  .scr.tab-set .srow em{ margin-left: auto !important; text-align: right !important; }
+  .scr.tab-set .srow .si{ flex: 0 0 36px !important; }
+  .scr.tab-set .sec, .scr.tab-set .day{ margin-top: 18px !important; }
+}
