@@ -551,3 +551,25 @@ svg{-webkit-touch-callout:none;user-select:none}
 .brwcard .bt{flex:1;min-width:0}
 .brwcard .bt b{display:block;font-size:14px}
 .brwcard .bt small{display:block;margin-top:2px;font-size:11.5px;color:var(--mu)}
+
+/* ---------- signing sheet ---------- */
+.sghead{display:flex;align-items:center;gap:11px;margin:2px 0 10px}
+.sgic{width:34px;height:34px;border-radius:11px;background:var(--pill);color:var(--green);display:flex;align-items:center;justify-content:center;flex:0 0 34px}
+.sghead b{display:block;font-size:15px}
+.sghead small{display:block;font-size:11px;color:var(--mu)}
+.srow{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--mu)}
+.srow b{color:var(--tx);text-align:right;word-break:break-word}
+.sgwarn{margin-top:12px;background:#2A1E12;border:1px solid #4A3418;border-radius:12px;padding:11px 13px}
+.sgwarn b{color:#FFD23F;font-size:12px;display:block}
+.sgwarn span{display:block;margin-top:4px;font-size:11px;line-height:1.5;color:var(--mu)}
+.sgb{display:flex;gap:10px;margin-top:14px}
+.sgb .btn,.sgb .btnw{flex:1;margin:0}
+.sgfine{margin-top:10px;text-align:center;font-size:10.5px;color:var(--mu);line-height:1.5}
+
+/* ---------- browser row on Explore (one slim line, under the search) ---------- */
+.brwrow{display:flex;align-items:center;gap:11px;width:calc(100% - 36px);margin:12px 18px 4px;padding:11px 14px;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;color:var(--tx);text-align:left}
+.brwrow .bic{width:30px;height:30px;border-radius:10px;background:var(--pill);color:var(--green);display:flex;align-items:center;justify-content:center;flex:0 0 30px}
+.brwrow .bt{flex:1;min-width:0}
+.brwrow .bt b{display:block;font-size:13.5px}
+.brwrow .bt small{display:block;margin-top:1px;font-size:11px;color:var(--mu)}
