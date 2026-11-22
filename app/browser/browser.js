@@ -2,7 +2,7 @@
 "use strict";
 /* The browser screen. Everything about it lives in this one file: the address bar, the start page,
    the shortcuts and the history. Opening a real site inside the app needs the Android shell; until
-   that exists, a site opens in a new tab and is connected with WalletConnect. The wallet core and
+   that exists, a site opens in a new tab. Connecting to the wallet (WalletConnect) is planned, not live yet. The wallet core and
    the signing sheet are NOT here — this screen can only ask them. */
 /* Only sites whose address has been checked by hand. Each carries its own official logo, taken from
    Trust Wallet's public assets collection (the same source Trust Wallet itself uses). */
@@ -70,7 +70,7 @@ function brwOpen(u){
   var url=brwClean(u); if(!url){ toast(t("brwBad")); return }
   var b=brwState();
   b.hist=b.hist.slice(0,b.idx+1); b.hist.push(url); b.idx=b.hist.length-1; b.url=url;
-  /* inside the Android shell the site loads in our own WebView and gets the wallet injected */
+  /* if an Android shell bridge exists, open the site there. No wallet is injected into it yet. */
   if(window.TazveraBrowser&&typeof window.TazveraBrowser.open==="function"){
     try{ window.TazveraBrowser.open(url); render(); return }catch(e){}
   }
