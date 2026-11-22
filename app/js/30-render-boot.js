@@ -4,7 +4,7 @@
 function soonHTML(){return homeHTML()}
 
 function render(){var h;if(!S.addr){$("app").innerHTML=welHTML();return}
- var m={home:homeHTML,act:actHTML,recv:recvHTML,send:sendHTML,exp:expHTML,set:setHTML,req:reqHTML,chk:chkHTML,helpc:helpHTML}[S.tab]||homeHTML;h=m();
+ var m={home:homeHTML,act:actHTML,recv:recvHTML,send:sendHTML,exp:expHTML,set:setHTML,req:reqHTML,chk:chkHTML,helpc:helpHTML,brw:browserHTML}[S.tab]||homeHTML;h=m();
  var an=S.tab!==S._lt;if(an&&!H.pop){if(S.tab!=="home"&&!H.page){H.page=true;hPush()}else if(S.tab==="home"&&H.page){H.page=false;hBack()}}S._lt=S.tab;var y=window.scrollY;$("app").innerHTML='<div class="scr on'+(an?" anim":"")+'">'+h+'</div>'+((S.tab==="recv"||S.tab==="send"||S.tab==="req"||S.tab==="chk")?"":nav());if(!an)window.scrollTo(0,y);
  if(S.tab==="req"){drawReqQR();var ra=$("rAmt");ra.oninput=function(){REQ.amt=ra.value.replace(/,/g,"");clearTimeout(ra._t);ra._t=setTimeout(drawReqQR,250)}}
  if(S.tab==="recv"){try{new QRCode($("qrbox"),{text:rcvURI(),width:212,height:212,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})}catch(e){}}
@@ -16,7 +16,7 @@ function closeSheet(){SLOCK=false;stopCam();if(typeof aiStop==="function")aiStop
 
 function tokSheet(){var h='<div class="grab"></div><div class="sht">'+esc(t("coin"))+'</div>'+tokens().map(function(k){return '<button class="opt" data-tok="'+k.id+'"><span class="ci">'+(k.img?'<img src="'+k.img+'" alt="">':'<b>'+esc(k.sym.slice(0,1))+'</b>')+'</span><div class="m"><b>'+esc(k.name)+'</b><small>'+esc(fmt(k.bal,4)+" "+k.sym)+'</small></div>'+(S.snd.tok===k.id?'<span class="tick">'+ic("check",20,2.4)+'</span>':"")+'</button>'}).join("");sheet(h)}
 function choose(title,opts,cur,cb){sheet('<div class="grab"></div><div class="sht">'+esc(title)+'</div>'+opts.map(function(o){return '<button class="opt" data-ch="'+o[0]+'"><div class="m"><b>'+esc(o[1])+'</b></div>'+(cur===o[0]?'<span class="tick">'+ic("check",20,2.4)+'</span>':"")+'</button>'}).join(""));[].forEach.call(document.querySelectorAll("#sheet [data-ch]"),function(b){b.onclick=function(){cb(b.getAttribute("data-ch"));closeSheet();render()}})}
-document.addEventListener("click",function(e){var el=e.target.closest("[data-wsheet],[data-wsw],[data-wren],[data-wnew2],[data-wimp2],[data-pinsheet],[data-pinsw2],[data-words],[data-fix],[data-rdismiss],[data-hc],[data-hq],[data-bk],[data-notif],[data-tool],[data-csv],[data-addtok],[data-fourth],[data-tx],[data-s12],[data-chpin],[data-fp],[data-alock],[data-about],[data-help],[data-cur],[data-rtok],[data-rcvtok],[data-ai],[data-sx],[data-rshare],[data-wnew],[data-wimp],[data-wmm],[data-tab],[data-go],[data-net],[data-pick],[data-copy],[data-share],[data-hide],[data-flt],[data-scan],[data-paste],[data-pickc],[data-max],[data-cont],[data-tokpick],[data-tok],[data-pinsw],[data-t12],[data-lock],[data-lang],[data-thm],#sbg");if(!el)return;var d=el.dataset;
+document.addEventListener("click",function(e){var el=e.target.closest("[data-wsheet],[data-wsw],[data-wren],[data-wnew2],[data-wimp2],[data-pinsheet],[data-pinsw2],[data-words],[data-fix],[data-rdismiss],[data-brwback],[data-brwgo],[data-brwopen],[data-brwtab],[data-brwhome],[data-hc],[data-hq],[data-bk],[data-notif],[data-tool],[data-csv],[data-addtok],[data-fourth],[data-tx],[data-s12],[data-chpin],[data-fp],[data-alock],[data-about],[data-help],[data-cur],[data-rtok],[data-rcvtok],[data-ai],[data-sx],[data-rshare],[data-wnew],[data-wimp],[data-wmm],[data-tab],[data-go],[data-net],[data-pick],[data-copy],[data-share],[data-hide],[data-flt],[data-scan],[data-paste],[data-pickc],[data-max],[data-cont],[data-tokpick],[data-tok],[data-pinsw],[data-t12],[data-lock],[data-lang],[data-thm],#sbg");if(!el)return;var d=el.dataset;
  if(el.id==="sbg"){if(SLOCK)return;return closeSheet()}
  if(d.help){helpSheet();return}
  if(d.ai){if(typeof aiOpen==="function")aiOpen();else helpSheet();return}
@@ -31,6 +31,10 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.fix){var f=d.fix;if(f==="t12")t12();else if(f==="bk")bkSheet();else if(f==="pin"){rawSet("tz_pinsend","1");render()}else if(f==="fp")toggleFp();else if(f==="alock")choose(t("alock"),[["1","1 "+t("min")],["2","2 "+t("min")],["5","5 "+t("min")]],String(amin()),function(v){lss("xt_am",+v)});return}
  if(d.hc){hcOpen(d.hc);return}
  if(d.hq){S.hopen=S.hopen===+d.hq?0:+d.hq;render();return}
+ if(d.brwback){brwBack();return} if(d.brwhome){brwHome();return}
+ if(d.brwgo){var u=prompt(t("brwPh"),brwState().url||"");if(u)brwOpen(u);return}
+ if(d.brwopen){brwOpen(BRW_SHORTCUTS[+d.brwopen].url);return}
+ if(d.brwtab){var bu=brwState().url;if(bu)try{window.open(bu,"_blank","noopener")}catch(e){} return}
  if(d.rdismiss){rawSet("tz_ready_"+S.net,"1");render();return} if(d.bk){bkSheet();return}
  if(d.notif){notifToggle();return}
  if(d.tool){tool(d.tool);return}
