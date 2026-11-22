@@ -1,20 +1,24 @@
 /* Tazvera wallet · app/layout/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
-/* Everything that only applies to wide screens lives here. Change the computer layout in this file
-   and nothing on a phone can move, because every rule below is inside a min-width query. */
+/* Everything that only applies to wide screens lives here. Every rule sits inside a min-width query,
+   so nothing written in this file can move a single thing on a phone. */
 
-/* the bottom bar becomes a rail down the left side, one item under the other */
+/* a rail down the left edge, from the very top, one item under the other */
 @media (min-width: 900px){
-  #app{max-width:980px;margin:0 auto 0 152px;padding:34px 32px 48px}
-  .nav.n3{position:fixed;left:20px;top:50%;bottom:auto;transform:translateY(-50%);
-          width:108px;height:auto;max-width:108px!important;min-width:108px;
-          grid-template-columns:1fr!important;gap:6px;padding:14px 10px;
-          border-radius:22px;background:var(--card);border:1px solid var(--line)}
-  .nav.n3 .nv{height:auto;padding:11px 0;gap:5px;font-size:11px;margin:0}
-  .nav.n3 .nv span{font-size:11px}
-  .aifab{right:28px;bottom:28px}
+  #app{max-width:none;margin:0;padding:26px 40px 56px 116px}
+  .nav.n3{position:fixed;left:0;top:0;bottom:0;transform:none;
+          width:96px;height:100vh;max-width:96px!important;min-width:96px;
+          grid-template-columns:1fr!important;grid-auto-rows:min-content;align-content:start;
+          gap:4px;padding:22px 8px;border-radius:0 20px 20px 0;
+          background:var(--card);border:1px solid var(--line);border-left:0}
+  .nav.n3 .nv{height:auto;padding:11px 0;gap:6px;font-size:10.5px;margin:0}
+  .nav.n3 .nv span{font-size:10.5px}
+  .nv-extra{display:flex!important}
+  /* the bell and the gear now live in the rail, so the header keeps only the scan button */
+  .hd .ib:not(:first-of-type){display:none}
+  .aifab{right:32px;bottom:32px}
   .brwgrid{grid-template-columns:repeat(4,1fr)}
   .grid6{grid-template-columns:repeat(6,1fr)}
 }
 @media (min-width: 1400px){
-  #app{max-width:1120px}
+  #app{padding-right:80px}
 }
