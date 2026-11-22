@@ -3,18 +3,8 @@
 var SHMLOGO="app/img/shm.png",LOGO="icon-192.png",TZVLOGO="brand/tzv/tzv-logo-128.png";
 var CG={BTC:"https://assets.coingecko.com/coins/images/1/small/bitcoin.png",ETH:"https://assets.coingecko.com/coins/images/279/small/ethereum.png",BNB:"https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png",USDT:"https://assets.coingecko.com/coins/images/325/small/Tether.png"};
 /* The token is called BNB; "BNB Chain" is the network. Never show the network name as a coin. */
-function coinName(n){var y=String(n&&n.sym||"").toLowerCase();
-  if(y==="shm")return "Shardeum";
-  if(y==="bnb"||y==="tbnb")return "BNB";
-  if(y==="eth"||y==="sepoliaeth")return "Ethereum";
-  return (n&&n.sym)||""}
-function netLogo(k){return (k==="bsc"||k==="bsc-testnet")?CG.BNB:(k==="ethereum"||k==="sepolia")?CG.ETH:SHMLOGO}
-var NETS={"shardeum-testnet":{name:"Shardeum Testnet",chainId:"0x1fb7",dec:8119,sym:"SHM",rpc:"https://api-mezame.shardeum.org",exp:"https://explorer-mezame.shardeum.org",test:true,tzt:"0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0"},
-"bsc-testnet":{name:"BNB Testnet",chainId:"0x61",dec:97,sym:"tBNB",rpc:"https://data-seed-prebsc-1-s1.bnbchain.org:8545",exp:"https://testnet.bscscan.com",test:true},
-"sepolia":{name:"Sepolia",chainId:"0xaa36a7",dec:11155111,sym:"SepoliaETH",rpc:"https://ethereum-sepolia-rpc.publicnode.com",exp:"https://sepolia.etherscan.io",test:true},
-"bsc":{name:"BNB Chain",chainId:"0x38",dec:56,sym:"BNB",rpc:"https://bsc-rpc.publicnode.com",exp:"https://bscscan.com",test:false},
-"ethereum":{name:"Ethereum",chainId:"0x1",dec:1,sym:"ETH",rpc:"https://ethereum-rpc.publicnode.com",exp:"https://etherscan.io",test:false},
-"shardeum":{name:"Shardeum Mainnet",chainId:"0x1fb6",dec:8118,sym:"SHM",rpc:"https://api.shardeum.org",exp:"https://explorer.shardeum.org",test:false,beta:true,tzv:"0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73"}};
+
+
 /* Token contracts per network. Add an address only after checking it on the official source and the explorer.
    USDC (Ethereum): Circle developer docs. WBNB (BSC): found on several explorer aggregators; check it on bscscan.com before relying on it. */
 var CHAIN_TOKENS={"ethereum":[{sym:"USDC",name:"USD Coin",addr:"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",dec:6,src:"circle-docs"},{sym:"USDT",name:"Tether USD",addr:"0xdAC17F958D2ee523a2206206994597C13D831ec7",dec:6,src:"tether-official"},{sym:"USDe",name:"Ethena USDe",addr:"0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",dec:18,src:"ethena-docs"},{sym:"LINK",name:"Chainlink",addr:"0x514910771AF9Ca656af840dff83E8264EcF986CA",dec:18,src:"chainlink-docs"}],"bsc":[{sym:"WBNB",name:"Wrapped BNB",addr:"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",dec:18,src:"unverified-aggregator"},{sym:"CAKE",name:"PancakeSwap Token",addr:"0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",dec:18,src:"pancakeswap-docs"}]};
