@@ -590,3 +590,19 @@ svg{-webkit-touch-callout:none;user-select:none}
 
 /* the two rail-only items stay out of the phone bar */
 .nv-extra{display:none!important}
+
+/* ---------- pinned sites: a row of quiet pills, no letters ---------- */
+.brwpin{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.brwpin2{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;
+  background:var(--soft);border:1px solid var(--line);color:var(--tx);
+  font:600 12.5px Poppins,system-ui,sans-serif;white-space:nowrap}
+.brwpin2.add{color:var(--greenDeep);border-style:dashed}
+.brwpin2:active{transform:scale(.98)}
+
+/* ---------- the browser's address bar is a real input ---------- */
+.baddr{display:flex;align-items:center;gap:8px;flex:1;min-width:0;
+  background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:0 14px;height:42px}
+.binput{flex:1;min-width:0;border:0;outline:0;background:none;
+  font:500 13.5px Poppins,system-ui,sans-serif;color:var(--tx)}
+.binput::placeholder{color:var(--mu)}
+.baddr:focus-within{border-color:var(--greenDeep)}

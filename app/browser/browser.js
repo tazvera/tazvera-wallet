@@ -72,10 +72,15 @@ function browserHTML(){
   var b=brwState(), n=N();
   var bar='<div class="brwbar">'+
     '<button class="ib" data-brwback="1" aria-label="back" '+(b.idx>0?'':'disabled')+'>'+ic("back",18)+'</button>'+
-    '<div class="baddr"><span class="bdot '+(b.url?brwTrust(brwHost(b.url)):'')+'"></span>'+(b.url?esc(brwHost(b.url)):'<span class="bph">'+esc(t("brwPh"))+'</span>')+'</div>'+
+    '<div class="baddr"><span class="bdot '+(b.url?brwTrust(brwHost(b.url)):'')+'"></span>'+
+      '<input id="burl" class="binput" type="text" inputmode="url" autocomplete="off" spellcheck="false" '+
+      'value="'+esc(b.url?brwHost(b.url):(S.bq||""))+'" placeholder="'+esc(t("brwPh"))+'" aria-label="'+esc(t("brwPh"))+'">'+
+    '</div>'+
     '<button class="ib" data-brwsites="1" aria-label="'+esc(t("brwSites"))+'">'+ic("shield",18)+'</button>'+
     '<button class="ib" data-brwgo="1" aria-label="open">'+ic("globe",18)+'</button></div>'+
     '<div class="bstrip"><i></i>'+esc(t("brwConn"))+' · '+esc(n.name)+'</div>';
+  var q=(S.bq||"").trim().toLowerCase();
+  var list=BRW_SHORTCUTS.filter(function(x){return !q||(x.name+" "+x.url).toLowerCase().indexOf(q)>=0});
   var body;
   if(b.url){
     var tr=brwTrust(brwHost(b.url));
@@ -87,15 +92,15 @@ function browserHTML(){
   }else{
     body='<div class="brwstart">'+
       '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
-        brwPins().map(function(i){return '<button class="brwfav" data-brwopen="'+i+'">'+esc(BRW_SHORTCUTS[i].name.slice(0,1))+'</button>'}).join("")+
-        '<button class="brwfav add" data-brwpin="1">+</button>'+
+        (q?'':brwPins().map(function(i){return '<button class="brwpin2" data-brwopen="'+i+'">'+esc(BRW_SHORTCUTS[i].name)+'</button>'}).join(""))+
+        '<button class="brwpin2 add" data-brwpin="1">'+ic("plus",14)+' '+esc(t("brwPinAdd"))+'</button>'+
       '</div>'+
       '<div class="brwcat"><div class="lb3">'+esc(t("brwSwap"))+'</div>'+
-        BRW_SHORTCUTS.filter(function(x){return x.cat==="swap"}).map(function(x){
+        list.filter(function(x){return x.cat==="swap"}).map(function(x){
           return '<button class="brwli" data-brwopen="'+BRW_SHORTCUTS.indexOf(x)+'"><div><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,""))+'</small></div></button>'}).join("")+
       '</div>'+
       '<div class="brwcat"><div class="lb3">'+esc(t("brwExp"))+'</div>'+
-        BRW_SHORTCUTS.filter(function(x){return x.cat==="exp"}).map(function(x){
+        list.filter(function(x){return x.cat==="exp"}).map(function(x){
           return '<button class="brwli" data-brwopen="'+BRW_SHORTCUTS.indexOf(x)+'"><div><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,""))+'</small></div></button>'}).join("")+
       '</div>'+
       '<div class="brwnote">'+esc(t("brwNote"))+'</div></div>';
