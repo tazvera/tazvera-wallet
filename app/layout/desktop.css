@@ -34,3 +34,15 @@
 @media (min-width: 1400px){
   #app{max-width:1240px}
 }
+
+/* a short window (a laptop with the browser at half height) used to cut the last row of the
+   PIN keypad off the screen. Keys get smaller, and the page is allowed to scroll as a safety net. */
+@media (min-width: 900px){
+  #app{overflow-y:auto}
+  .k{width:64px;height:64px;font-size:22px}
+}
+@media (min-width: 900px) and (max-height: 860px){
+  #app{padding-top:14px}
+  .pinw{padding-top:0}
+  .k{width:56px;height:56px;font-size:19px}
+}
