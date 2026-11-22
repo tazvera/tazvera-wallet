@@ -20,7 +20,7 @@
   .nv-extra{display:flex!important}
 
   /* the content starts to the right of the rail, never under it */
-  #app{max-width:1120px;margin:0 auto 0 104px;padding:28px 40px 56px}
+  #app{max-width:880px;margin:0 auto 0 104px;padding:28px 40px 56px}
 
   /* the header keeps only the scan button; the bell and gear live in the rail now */
   .hd .ib:not(:first-of-type){display:none}
@@ -32,7 +32,7 @@
   .grid6{grid-template-columns:repeat(6,1fr)}
 }
 @media (min-width: 1400px){
-  #app{max-width:1240px}
+  #app{max-width:980px}
 }
 
 /* a short window (a laptop with the browser at half height) used to cut the last row of the
