@@ -1,22 +1,20 @@
 /* Tazvera wallet · app/layout/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
 /* Everything that only applies to wide screens lives here. Change the computer layout in this file
    and nothing on a phone can move, because every rule below is inside a min-width query. */
-/* ---------- desktop: the bar moves to the top, in one line ---------- */
+
+/* the bottom bar becomes a rail down the left side, one item under the other */
 @media (min-width: 900px){
-  #app{max-width:980px;margin:0 auto;padding:84px 32px 48px}
-  .nav.n3{position:fixed;top:0;left:50%;bottom:auto;transform:translateX(-50%);
-          width:100%;max-width:980px!important;min-width:0;height:64px;
-          grid-template-columns:repeat(3,1fr)!important;
-          border-radius:0 0 18px 18px;padding:0 12px;
-          background:var(--card);border:1px solid var(--line);border-top:0}
-  .nav.n3 .nv{flex-direction:row;gap:9px;font-size:13px}
-  .nav.n3 .nv span{font-size:13px}
+  #app{max-width:980px;margin:0 auto 0 152px;padding:34px 32px 48px}
+  .nav.n3{position:fixed;left:20px;top:50%;bottom:auto;transform:translateY(-50%);
+          width:108px;height:auto;max-width:108px!important;min-width:108px;
+          grid-template-columns:1fr!important;gap:6px;padding:14px 10px;
+          border-radius:22px;background:var(--card);border:1px solid var(--line)}
+  .nav.n3 .nv{height:auto;padding:11px 0;gap:5px;font-size:11px;margin:0}
+  .nav.n3 .nv span{font-size:11px}
   .aifab{right:28px;bottom:28px}
   .brwgrid{grid-template-columns:repeat(4,1fr)}
   .grid6{grid-template-columns:repeat(6,1fr)}
 }
-
 @media (min-width: 1400px){
   #app{max-width:1120px}
-  .nav.n3{max-width:1120px!important}
 }
