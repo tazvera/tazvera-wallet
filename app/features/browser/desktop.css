@@ -7,7 +7,9 @@
   .scr.tab-brw .brwbar .ib{ width: 52px !important; height: 52px !important; border-radius: 16px !important; background: var(--card) !important; border: 1px solid var(--line) !important; }
   .scr.tab-brw .bstrip{ border-radius: 14px !important; margin: 0 0 26px !important; padding: 10px 16px !important; font-size: 13px !important; font-weight: 600 !important; }
   .scr.tab-brw .brwpin{ display: grid !important; grid-template-columns: repeat(6, 1fr) !important; gap: 12px !important; margin-top: 10px !important; }
-  .scr.tab-brw .brwfav{ width: 100% !important; height: 84px !important; border-radius: 18px !important; font-size: 20px !important; }
+  .scr.tab-brw .brwpin2{ width: 100% !important; height: 84px !important; border-radius: 18px !important; font-size: 14px !important; font-weight: 700 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 8px !important; background: var(--card) !important; border: 1px solid var(--line) !important; }
+  .scr.tab-brw .brwpin2 img{ width: 32px !important; height: 32px !important; border-radius: 10px !important; }
+  .scr.tab-brw .brwpin2.add{ color: var(--green) !important; }
   .scr.tab-brw .brwcat{ display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; margin-top: 26px !important; }
   .scr.tab-brw .brwcat > .lb3{ grid-column: 1 / -1 !important; margin: 0 0 2px !important; }
   .scr.tab-brw .brwli{ width: 100% !important; margin: 0 !important; }
