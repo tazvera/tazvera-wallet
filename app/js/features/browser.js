@@ -5,10 +5,10 @@
    that exists, a site opens in a new tab and is connected with WalletConnect. The wallet core and
    the signing sheet are NOT here — this screen can only ask them. */
 var BRW_SHORTCUTS = [
-  { name: "PancakeSwap", url: "https://pancakeswap.finance", tag: "BNB Chain" },
-  { name: "Uniswap", url: "https://app.uniswap.org", tag: "Ethereum" },
-  { name: "BscScan", url: "https://bscscan.com", tag: "explorer" },
-  { name: "Shardeum explorer", url: "https://explorer.shardeum.org", tag: "explorer" }
+  { name: "PancakeSwap", url: "https://pancakeswap.finance", tag: "BNB Chain", cat: "swap" },
+  { name: "Uniswap", url: "https://app.uniswap.org", tag: "Ethereum", cat: "swap" },
+  { name: "BscScan", url: "https://bscscan.com", tag: "explorer", cat: "exp" },
+  { name: "Shardeum explorer", url: "https://explorer.shardeum.org", tag: "explorer", cat: "exp" }
 ];
 function brwState(){ if(!S.brw||typeof S.brw!=="object")S.brw={url:"",hist:[],idx:-1}; return S.brw }
 /* a URL is only accepted as http(s); anything else (javascript:, data:) is refused outright */
@@ -38,6 +38,7 @@ function browserHTML(){
   var bar='<div class="brwbar">'+
     '<button class="ib" data-brwback="1" aria-label="back" '+(b.idx>0?'':'disabled')+'>'+ic("back",18)+'</button>'+
     '<div class="baddr"><span class="bdot"></span>'+(b.url?esc(brwHost(b.url)):'<span class="bph">'+esc(t("brwPh"))+'</span>')+'</div>'+
+    '<button class="ib" data-brwsites="1" aria-label="'+esc(t("brwSites"))+'">'+ic("shield",18)+'</button>'+
     '<button class="ib" data-brwgo="1" aria-label="open">'+ic("globe",18)+'</button></div>'+
     '<div class="bstrip"><i></i>'+esc(t("brwConn"))+' · '+esc(n.name)+'</div>';
   var body;
@@ -47,9 +48,19 @@ function browserHTML(){
       '<button class="btn" data-brwtab="1">'+esc(t("brwTab"))+'</button>'+
       '<button class="btnw" data-brwhome="1">'+esc(t("brwHome"))+'</button></div>';
   }else{
-    body='<div class="brwstart"><div class="lb3">'+esc(t("brwPop"))+'</div><div class="brwgrid">'+
-      BRW_SHORTCUTS.map(function(x,i){return '<button class="brwsc" data-brwopen="'+i+'"><b>'+esc(x.name)+'</b><small>'+esc(x.tag)+'</small></button>'}).join("")+
-      '</div><div class="brwnote">'+esc(t("brwNote"))+'</div></div>';
+    body='<div class="brwstart">'+
+      '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
+        BRW_SHORTCUTS.slice(0,4).map(function(x,i){return '<button class="brwfav" data-brwopen="'+i+'">'+esc(x.name.slice(0,1))+'</button>'}).join("")+
+      '</div>'+
+      '<div class="brwcat"><div class="lb3">'+esc(t("brwSwap"))+'</div>'+
+        BRW_SHORTCUTS.filter(function(x){return x.cat==="swap"}).map(function(x){
+          return '<button class="brwli" data-brwopen="'+BRW_SHORTCUTS.indexOf(x)+'"><div><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,""))+'</small></div></button>'}).join("")+
+      '</div>'+
+      '<div class="brwcat"><div class="lb3">'+esc(t("brwExp"))+'</div>'+
+        BRW_SHORTCUTS.filter(function(x){return x.cat==="exp"}).map(function(x){
+          return '<button class="brwli" data-brwopen="'+BRW_SHORTCUTS.indexOf(x)+'"><div><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,""))+'</small></div></button>'}).join("")+
+      '</div>'+
+      '<div class="brwnote">'+esc(t("brwNote"))+'</div></div>';
   }
   return '<div class="tb"><button class="ib" data-tab="home" aria-label="back">'+ic("back",20)+'</button><b>'+esc(t("brwT"))+'</b></div>'+bar+body;
 }

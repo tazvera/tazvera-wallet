@@ -79,7 +79,7 @@ function makeContext() {
 const FILES = [
   "app/js/features/networks.js", "app/js/00-config.js", "app/js/01-i18n.js", "app/js/02-core.js", "app/js/10-send.js",
   "app/js/20-faucet-security.js", "app/js/22-wallets-help-backup.js",
-  "app/js/26-v8-trust.js", "app/js/28-backup.js", "app/js/features/pin-change-wallets.js", "app/js/features/browser.js", "app/js/features/signing.js",
+  "app/js/26-v8-trust.js", "app/js/28-backup.js", "app/js/features/pin-change-wallets.js", "app/js/features/browser.js", "app/js/features/signing.js", "app/js/features/connected-sites.js",
 ];
 const ctx = makeContext();
 /* a few files wrap a function that another file defines (createFlow lives in 13-lock-onboarding,
