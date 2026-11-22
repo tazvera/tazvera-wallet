@@ -35,3 +35,8 @@
   .lb3, .day{ font-size: 12px !important; font-weight: 600 !important; letter-spacing: 1.2px !important; color: var(--mu) !important; text-transform: uppercase; }
   .card{ box-shadow: none; border: 1px solid var(--line); }
 }
+
+@media (min-width: 900px){
+  /* the header icons (scan, bell, settings) move to the left rail: one place for each */
+  .hd > div:last-child{ display: none !important; }
+}

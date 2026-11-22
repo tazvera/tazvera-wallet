@@ -86,7 +86,7 @@ async function boot(){theme();var eth=window.ethereum;
  if(S.mode==="mm"&&NETS[ls("v2net","")]){S.net=ls("v2net","shardeum-testnet")}
  try{if(S.addr){var cb=ls("v2_bal_"+S.net+"_"+S.addr.toLowerCase(),null);if(cb&&cb.bal!=null)S.bal=cb.bal}}catch(e){}
  try{if(S.mode==="inapp")wList()}catch(e){}
- var unl=false;try{unl=sessionStorage.getItem("v2_unl")==="1"&&(CPW.unlocked()||Number(sessionStorage.getItem("v2_act")||0)>Date.now()-amin()*60000)}catch(e){}
+ var unl=false;try{unl=CPW.unlocked()===true}catch(e){}if(!unl){try{sessionStorage.removeItem("v2_unl");sessionStorage.removeItem("v2_act")}catch(e){}}
  if(S.mode==="inapp"&&!unl){lockScreen();setInterval(function(){if(CPW.unlocked())load()},30000);return}
  render();load();setInterval(load,30000);setInterval(function(){if(alarms().length){S.mkt=0;loadMk().then(function(){fetch("/api/price").then(function(r){return r.json()}).then(function(pj){if(pj&&pj.inr>0)S.inr=pj.inr;if(pj&&pj.usd>0)S.usd=pj.usd;checkAlarms()}).catch(checkAlarms)})}},60000)}
 window.addEventListener("pageshow",function(){theme()});
