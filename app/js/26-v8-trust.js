@@ -6,7 +6,7 @@
    "exit the app?" check on the phone Back button */
 Object.assign(L.en,{ver:"Verified",unv:"Not verified",nhOk:"Network OK",nhSlow:"Network slow",nhDown:"Offline",nhTry:"Connecting…",safeN:"Your money is safe. Nothing has been sent.",lastSeen:"Last seen",
  secOk:"Your wallet is protected",secLeft:"%n safety steps left",secLeft1:"1 safety step left",secFix:"Fix",secAll:"Backup done · PIN on",
- emptyT:"Your wallet is ready",emptyS:"Receive your first coins to get started.",
+ emptyT:"Your wallet is ready",emptyS:"Receive your first coins to get started.",gasH:"You will need a little %s to pay the network fee.",
  bigT:"Big amount",bigS:"You are sending %a. Check the address once more.",bigTick:"I checked. Send this big amount.",
  annT:"News & alerts",annNone:"No news yet",
  riskT:"Before you start",risk1:"Your keys stay only on this phone. Tazvera cannot see or recover them.",risk2:"Your 12 secret words are the only backup. Never share them with anyone, not even Tazvera.",risk3:"Crypto sent to a wrong address can be lost. Always check before sending.",riskTick:"I understand",riskGo:"Continue",
@@ -14,7 +14,7 @@ Object.assign(L.en,{ver:"Verified",unv:"Not verified",nhOk:"Network OK",nhSlow:"
  exitT:"Leave Tazvera?",exitS:"Your wallet stays safe on this phone.",exitY:"Yes, leave",exitN:"Stay"});
 Object.assign(L.hi,{ver:"सत्यापित",unv:"सत्यापित नहीं",nhOk:"नेटवर्क ठीक",nhSlow:"नेटवर्क धीमा",nhDown:"कनेक्शन नहीं",nhTry:"जुड़ रहे हैं…",safeN:"आपका पैसा सुरक्षित है। कुछ भी नहीं भेजा गया।",lastSeen:"अंतिम बार देखा",
  secOk:"आपका वॉलेट सुरक्षित है",secLeft:"%n सुरक्षा कदम बाक़ी",secLeft1:"1 सुरक्षा कदम बाक़ी है।",secFix:"ठीक करें",secAll:"बैकअप पूरा · PIN चालू",
- emptyT:"आपका वॉलेट तैयार है",emptyS:"शुरू करने के लिए पहले सिक्के पाइए।",
+ emptyT:"आपका वॉलेट तैयार है",emptyS:"शुरू करने के लिए पहले सिक्के पाइए।",gasH:"नेटवर्क फ़ीस के लिए थोड़ा %s चाहिए होगा।",
  bigT:"बड़ी रकम",bigS:"आप %a भेज रहे हैं। पता एक बार फिर जाँच लीजिए।",bigTick:"मैंने जाँच लिया। यह बड़ी रकम भेजें।",
  annT:"ख़बरें और चेतावनियाँ",annNone:"अभी कोई ख़बर नहीं",
  riskT:"शुरू करने से पहले",risk1:"आपकी चाबी सिर्फ़ इसी फ़ोन में रहती है। Tazvera उसे न देख सकता है, न वापस ला सकता है।",risk2:"आपके 12 गुप्त शब्द ही एकमात्र बैकअप हैं। इन्हें कभी किसी को न दें, Tazvera को भी नहीं।",risk3:"ग़लत पते पर भेजा crypto खो सकता है। भेजने से पहले हमेशा जाँचिए।",riskTick:"मैं समझता/समझती हूँ",riskGo:"आगे बढ़ें",
@@ -22,7 +22,7 @@ Object.assign(L.hi,{ver:"सत्यापित",unv:"सत्यापित
  exitT:"Tazvera से बाहर जाएँ?",exitS:"आपका वॉलेट इसी फ़ोन में सुरक्षित रहेगा।",exitY:"हाँ, बाहर जाएँ",exitN:"रुकें"});
 
 /* ----- token badges ----- */
-function isVer(k){return !!k&&(k.id==="native"||k.id==="tzt"||k.id==="tzv"||!!k.curated)}
+function isVer(k){return !!k&&(k.id==="native"||k.id==="tzt"||k.id==="tzv")}
 function tokBadge(k){if(isVer(k))return ' <span class="vb" title="'+esc(t("ver"))+'">'+ic("check",10,3.2)+'</span>';if(k&&k.custom)return ' <span class="ub">⚠ '+esc(t("unv"))+'</span>';return ""}
 
 /* ----- safe re-render: only on the main Home screen, never over the lock screen ----- */
@@ -52,13 +52,13 @@ function secCard(){if(S.mode!=="inapp")return "";var c;try{c=checks()}catch(e){r
 function emptyCard(){if(!(S.bal===0)||(S.tzt>0)||(S.tzv>0)||txs().length)return "";var n=N();
  /* it is a first-time hint, not a permanent banner: once dismissed for a network, it stays away */
  if(raw("tz_ready_"+S.net,"")==="1")return "";
- return '<div class="emptyc" style="position:relative"><button data-rdismiss="1" aria-label="dismiss" style="position:absolute;top:10px;right:12px;background:none;border:0;color:var(--mu);font-size:20px;line-height:1;padding:4px">×</button><b>'+esc(t("emptyT"))+' 🎉</b><small>'+esc(t("emptyS"))+'</small><div class="eb"><button class="btn" data-go="recv">'+ic("recv",18)+esc(t("recv"))+'</button>'+(n.tzt?'<button class="btnw" data-fourth="1">'+esc(t("getTzt"))+'</button>':'')+'</div></div>'}
+ return '<div class="emptyc" style="position:relative"><button data-rdismiss="1" aria-label="dismiss" style="position:absolute;top:10px;right:12px;background:none;border:0;color:var(--mu);font-size:20px;line-height:1;padding:4px">×</button><b>'+esc(t("emptyT"))+' 🎉</b><small>'+esc(t("emptyS"))+'</small><small style="display:block;margin-top:8px;color:var(--mu);font-size:11.5px;line-height:1.45">'+esc(t("gasH").replace("%s",n.sym))+'</small><div class="eb"><button class="btn" data-go="recv">'+ic("recv",18)+esc(t("recv"))+'</button>'+(n.tzt?'<button class="btnw" data-fourth="1">'+esc(t("getTzt"))+'</button>':'')+'</div></div>'}
 
 /* ----- big amount check (used by openConfirm) ----- */
 function isBig(a,k){var x=parseFloat(a);if(!(x>0)||!k)return false;var n=N();if(n.test)return false;
  if(k.id==="native"&&S.inr&&x*S.inr>=1000)return true;
  if(k.bal>0&&x>=k.bal*0.5)return true;return false}
-function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&npx())?money(parseFloat(a)*npx()):exactAmt(a)+" "+k.sym;
+function bigBox(a,k){if(!isBig(a,k))return "";var txt=(k.id==="native"&&dpx())?money(parseFloat(a)*dpx()):exactAmt(a)+" "+k.sym;
  return '<div class="sc warn" style="margin-top:10px">'+ic("warn",24)+'<div><b>'+esc(t("bigT"))+'</b><small>'+esc(t("bigS").replace("%a",txt))+'</small><label class="tick"><input type="checkbox" id="cBig">'+esc(t("bigTick"))+'</label></div></div>'}
 
 /* ----- news & alerts (announcements.json on the same site, so news can change without an app update) ----- */
@@ -71,7 +71,7 @@ function bellSheet(){lss("annSeen",annMax());render();var L2=S.lang==="hi"?"hi":
 
 /* ----- token detail ----- */
 function tokDetail(id){var k=tokens().find(function(x){return x.id===id});if(!k)return;var n=N();
- var val=(k.id==="native"&&npx()&&!n.test&&k.bal!=null)?money(k.bal*npx()):"";
+ var val=(k.id==="native"&&dpx()&&!n.test&&k.bal!=null)?money(k.bal*dpx()):"";
  var hist=txs().filter(function(x){return String(x.symbol||n.sym).toUpperCase()===String(k.sym).toUpperCase()}).slice(0,8);
  var extra=k.id==="tzt"?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("drop",18)+esc(t("getTzt"))+'</button>':(k.id==="native"&&S.net==="shardeum")?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("add",18)+esc(t("addShm"))+'</button>':(k.id==="native"&&n.test&&!n.tzt)?'<button class="btnw" data-fourth="1" style="margin-top:10px">'+ic("drop",18)+esc(t("testCoins"))+'</button>':'';
  sheet('<div class="grab"></div><div class="tdh"><span class="ci big'+(k.custom?' unv':'')+'">'+(k.img?'<img src="'+k.img+'" alt="">':'<b>'+esc(k.sym.slice(0,1))+'</b>')+'</span><div><b>'+esc(k.name)+tokBadge(k)+'</b><small>'+esc(k.sym+" · "+n.name)+'</small></div></div>'+
