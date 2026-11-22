@@ -3,10 +3,10 @@
    (and saved for next time); only when offline does it fall back to the saved copy.
    Never stores /api/ answers or anything from other websites. Keys and wallet data are not touched here. */
 "use strict";
-var CACHE = "tazvera-v9-83";
+var CACHE = "tazvera-v9-84";
 var CORE = ["/", "/index.html", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/ethers.min.js", "/wallet.js", "/qrcode.min.js", "/jsqr.js",
   "/app/fonts/fonts.css", "/app/css/app.css",
-  "/app/layout/mobile.css", "/app/features/shell/desktop.css", "/app/features/nav/desktop.css", "/app/features/home/desktop.css", "/app/features/send/desktop.css", "/app/features/receive/desktop.css", "/app/features/request/desktop.css", "/app/features/activity/desktop.css", "/app/features/explore/desktop.css", "/app/features/learn/desktop.css", "/app/features/security/desktop.css", "/app/features/browser/desktop.css", "/app/features/settings/desktop.css", "/app/features/assistant/desktop.css", "/app/features/shell/bg-light.svg", "/app/features/shell/bg-dark.svg", 
+  "/app/layout/mobile.css", "/app/features/shell/shell-desktop.css", "/app/features/nav/nav-desktop.css", "/app/features/home/home-desktop.css", "/app/features/send/send-desktop.css", "/app/features/receive/receive-desktop.css", "/app/features/request/request-desktop.css", "/app/features/activity/activity-desktop.css", "/app/features/explore/explore-desktop.css", "/app/features/learn/learn-desktop.css", "/app/features/security/security-desktop.css", "/app/features/browser/browser-desktop.css", "/app/features/settings/settings-desktop.css", "/app/features/assistant/assistant-desktop.css", "/app/features/shell/bg-light.svg", "/app/features/shell/bg-dark.svg", 
   "/app/theme/colors.css",
   "/app/fonts/poppins-400-latin.woff2", "/app/fonts/poppins-500-latin.woff2",
   "/app/fonts/poppins-600-latin.woff2", "/app/fonts/poppins-700-latin.woff2",
