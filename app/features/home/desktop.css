@@ -2,5 +2,5 @@
 /* Desktop Home page: one centred column, same width as the other pages. Desktop only (900px and up). */
 @media (min-width: 900px){
   .scr.tab-home .card{ border-radius: 20px; }
-  .scr.tab-home{ max-width: 760px !important; }
+  #app > .scr.tab-home{ max-width: 760px !important; }
 }
