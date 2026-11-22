@@ -19,6 +19,17 @@ function brwClean(v){
   if(!/^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(s)) return "";
   return "https://" + s;
 }
+/* Which sites do we know? Only the ones on the verified list, plus any the user has already opened
+   once. Anything else is "new" and says so, because a wrong address is the whole attack. */
+function brwTrust(host){
+  var h=String(host||"").toLowerCase();
+  if(!h)return "new";
+  for(var i=0;i<BRW_SHORTCUTS.length;i++){
+    if(brwHost(BRW_SHORTCUTS[i].url)===h)return "ok";
+  }
+  try{ if(sitesList().some(function(x){return x.domain===h}))return "ok" }catch(e){}
+  return "new";
+}
 function brwHost(u){ try{ return String(u).replace(/^https?:\/\//i,"").split("/")[0] }catch(e){ return u } }
 function brwOpen(u){
   var url=brwClean(u); if(!url){ toast(t("brwBad")); return }
@@ -37,13 +48,15 @@ function browserHTML(){
   var b=brwState(), n=N();
   var bar='<div class="brwbar">'+
     '<button class="ib" data-brwback="1" aria-label="back" '+(b.idx>0?'':'disabled')+'>'+ic("back",18)+'</button>'+
-    '<div class="baddr"><span class="bdot"></span>'+(b.url?esc(brwHost(b.url)):'<span class="bph">'+esc(t("brwPh"))+'</span>')+'</div>'+
+    '<div class="baddr"><span class="bdot '+(b.url?brwTrust(brwHost(b.url)):'')+'"></span>'+(b.url?esc(brwHost(b.url)):'<span class="bph">'+esc(t("brwPh"))+'</span>')+'</div>'+
     '<button class="ib" data-brwsites="1" aria-label="'+esc(t("brwSites"))+'">'+ic("shield",18)+'</button>'+
     '<button class="ib" data-brwgo="1" aria-label="open">'+ic("globe",18)+'</button></div>'+
     '<div class="bstrip"><i></i>'+esc(t("brwConn"))+' · '+esc(n.name)+'</div>';
   var body;
   if(b.url){
+    var tr=brwTrust(brwHost(b.url));
     body='<div class="brwsite"><b>'+esc(brwHost(b.url))+'</b>'+
+      (tr==="ok"?'':'<div class="bnew">'+esc(t("brwNew"))+'</div>')+
       '<p>'+esc(t("brwNote"))+'</p>'+
       '<button class="btn" data-brwtab="1">'+esc(t("brwTab"))+'</button>'+
       '<button class="btnw" data-brwhome="1">'+esc(t("brwHome"))+'</button></div>';
