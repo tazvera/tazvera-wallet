@@ -21,6 +21,30 @@ function brwClean(v){
 }
 /* Which sites do we know? Only the ones on the verified list, plus any the user has already opened
    once. Anything else is "new" and says so, because a wrong address is the whole attack. */
+/* Pinned sites: four by default, chosen by the user, kept on this phone. A pin is an index into
+   BRW_SHORTCUTS, so nothing can be pinned that is not on the verified list. */
+function brwPins(){
+  var l=ls("pins",null);
+  if(!Array.isArray(l))return [0,1,2,3];
+  return l.filter(function(i){return typeof i==="number"&&i>=0&&i<BRW_SHORTCUTS.length}).slice(0,6);
+}
+function brwPinToggle(i){
+  var l=brwPins(),k=l.indexOf(i);
+  if(k>=0)l.splice(k,1); else { if(l.length>=6)return false; l.push(i) }
+  lss("pins",l); return true;
+}
+function pinSheet(){
+  var l=brwPins();
+  var rows=BRW_SHORTCUTS.map(function(x,i){
+    var on=l.indexOf(i)>=0;
+    return '<button class="sess" style="width:100%;text-align:left;background:var(--soft);border:1px solid var(--line)" data-pintoggle="'+i+'">'+
+      '<span class="dot" style="background:'+(on?"var(--green)":"var(--line)")+'"></span>'+
+      '<div class="sm2"><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,""))+'</small></div>'+
+      '<span class="srm" style="color:'+(on?"var(--green)":"var(--mu)")+'">'+esc(t(on?"brwPinned":"brwPinAdd"))+'</span></button>'
+  }).join("");
+  sheet('<div class="grab"></div><div class="sht">'+esc(t("brwPinsT"))+'</div>'+
+    '<div class="snote">'+esc(t("brwPinsNote"))+'</div>'+rows,true);
+}
 function brwTrust(host){
   var h=String(host||"").toLowerCase();
   if(!h)return "new";
@@ -63,7 +87,8 @@ function browserHTML(){
   }else{
     body='<div class="brwstart">'+
       '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
-        BRW_SHORTCUTS.slice(0,4).map(function(x,i){return '<button class="brwfav" data-brwopen="'+i+'">'+esc(x.name.slice(0,1))+'</button>'}).join("")+
+        brwPins().map(function(i){return '<button class="brwfav" data-brwopen="'+i+'">'+esc(BRW_SHORTCUTS[i].name.slice(0,1))+'</button>'}).join("")+
+        '<button class="brwfav add" data-brwpin="1">+</button>'+
       '</div>'+
       '<div class="brwcat"><div class="lb3">'+esc(t("brwSwap"))+'</div>'+
         BRW_SHORTCUTS.filter(function(x){return x.cat==="swap"}).map(function(x){
