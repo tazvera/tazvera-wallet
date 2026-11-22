@@ -46,3 +46,22 @@
   .pinw{padding-top:0}
   .k{width:56px;height:56px;font-size:19px}
 }
+
+/* ---------- page by page ---------- */
+@media (min-width: 900px){
+  /* HOME: money and actions on the left, the token list and activity on the right */
+  .scr.tab-home{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+                column-gap:26px;align-content:start;padding:0 4px}
+  .scr.tab-home>.hd{grid-column:1/-1}
+  .scr.tab-home>.hero,
+  .scr.tab-home>.acts,
+  .scr.tab-home>.emptyc,
+  .scr.tab-home>.seccard{grid-column:1}
+  .scr.tab-home>.sec,
+  .scr.tab-home>.card,
+  .scr.tab-home>.tip{grid-column:2}
+  .scr.tab-home>.acts{justify-content:space-between;padding:16px 4px 0}
+  .scr.tab-home>.acts>button{flex:1}
+  /* SETTINGS and EXPLORE read better in a single measured column */
+  .scr.tab-set,.scr.tab-exp,.scr.tab-chk,.scr.tab-helpc{max-width:760px}
+}
