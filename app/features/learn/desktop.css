@@ -1,9 +1,7 @@
-/* Tazvera wallet · app/layout/desktop/lists.css · MIT License · https://github.com/tazvera/tazvera-wallet */
-/* Desktop: lists and grids on Help, Explore and Activity. Rows are full width and read left to right. */
+/* Tazvera wallet · app/features/learn/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop Help center: four cards in a row, full-width question rows, left aligned. */
 @media (min-width: 900px){
   .scr.tab-helpc .grid6{ grid-template-columns: repeat(4, 1fr) !important; gap: 14px !important; }
   .scr.tab-helpc .card .srow{ justify-content: space-between !important; text-align: left !important; padding: 18px 22px !important; }
   .scr.tab-helpc .card .srow b{ flex: 1 1 auto !important; text-align: left !important; }
-  .scr.tab-exp .grid6{ grid-template-columns: repeat(6, 1fr) !important; gap: 12px !important; }
-  .grid6{ gap: 12px; }
 }

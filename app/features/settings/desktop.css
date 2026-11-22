@@ -1,4 +1,5 @@
-/* Tazvera wallet · app/layout/desktop/settings.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · app/features/settings/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop Settings page: a plain sheet, rows separated by space. */
 /* Desktop: the Settings page. A plain sheet: rows sit on one surface and are separated by space, with no boxes. */
 @media (min-width: 900px){
   .scr.tab-set{ max-width: 760px !important; }
