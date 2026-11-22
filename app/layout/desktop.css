@@ -5,7 +5,7 @@
 @media (min-width: 900px){
   /* the rail is a surface of its own, pinned to the left edge, full height */
   .nav.n3{position:fixed;left:0;top:0;bottom:0;transform:none;
-          width:96px;height:100vh;max-width:96px!important;min-width:96px;
+          width:96px!important;height:100vh;max-width:96px!important;min-width:96px!important;
           display:grid;grid-template-columns:1fr!important;grid-auto-rows:min-content;
           align-content:start;gap:2px;padding:18px 10px;
           border-radius:0;background:var(--card);border:0;border-right:1px solid var(--line);
@@ -20,7 +20,7 @@
   .nv-extra{display:flex!important}
 
   /* the content starts to the right of the rail, never under it */
-  #app{max-width:1120px;margin:0 auto 0 96px;padding:28px 40px 56px}
+  #app{max-width:1120px;margin:0 auto 0 104px;padding:28px 40px 56px}
 
   /* the header keeps only the scan button; the bell and gear live in the rail now */
   .hd .ib:not(:first-of-type){display:none}
