@@ -4,11 +4,22 @@
    the shortcuts and the history. Opening a real site inside the app needs the Android shell; until
    that exists, a site opens in a new tab and is connected with WalletConnect. The wallet core and
    the signing sheet are NOT here — this screen can only ask them. */
+/* Only sites whose address has been checked by hand. Each carries its own official logo, taken from
+   Trust Wallet's public assets collection (the same source Trust Wallet itself uses). */
+var BRW_LOGOS = "app/browser/layout/logos/";
 var BRW_SHORTCUTS = [
-  { name: "PancakeSwap", url: "https://pancakeswap.finance", tag: "BNB Chain", cat: "swap" },
-  { name: "Uniswap", url: "https://app.uniswap.org", tag: "Ethereum", cat: "swap" },
-  { name: "BscScan", url: "https://bscscan.com", tag: "explorer", cat: "exp" },
-  { name: "Shardeum explorer", url: "https://explorer.shardeum.org", tag: "explorer", cat: "exp" }
+  { name: "PancakeSwap", url: "https://pancakeswap.finance", tag: "BNB Chain", cat: "swap", logo: BRW_LOGOS + "pancakeswap.finance.png" },
+  { name: "Uniswap", url: "https://app.uniswap.org", tag: "Ethereum", cat: "swap", logo: BRW_LOGOS + "app.uniswap.org.png" },
+  { name: "1inch", url: "https://app.1inch.io", tag: "Both chains", cat: "swap", logo: BRW_LOGOS + "app.1inch.io.png" },
+  { name: "Curve", url: "https://curve.fi", tag: "Ethereum", cat: "swap", logo: BRW_LOGOS + "curve.fi.png" },
+  { name: "BscScan", url: "https://bscscan.com", tag: "BNB Chain", cat: "exp", logo: BRW_LOGOS + "bscscan.com.png" },
+  { name: "Etherscan", url: "https://etherscan.io", tag: "Ethereum", cat: "exp", logo: BRW_LOGOS + "etherscan.io.png" },
+  { name: "Shardeum explorer", url: "https://explorer.shardeum.org", tag: "Shardeum", cat: "exp", logo: "app/img/shm.png" },
+  { name: "OpenSea", url: "https://opensea.io", tag: "NFT", cat: "nft", logo: BRW_LOGOS + "opensea.io.png" },
+  { name: "Magic Eden", url: "https://magiceden.io", tag: "NFT", cat: "nft", logo: BRW_LOGOS + "magiceden.io.png" },
+  { name: "Blur", url: "https://blur.io", tag: "NFT", cat: "nft", logo: BRW_LOGOS + "blur.io.png" },
+  { name: "Aave", url: "https://aave.com", tag: "Lending", cat: "defi", logo: BRW_LOGOS + "aave.com.png" },
+  { name: "Axie Infinity", url: "https://axieinfinity.com", tag: "Game", cat: "game", logo: BRW_LOGOS + "axieinfinity.com.png" }
 ];
 function brwState(){ if(!S.brw||typeof S.brw!=="object")S.brw={url:"",hist:[],idx:-1}; return S.brw }
 /* a URL is only accepted as http(s); anything else (javascript:, data:) is refused outright */
@@ -81,6 +92,19 @@ function browserHTML(){
     '<div class="bstrip"><i></i>'+esc(t("brwConn"))+' · '+esc(n.name)+'</div>';
   var q=(S.bq||"").trim().toLowerCase();
   var list=BRW_SHORTCUTS.filter(function(x){return !q||(x.name+" "+x.url).toLowerCase().indexOf(q)>=0});
+  var pinnedIdx = brwPins();
+  var rest = list.filter(function(x){ return pinnedIdx.indexOf(BRW_SHORTCUTS.indexOf(x)) < 0 });
+  function card(x){ var i=BRW_SHORTCUTS.indexOf(x);
+    return '<button class="brwli" data-brwopen="'+i+'">'+
+      '<span class="blg"><img src="'+esc(x.logo)+'" alt="" loading="lazy"></span>'+
+      '<span class="bm"><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,"").replace(/\/$/,""))+'</small></span>'+
+      ic("right",16)+'</button>' }
+  var groups=[["swap",t("brwSwap")],["exp",t("brwExp")],["nft","NFT"],["defi","DeFi"],["game","Games"]];
+  var catRows = groups.map(function(g){
+    var items=rest.filter(function(x){return x.cat===g[0]});
+    if(!items.length) return "";
+    return '<div class="brwcat"><div class="lb3">'+esc(g[1])+'</div>'+items.map(card).join("")+'</div>'
+  }).join("");
   var body;
   if(b.url){
     var tr=brwTrust(brwHost(b.url));
@@ -92,17 +116,10 @@ function browserHTML(){
   }else{
     body='<div class="brwstart">'+
       '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
-        (q?'':brwPins().map(function(i){return '<button class="brwpin2" data-brwopen="'+i+'">'+esc(BRW_SHORTCUTS[i].name)+'</button>'}).join(""))+
+        (q?'':brwPins().map(function(i){var x=BRW_SHORTCUTS[i];return '<button class="brwpin2" data-brwopen="'+i+'"><img src="'+esc(x.logo)+'" alt="">'+esc(x.name)+'</button>'}).join(""))+
         '<button class="brwpin2 add" data-brwpin="1">'+ic("plus",14)+' '+esc(t("brwPinAdd"))+'</button>'+
       '</div>'+
-      '<div class="brwcat"><div class="lb3">'+esc(t("brwSwap"))+'</div>'+
-        list.filter(function(x){return x.cat==="swap"}).map(function(x){
-          return '<button class="brwli" data-brwopen="'+BRW_SHORTCUTS.indexOf(x)+'"><div><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,""))+'</small></div></button>'}).join("")+
-      '</div>'+
-      '<div class="brwcat"><div class="lb3">'+esc(t("brwExp"))+'</div>'+
-        list.filter(function(x){return x.cat==="exp"}).map(function(x){
-          return '<button class="brwli" data-brwopen="'+BRW_SHORTCUTS.indexOf(x)+'"><div><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,""))+'</small></div></button>'}).join("")+
-      '</div>'+
+      catRows+
       '<div class="brwnote">'+esc(t("brwNote"))+'</div></div>';
   }
   return '<div class="tb"><button class="ib" data-tab="home" aria-label="back">'+ic("back",20)+'</button><b>'+esc(t("brwT"))+'</b></div>'+bar+body;

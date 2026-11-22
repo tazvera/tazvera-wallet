@@ -3,7 +3,7 @@
    (and saved for next time); only when offline does it fall back to the saved copy.
    Never stores /api/ answers or anything from other websites. Keys and wallet data are not touched here. */
 "use strict";
-var CACHE = "tazvera-v9-78";
+var CACHE = "tazvera-v9-79";
 var CORE = ["/", "/index.html", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/ethers.min.js", "/wallet.js", "/qrcode.min.js", "/jsqr.js",
   "/app/fonts/fonts.css", "/app/css/app.css",
   "/app/layout/mobile.css", "/app/features/shell/desktop.css", "/app/features/nav/desktop.css", "/app/features/home/desktop.css", "/app/features/send/desktop.css", "/app/features/receive/desktop.css", "/app/features/request/desktop.css", "/app/features/activity/desktop.css", "/app/features/explore/desktop.css", "/app/features/learn/desktop.css", "/app/features/security/desktop.css", "/app/features/browser/desktop.css", "/app/features/settings/desktop.css", "/app/features/assistant/desktop.css", "/app/features/shell/bg-light.svg", "/app/features/shell/bg-dark.svg", 
@@ -17,6 +17,17 @@ var CORE = ["/", "/index.html", "/manifest.webmanifest", "/icon-192.png", "/icon
   "/app/js/23-back-button.js", "/app/js/24-explore.js", "/app/js/25-settings.js", "/app/js/26-v8-trust.js", "/app/js/features/session-and-copy.js", "/app/js/features/pin-wait.js", "/app/js/features/offline-theme-mainnet.js", "/app/js/features/qr-network-privacy.js", "/app/js/features/bottom-bar-assistant-icon.js", "/app/js/features/backup-check.js", "/app/js/features/idle-lock.js", "/app/js/features/pin-change-wallets.js", "/app/js/features/send-safety.js", "/app/js/features/currency.js", "/app/js/features/chart.js", "/app/js/features/quiz.js", "/app/js/features/strong-lock.js", "/app/js/features/lock-screen-fingerprint.js", "/app/js/features/sounds.js",
   "/app/tokens/add-token.js",
   "/app/browser/browser.js",
+  "/app/browser/layout/logos/axieinfinity.com.png",
+  "/app/browser/layout/logos/aave.com.png",
+  "/app/browser/layout/logos/blur.io.png",
+  "/app/browser/layout/logos/magiceden.io.png",
+  "/app/browser/layout/logos/opensea.io.png",
+  "/app/browser/layout/logos/etherscan.io.png",
+  "/app/browser/layout/logos/bscscan.com.png",
+  "/app/browser/layout/logos/curve.fi.png",
+  "/app/browser/layout/logos/app.1inch.io.png",
+  "/app/browser/layout/logos/app.uniswap.org.png",
+  "/app/browser/layout/logos/pancakeswap.finance.png",
   "/app/browser/signing/signing.js",
   "/app/browser/sites/connected-sites.js", "/app/js/27-ai.js", "/app/js/28-backup.js", "/app/js/29-ai2.js", "/app/js/30-render-boot.js"];
 

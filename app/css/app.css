@@ -606,3 +606,19 @@ svg{-webkit-touch-callout:none;user-select:none}
   font:500 13.5px Poppins,system-ui,sans-serif;color:var(--tx)}
 .binput::placeholder{color:var(--mu)}
 .baddr:focus-within{border-color:var(--greenDeep)}
+
+/* ---------- browser: site cards with their real logo ---------- */
+.brwli{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;
+  margin-top:8px;color:var(--tx)}
+.brwli:active{transform:scale(.995)}
+.blg{width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:var(--soft);
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.blg img{width:30px;height:30px;object-fit:contain;display:block}
+.bm{flex:1;min-width:0}
+.bm b{display:block;font-size:13.5px;font-weight:600}
+.bm small{display:block;margin-top:1px;font-size:11px;color:var(--mu);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brwli svg{color:var(--mu);flex:0 0 16px}
+
+.brwpin2 img{width:18px;height:18px;object-fit:contain;display:block;margin-right:2px}
