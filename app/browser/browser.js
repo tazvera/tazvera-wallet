@@ -33,7 +33,7 @@ function brwPinToggle(i){
   if(k>=0)l.splice(k,1); else { if(l.length>=6)return false; l.push(i) }
   lss("pins",l); return true;
 }
-function pinSheet(){
+function brwPinSheet(){
   var l=brwPins();
   var rows=BRW_SHORTCUTS.map(function(x,i){
     var on=l.indexOf(i)>=0;

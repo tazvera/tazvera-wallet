@@ -34,8 +34,8 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-wsh
  if(d.brwback){brwBack();return} if(d.brwhome){brwHome();return}
  if(d.brwgo){var u=prompt(t("brwPh"),brwState().url||"");if(u)brwOpen(u);return}
  if(d.brwopen){brwOpen(BRW_SHORTCUTS[+d.brwopen].url);return}
- if(d.brwpin){pinSheet();return}
- if(d.pintoggle!==undefined&&d.pintoggle!==""){if(!brwPinToggle(+d.pintoggle))toast(t("brwPinsNote"));pinSheet();return}
+ if(d.brwpin){brwPinSheet();return}
+ if(d.pintoggle!==undefined&&d.pintoggle!==""){if(!brwPinToggle(+d.pintoggle))toast(t("brwPinsNote"));brwPinSheet();return}
  if(d.brwsites){sitesSheet();return}
  if(d.siteoff){siteDrop(d.siteoff);toast(t("sitesOff"));sitesSheet();return}
  if(d.brwconn){var hu=brwState().url?brwHost(brwState().url):"";signSheet({domain:hu,action:"connect"},function(ok){if(ok){S.brwConn=hu;try{siteAdd(hu,N().name)}catch(e){};toast(t("brwConnected")+" "+hu);render()}});return}
