@@ -524,7 +524,9 @@ svg{-webkit-touch-callout:none;user-select:none}
 .who small{font-size:12px;letter-spacing:.15px;opacity:.9}
 
 /* ---------- browser ---------- */
-.nav.n4 .nv{flex:1}
+.nav.n4{grid-template-columns:repeat(4,1fr)!important;max-width:408px!important;min-width:344px}
+.nav.n4 .nv{min-width:0}
+.nav.n4 .nv span{font-size:10.5px;white-space:nowrap}
 .brwbar{display:flex;align-items:center;gap:8px;padding:8px 14px}
 .brwbar .ib[disabled]{opacity:.35}
 .baddr{flex:1;display:flex;align-items:center;gap:8px;background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:9px 14px;font-size:13px;color:var(--tx);overflow:hidden;white-space:nowrap}
@@ -541,3 +543,11 @@ svg{-webkit-touch-callout:none;user-select:none}
 .brwsc b{display:block;font-size:13px}
 .brwsc small{display:block;margin-top:3px;font-size:10.5px;color:var(--mu)}
 .brwnote{margin-top:16px;font-size:11.5px;line-height:1.6;color:var(--mu)}
+
+/* ---------- browser card on Home ---------- */
+.brwcard{display:flex;align-items:center;gap:12px;width:calc(100% - 36px);margin:14px 18px 0;padding:14px 16px;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;color:var(--tx);text-align:left}
+.brwcard .bic{width:34px;height:34px;border-radius:11px;background:var(--pill);color:var(--green);display:flex;align-items:center;justify-content:center;flex:0 0 34px}
+.brwcard .bt{flex:1;min-width:0}
+.brwcard .bt b{display:block;font-size:14px}
+.brwcard .bt small{display:block;margin-top:2px;font-size:11.5px;color:var(--mu)}
