@@ -36,9 +36,13 @@ async function load(){var n=N();if(!S.addr)return;try{var h=await rpc(n.rpc,"eth
  else{S.inr=null;S.usd=null;S.chg=null}
  /* BNB and ETH have no /api/price entry; their value comes from the market table the Explore screen
     already loads, so the balance is shown in rupees on every main network, not just Shardeum. */
- if(n.sym!=="SHM"){try{await loadMk();var cid=n.sym==="BNB"||n.sym==="tBNB"?"binancecoin":(n.sym==="ETH"||n.sym==="SepoliaETH")?"ethereum":null;
-   var mk=S.mk&&cid?S.mk[cid]:null;
-   if(mk){if(mk.inr>0)S.inr=mk.inr;if(mk.usd>0)S.usd=mk.usd;if(mk.inr_24h_change!=null&&!isNaN(mk.inr_24h_change))S.chg=+mk.inr_24h_change}
+ /* The price must never hold up the balance or the token list: it is fetched alongside and
+    the screen is redrawn when it arrives. Awaiting it here left the wallet blank on slow data. */
+ if(n.sym!=="SHM"){try{var cid=n.sym==="BNB"||n.sym==="tBNB"?"binancecoin":(n.sym==="ETH"||n.sym==="SepoliaETH")?"ethereum":null;
+   if(cid){loadMk().then(function(){var mk=S.mk&&S.mk[cid];if(!mk)return;
+     if(mk.inr>0)S.inr=mk.inr;if(mk.usd>0)S.usd=mk.usd;
+     if(mk.inr_24h_change!=null&&!isNaN(mk.inr_24h_change))S.chg=+mk.inr_24h_change;
+     if(S.tab==="home")render()}).catch(function(){})}
  }catch(e){}}
  if(S.tab==="home"||S.tab==="recv")render();if(S.tab==="send")estFee()}
 var REMOTE={};
