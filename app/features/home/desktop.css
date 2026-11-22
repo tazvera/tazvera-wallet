@@ -1,5 +1,10 @@
 /* Tazvera wallet · app/features/home/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
-/* Desktop Home page: keeps the balance card at full width and the tokens list below it. */
+/* Desktop Home page: balance card on the left, tokens and activity on the right. */
 @media (min-width: 900px){
   .scr.tab-home .card{ border-radius: 20px; }
+  .scr.tab-home{ display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; gap: 0 28px !important; align-items: start !important; }
+  .scr.tab-home > .hd,
+  .scr.tab-home > .acts{ grid-column: 1 / -1 !important; }
+  .scr.tab-home > .hero{ grid-column: 1 !important; }
+  .scr.tab-home > *:not(.hd):not(.acts):not(.hero){ grid-column: 2 !important; }
 }
