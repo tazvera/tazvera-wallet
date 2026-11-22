@@ -372,8 +372,6 @@ html[data-theme=dark] .aifab{box-shadow:none!important}
 .netp .tav{width:100%;height:100%;font-size:18px;background:var(--card)}
 
 /* ---- opening animation ---- */
-#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 44%,#14336A 0%,#0B1D3A 46%,#060F22 100%);transition:opacity .5s ease,transform .5s ease;overflow:hidden}
-#splash.out{opacity:0;transform:scale(1.06);pointer-events:none}
 .sp-glow{position:absolute;width:420px;height:420px;border-radius:50%;left:50%;top:44%;transform:translate(-50%,-50%) scale(.6);background:radial-gradient(circle,rgba(55,222,100,.38),rgba(55,222,100,0) 65%);opacity:0;animation:spGlow 1.1s ease-out .05s forwards}
 .sp-logo{width:132px;height:132px;position:relative;margin-top:-30px}.sp-svg{width:100%;height:100%;overflow:visible}
 .pc{opacity:0;transform-box:view-box}
@@ -444,10 +442,6 @@ html[data-theme=dark] .aim.u .aib{background:linear-gradient(135deg,#14C8A8,#0EA
 .aifab svg{filter:drop-shadow(0 6px 12px rgba(14,165,233,.35))}
 
 /* calm opening (phones with "remove animations" on): the same picture, no movement */
-#splash.calm *{animation:none!important;transition:none!important}
-#splash.calm .pc,#splash.calm .sp-tile,#splash.calm .sp-word i,#splash.calm .sp-tag,#splash.calm .sp-glow{opacity:1!important;transform:none!important}
-#splash.calm .sp-glow{transform:translate(-50%,-50%)!important}
-#splash.calm .sp-ring,#splash.calm .sp-shine{opacity:0!important}
 
 /* ---------- accessibility & polish (added 2026-11) ---------- */
 
