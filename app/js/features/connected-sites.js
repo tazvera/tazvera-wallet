@@ -37,5 +37,5 @@ function sitesSheet(){
   }).join(""):'<div class="snone">'+esc(t("sitesNone"))+'</div>';
   sheet('<div class="grab"></div><div class="sht">'+esc(t("sitesT"))+'</div>'+
     '<div class="snote">'+esc(t("sitesNote"))+'</div>'+body+
-    '<div class="sfine" style="margin-top:12px">'+esc(t("sitesFine"))+'</div>',true);
+    '<div class="sfine" style="margin-top:12px">'+esc(t("sitesFine"))+'</div>');
 }

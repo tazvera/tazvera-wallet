@@ -43,7 +43,7 @@ function pinSheet(){
       '<span class="srm" style="color:'+(on?"var(--green)":"var(--mu)")+'">'+esc(t(on?"brwPinned":"brwPinAdd"))+'</span></button>'
   }).join("");
   sheet('<div class="grab"></div><div class="sht">'+esc(t("brwPinsT"))+'</div>'+
-    '<div class="snote">'+esc(t("brwPinsNote"))+'</div>'+rows,true);
+    '<div class="snote">'+esc(t("brwPinsNote"))+'</div>'+rows);
 }
 function brwTrust(host){
   var h=String(host||"").toLowerCase();

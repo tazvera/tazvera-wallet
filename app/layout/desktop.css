@@ -29,6 +29,11 @@
   .nav.n3 .nv.on{ color: var(--green) !important; background: transparent !important; }
   .nav.n3 .nv.on svg{ color: var(--green) !important; }
   .nv-extra{ display: flex !important; }
+  /* the assistant is a rail item at the bottom, not a circle floating over the page */
+  .nav.n3 .nv-ai{ margin-top: auto !important; }
+  .nav.n3 .nv-ai svg{ width: 26px !important; height: 26px !important; }
+  .aifab{ display: none !important; }
+
 
   /* ---------- the page beside it ---------- */
   #app{ max-width: none !important; margin: 0 !important; padding: 24px 32px 48px 124px !important; }
