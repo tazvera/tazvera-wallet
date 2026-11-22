@@ -8,7 +8,7 @@
           width:96px!important;height:100vh;max-width:96px!important;min-width:96px!important;
           display:grid;grid-template-columns:1fr!important;grid-auto-rows:min-content;
           align-content:start;gap:2px;padding:18px 10px;
-          border-radius:0;background:var(--card);border:0;border-right:1px solid var(--line);
+          border-radius:0;background:transparent;border:0;border-right:1px solid var(--line);
           box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
   .nav.n3 .nv{height:auto;padding:11px 4px;gap:6px;font-size:10.5px;margin:0;border-radius:12px}
   .nav.n3 .nv span{font-size:10.5px;line-height:1.2}
@@ -26,7 +26,7 @@
   .hd .ib:not(:first-of-type){display:none}
 
   /* the assistant gets a fixed home at the bottom of the rail */
-  .aifab{left:21px;right:auto;bottom:26px;width:54px;height:54px}
+  .aifab{left:21px!important;right:auto!important;bottom:26px!important;width:54px!important;height:54px!important}
 
   .brwgrid{grid-template-columns:repeat(4,1fr)}
   .grid6{grid-template-columns:repeat(6,1fr)}
