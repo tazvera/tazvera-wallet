@@ -1,0 +1,37 @@
+/* Tazvera wallet · app/features/shell/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop page frame, type scale and background picture. Used by every page. */
+/* Desktop: the page frame. Every page sits in one centred column, with the same header and width. */
+@media (min-width: 900px){
+  #app{ max-width: none !important; margin: 0 !important; padding: 28px 40px 56px 136px !important; }
+  #app:not(:has(.nav)){ padding-left: 40px !important; }
+  #app > .scr{ max-width: 1040px !important; margin: 0 auto !important; }
+  /* forms read best in a narrower column */
+  .scr.tab-send, .scr.tab-recv, .scr.tab-req, .scr.tab-chk{ max-width: 640px !important; }
+  /* the Continue button sits under the form, not pinned to the bottom of a 1080px-tall window */
+  .bar{ position: static !important; transform: none !important; left: auto !important; bottom: auto !important;
+        width: 100% !important; max-width: 420px !important; margin: 28px auto 0 !important; }
+  .tb{ margin-bottom: 4px; }
+  .tb b{ font-size: 22px; letter-spacing: -.2px; }
+  .card{ border-radius: 20px; }
+}
+
+/* Desktop: the picture behind the page. A large, faint version of the T mark sits on the empty side,
+   in green on dark and in black on light. The phone has no picture (its page fills the screen). */
+@media (min-width: 900px){
+  html, body{ background-color: var(--bg) !important; }
+  body{
+    background-image: url("bg-light.svg") !important; background-repeat: no-repeat !important;
+    background-position: right -10vw center !important; background-size: min(70vh, 720px) auto !important;
+    background-attachment: fixed !important;
+  }
+  html[data-theme=dark] body{ background-image: url("bg-dark.svg") !important; }
+}
+
+@media (min-width: 900px){
+  /* type scale: one font (Poppins), clear sizes */
+  html, body{ font-family: Poppins, system-ui, sans-serif; font-size: 15px; -webkit-font-smoothing: antialiased; }
+  .tb b{ font-size: 26px !important; font-weight: 700 !important; letter-spacing: -.4px; }
+  .sec b{ font-size: 18px; font-weight: 700; letter-spacing: -.2px; }
+  .lb3, .day{ font-size: 12px !important; font-weight: 600 !important; letter-spacing: 1.2px !important; color: var(--mu) !important; text-transform: uppercase; }
+  .card{ box-shadow: none; border: 1px solid var(--line); }
+}

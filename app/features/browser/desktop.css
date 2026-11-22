@@ -1,0 +1,15 @@
+/* Tazvera wallet · app/features/browser/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop in-app browser: a search bar on top, pinned sites as tiles, sites in a two-column grid. */
+@media (min-width: 900px){
+  .scr.tab-brw{ max-width: 960px !important; }
+  .scr.tab-brw .brwbar{ display: flex !important; align-items: center !important; gap: 10px !important; margin: 0 0 16px !important; }
+  .scr.tab-brw .baddr{ flex: 1 !important; height: 52px !important; border-radius: 16px !important; background: var(--card) !important; border: 1px solid var(--line) !important; display: flex !important; align-items: center !important; padding: 0 18px !important; font-size: 15px !important; }
+  .scr.tab-brw .brwbar .ib{ width: 52px !important; height: 52px !important; border-radius: 16px !important; background: var(--card) !important; border: 1px solid var(--line) !important; }
+  .scr.tab-brw .bstrip{ border-radius: 14px !important; margin: 0 0 26px !important; padding: 10px 16px !important; font-size: 13px !important; font-weight: 600 !important; }
+  .scr.tab-brw .brwpin{ display: grid !important; grid-template-columns: repeat(6, 1fr) !important; gap: 12px !important; margin-top: 10px !important; }
+  .scr.tab-brw .brwfav{ width: 100% !important; height: 84px !important; border-radius: 18px !important; font-size: 20px !important; }
+  .scr.tab-brw .brwcat{ display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; margin-top: 26px !important; }
+  .scr.tab-brw .brwcat > .lb3{ grid-column: 1 / -1 !important; margin: 0 0 2px !important; }
+  .scr.tab-brw .brwli{ width: 100% !important; margin: 0 !important; }
+  .scr.tab-brw .brwnote{ margin-top: 26px !important; font-size: 13px !important; color: var(--mu) !important; line-height: 1.6 !important; }
+}

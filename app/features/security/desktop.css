@@ -1,0 +1,5 @@
+/* Tazvera wallet · app/features/security/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop Security checkup page. */
+@media (min-width: 900px){
+  .scr.tab-chk{ max-width: 640px !important; }
+}

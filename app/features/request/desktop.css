@@ -1,0 +1,5 @@
+/* Tazvera wallet · app/features/request/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop Request page: a centred form and QR. */
+@media (min-width: 900px){
+  .scr.tab-req{ max-width: 640px !important; }
+}

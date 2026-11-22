@@ -1,4 +1,5 @@
-/* Tazvera wallet · app/layout/desktop/rail.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Tazvera wallet · app/features/nav/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop left menu (rail). Only from 900px wide. */
 /* Desktop: the left menu (rail). Only from 900px wide, so phones are not touched. */
 @media (min-width: 900px){
   .nav.n3{
