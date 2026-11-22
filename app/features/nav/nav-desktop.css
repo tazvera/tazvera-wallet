@@ -27,3 +27,14 @@
   .nav.n3 .nv-ai{ margin-top: auto !important; }
   .aifab{ display: none !important; }
 }
+
+/* THE ASSISTANT KEEPS ITS OWN COLOURS. The rule above forces every rail icon into a thin outline,
+   which stripped the robot's gradients and made it look like a different logo. This one is exempt. */
+@media (min-width: 900px){
+  .nav.n3 .nv-ai svg{
+    all: unset !important;
+    display: block !important;
+    width: 26px !important;
+    height: 26px !important;
+  }
+}
