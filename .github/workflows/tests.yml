@@ -14,6 +14,7 @@ jobs:
       - run: node test/pin-wait.test.cjs
       - run: node test/transaction-approval.test.cjs
       - run: node test/walletconnect-policy.test.cjs
+      - run: node test/walletconnect-not-enabled.test.cjs
   vendor:
     runs-on: ubuntu-latest
     steps:
