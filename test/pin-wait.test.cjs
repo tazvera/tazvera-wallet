@@ -76,20 +76,17 @@ vm.runInContext(fs.readFileSync("app/js/features/pin-wait.js", "utf8"), ctx);
   assert.equal(ctx.pinWait(), 0, "successful unlock clears the failure counter");
   assert.equal(store.has("tz_pinfail"), false, "successful unlock removes persisted failure state");
 
+  store.set("tz_pinfail", JSON.stringify({ n: Number.MAX_SAFE_INTEGER, u: 0 }));
+  ctx.pinFail();
+  assert.equal(JSON.parse(store.get("tz_pinfail")).n, 8, "oversized counters are capped at the maximum backoff step");
+  assert.equal(ctx.pinWait(), 900_000, "counter values cannot overflow the backoff schedule");
+
   storageThrows = true;
   for (let i = 0; i < 5; i++) await assert.rejects(ctx.CPW.unlock("wrong"));
   assert.equal(ctx.pinWait(), 30_000, "session-memory throttle still activates when browser storage is unavailable");
   const callsBeforeStorageLock = unlockCalls;
   await assert.rejects(ctx.CPW.unlock("correct"), /pin-wait/);
   assert.equal(unlockCalls, callsBeforeStorageLock, "storage failure must not bypass the active session lock");
-
-  storageThrows = false;
-  ctx.PINSTORE = true;
-  ctx.PINMEM = { n: 0, u: 0 };
-  store.set("tz_pinfail", JSON.stringify({ n: Number.MAX_SAFE_INTEGER, u: 0 }));
-  ctx.pinFail();
-  assert.equal(JSON.parse(store.get("tz_pinfail")).n, 8, "tampered oversized counters are capped at the maximum backoff step");
-  assert.equal(ctx.pinWait(), 900_000, "counter tampering cannot overflow the backoff schedule");
 
   console.log("PIN throttle tests: escalation, storage fallback and counter bounds passed");
 })().catch(err => {
