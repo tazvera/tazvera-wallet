@@ -83,7 +83,13 @@ vm.runInContext(fs.readFileSync("app/js/features/pin-wait.js", "utf8"), ctx);
   await assert.rejects(ctx.CPW.unlock("correct"), /pin-wait/);
   assert.equal(unlockCalls, callsBeforeStorageLock, "storage failure must not bypass the active session lock");
 
-  console.log("PIN throttle tests: storage-failure fallback and escalation passed");
+  storageThrows = false;
+  store.set("tz_pinfail", JSON.stringify({ n: Number.MAX_SAFE_INTEGER, u: 0 }));
+  ctx.pinFail();
+  assert.equal(JSON.parse(store.get("tz_pinfail")).n, 8, "tampered oversized counters are capped at the maximum backoff step");
+  assert.equal(ctx.pinWait(), 900_000, "counter tampering cannot overflow the backoff schedule");
+
+  console.log("PIN throttle tests: escalation, storage fallback and counter bounds passed");
 })().catch(err => {
   console.error(err);
   process.exitCode = 1;
