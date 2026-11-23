@@ -27,7 +27,7 @@ test("approval is bound to exact transaction and consumed once",async()=>{
  await assert.rejects(send(),/fresh approval/);
  assert.equal(sends,1);
 });
-test("approval expires and cannot survive wallet lock",async()=>{
+test("approval cannot survive wallet lock",async()=>{
  ctx.CPW.approveTransaction(tx);
  const permit=ctx.CPW; // expiry is checked against the real clock
  // Locking the wallet clears any outstanding approval before another request.
@@ -43,4 +43,15 @@ test("approval expires and cannot survive wallet lock",async()=>{
 test("approval details reject mismatched sender and malformed destination",async()=>{
  await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,from:recipient})),/Invalid transaction/);
  await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,to:"not-an-address"})),/Invalid transaction/);
+});
+
+test("approval expires after its short validity window",async()=>{
+ await ctx.CPW.unlockKs("{}", "pw",address);
+ ctx.CPW.approveTransaction(tx);
+ const now=Date.now;
+ try {
+   Date.now=()=>now()+31000;
+   await assert.rejects(send(),/fresh approval/);
+ } finally { Date.now=now; }
+ assert.equal(sends,1);
 });
