@@ -33,12 +33,12 @@ function slSetSheet(oldSecret){var lv=0;
  function upd(){lv=wbkLevel(p1.value,oldSecret);var why=wbkWhy(p1.value,p2.value,oldSecret);$("slBar").className="l"+lv;$("slMsg").textContent=p1.value?(lv<2?why:(p2.value&&p2.value!==p1.value?t("wbkSame"):(lv===3?t("wbkStrong"):t("wbkOk")))):"";$("slMsg").className="wbmsg l"+lv;go.disabled=!!why||!$("slTk").checked}
  p1.oninput=p2.oninput=$("slTk").onchange=upd;
  go.onclick=async function(){if(go.disabled)return;var np=p1.value;p1.value=p2.value="";sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);
-  try{var ph=await CPW.phrase(oldSecret);await CPW.imp(ph,np);ph=null;var miss=await pinRelockAll(oldSecret,np);rawSet("tz_lockmode","pass");closeSheet();render();toast(miss?t("pinOkPart").replace("%n",miss):t("slDone"))}catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}}}
+  try{var previous=raw("cp3_inapp_keystore","");var ph=await CPW.phrase(oldSecret);await CPW.imp(ph,np);ph=null;await pinRelockAll(oldSecret,np,previous);rawSet("tz_lockmode","pass");closeSheet();render();toast(t("slDone"))}catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}}}
 function slBackToPin(oldPass){var first=null;
  function ask(title){window.askPin6(t("pinT"),title,async function(p,fail){if(first===null){first=p;closeSheet();setTimeout(function(){ask(t("rePin"))},250);return}
   if(p!==first){first=null;closeSheet();toast(t("pinMis"));return}
   sheet('<div class="grab"></div><div class="pinw"><div class="pt">'+esc(t("making"))+'</div></div>',true);
-  try{var ph=await CPW.phrase(oldPass);await CPW.imp(ph,p);ph=null;var miss=await pinRelockAll(oldPass,p);rawSet("tz_lockmode",null);closeSheet();render();toast(miss?t("pinOkPart").replace("%n",miss):t("slBackDone"))}catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}})}
+  try{var previous=raw("cp3_inapp_keystore","");var ph=await CPW.phrase(oldPass);await CPW.imp(ph,p);ph=null;await pinRelockAll(oldPass,p,previous);rawSet("tz_lockmode",null);closeSheet();render();toast(t("slBackDone"))}catch(e){closeSheet();toast(String(e&&e.message||e).slice(0,80))}})}
  ask(t("newPin"))}
 document.addEventListener("click",function(e){if(!e.target.closest("[data-slock]"))return;
  if(!passOn()){askPin(t("pinT"),t("slCur"),async function(p,fail){try{await CPW.unlock(p)}catch(x){return fail(t("pinBad"))}closeSheet();setTimeout(function(){slSetSheet(p)},250)});return}
