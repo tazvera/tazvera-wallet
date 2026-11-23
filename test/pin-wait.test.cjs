@@ -84,6 +84,8 @@ vm.runInContext(fs.readFileSync("app/js/features/pin-wait.js", "utf8"), ctx);
   assert.equal(unlockCalls, callsBeforeStorageLock, "storage failure must not bypass the active session lock");
 
   storageThrows = false;
+  ctx.PINSTORE = true;
+  ctx.PINMEM = { n: 0, u: 0 };
   store.set("tz_pinfail", JSON.stringify({ n: Number.MAX_SAFE_INTEGER, u: 0 }));
   ctx.pinFail();
   assert.equal(JSON.parse(store.get("tz_pinfail")).n, 8, "tampered oversized counters are capped at the maximum backoff step");
