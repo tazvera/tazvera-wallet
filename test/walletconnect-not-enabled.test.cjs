@@ -8,8 +8,10 @@ const read=p=>fs.readFileSync(path.join(root,p),"utf8");
 test("WalletConnect SDK is not loaded until its reviewed integration is ready",()=>{
  const html=read("index.html");
  const scripts=[...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(x=>x[1]);
- assert.equal(scripts.some(s=>/walletconnect|reown|sign-client|walletkit/i.test(s)),false,
+ assert.equal(scripts.some(s=>/reown|sign-client|walletkit/i.test(s)),false,
   "do not ship an unreviewed WalletConnect SDK");
+ assert.equal(scripts.filter(s=>/walletconnect/i.test(s)).every(s=>/^app\\/walletconnect\\/(config|policy)\\.js$/.test(s)),true,
+  "only the local metadata and fail-closed policy files may load before integration");
 });
 test("wallet does not inject a global Ethereum provider for arbitrary websites",()=>{
  for(const file of ["wallet.js","app/browser/browser.js"]){
