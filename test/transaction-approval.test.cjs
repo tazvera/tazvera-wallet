@@ -20,12 +20,12 @@ function hasMessage(s){return e=>String(e&&e.message||e).includes(s)}
 test("unapproved direct transaction is rejected",async()=>{await ctx.CPW.unlockKs("{}", "pw",address);await assert.rejects(send(),hasMessage("fresh approval"));assert.equal(sends,0)});
 test("approval is bound to exact transaction and consumed once",async()=>{
  ctx.CPW.approveTransaction(tx);
- await assert.rejects(send({...tx,value:"0x02"}),/fresh approval/);
+ await assert.rejects(send({...tx,value:"0x02"}),hasMessage("fresh approval"));
  assert.equal(sends,0);
  ctx.CPW.approveTransaction(tx);
  assert.equal(await send(),"0xabc");
  assert.equal(sends,1);
- await assert.rejects(send(),/fresh approval/);
+ await assert.rejects(send(),hasMessage("fresh approval"));
  assert.equal(sends,1);
 });
 test("approval cannot survive wallet lock",async()=>{
@@ -38,13 +38,13 @@ test("approval cannot survive wallet lock",async()=>{
  ctx.CPW.approveTransaction(tx);
  ctx.CPW.lock();
  await ctx.CPW.unlockKs("{}", "pw",address);
- await assert.rejects(send(),/fresh approval/);
+ await assert.rejects(send(),hasMessage("fresh approval"));
  assert.equal(sends,1);
 });
 test("approval details reject mismatched sender and malformed destination",async()=>{
  await ctx.CPW.unlockKs("{}", "pw",address);
  await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,from:recipient})),hasMessage("Invalid transaction"));
- await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,to:"not-an-address"})),/Invalid transaction/);
+ await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,to:"not-an-address"})),hasMessage("Invalid transaction"));
 });
 
 test("approval expires after its short validity window",async()=>{
@@ -53,7 +53,7 @@ test("approval expires after its short validity window",async()=>{
  const now=Date.now;
  try {
    Date.now=()=>now()+31000;
-   await assert.rejects(send(),/fresh approval/);
+   await assert.rejects(send(),hasMessage("fresh approval"));
  } finally { Date.now=now; }
  assert.equal(sends,1);
 });
