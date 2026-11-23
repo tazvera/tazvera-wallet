@@ -98,6 +98,15 @@ for (const f of FILES) {
   }
 }
 
+/* ------------------------------------------------------------------ browser connected-site labels */
+if (typeof ctx.sitesWhen === "function") {
+  const now = Date.now();
+  eq("connected sites: just now label", ctx.sitesWhen(now), ctx.t("justNow"));
+  eq("connected sites: minutes label", ctx.sitesWhen(now - 5 * 60000), "5 " + ctx.t("min"));
+  eq("connected sites: hours label", ctx.sitesWhen(now - 3 * 3600000), "3 " + ctx.t("hourAgo"));
+  eq("connected sites: days label", ctx.sitesWhen(now - 2 * 86400000), "2 " + ctx.t("dayAgo"));
+}
+
 /* ------------------------------------------------------------------ 1. amounts */
 const amtWei = ctx.amtWei, exactAmt = ctx.exactAmt;
 ok("amtWei exists", typeof amtWei === "function");
