@@ -81,6 +81,7 @@ vm.runInContext(fs.readFileSync("app/js/features/pin-wait.js", "utf8"), ctx);
   assert.equal(JSON.parse(store.get("tz_pinfail")).n, 8, "oversized counters are capped at the maximum backoff step");
   assert.equal(ctx.pinWait(), 900_000, "counter values cannot overflow the backoff schedule");
 
+  ctx.pinOk();
   storageThrows = true;
   for (let i = 0; i < 5; i++) await assert.rejects(ctx.CPW.unlock("wrong"));
   assert.equal(ctx.pinWait(), 30_000, "session-memory throttle still activates when browser storage is unavailable");
