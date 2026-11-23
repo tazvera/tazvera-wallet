@@ -15,15 +15,16 @@ const messages = {
   hi: { pinBad: "गलत PIN" }
 };
 let unlockCalls = 0;
+let storageThrows = false;
 const ctx = {
   Date: class extends Date {
     static now() { return now; }
   },
   Math, JSON, Promise, Error, String, Object,
   localStorage: {
-    getItem: k => store.has(k) ? store.get(k) : null,
-    setItem: (k, v) => store.set(k, String(v)),
-    removeItem: k => store.delete(k)
+    getItem: k => { if (storageThrows) throw new Error("storage unavailable"); return store.has(k) ? store.get(k) : null; },
+    setItem: (k, v) => { if (storageThrows) throw new Error("storage unavailable"); store.set(k, String(v)); },
+    removeItem: k => { if (storageThrows) throw new Error("storage unavailable"); store.delete(k); }
   },
   S: { lang: "en" },
   L: messages,
@@ -75,7 +76,14 @@ vm.runInContext(fs.readFileSync("app/js/features/pin-wait.js", "utf8"), ctx);
   assert.equal(ctx.pinWait(), 0, "successful unlock clears the failure counter");
   assert.equal(store.has("tz_pinfail"), false, "successful unlock removes persisted failure state");
 
-  console.log("PIN throttle tests: 9 assertions passed");
+  storageThrows = true;
+  for (let i = 0; i < 5; i++) await assert.rejects(ctx.CPW.unlock("wrong"));
+  assert.equal(ctx.pinWait(), 30_000, "session-memory throttle still activates when browser storage is unavailable");
+  const callsBeforeStorageLock = unlockCalls;
+  await assert.rejects(ctx.CPW.unlock("correct"), /pin-wait/);
+  assert.equal(unlockCalls, callsBeforeStorageLock, "storage failure must not bypass the active session lock");
+
+  console.log("PIN throttle tests: storage-failure fallback and escalation passed");
 })().catch(err => {
   console.error(err);
   process.exitCode = 1;
