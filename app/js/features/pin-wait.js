@@ -4,9 +4,9 @@
 /* ----- wrong PIN: after 5 wrong tries, wait 30 s, then 1, 5, 15 minutes ----- */
 var PINF="tz_pinfail",PINSTEP=[30,60,300,900],PINMEM={n:0,u:0},PINSTORE=true;
 /* Keep the throttle active for this page session even when browser storage is unavailable. */
-function pinSt(){if(!PINSTORE)return PINMEM;try{var o=JSON.parse(localStorage.getItem(PINF)||"null");if(o&&Number.isSafeInteger(o.n)&&o.n>=0&&Number.isFinite(o.u)&&o.u>=0){PINMEM={n:o.n,u:o.u};return PINMEM}}catch(e){PINSTORE=false}return PINMEM}
+function pinSt(){if(!PINSTORE)return PINMEM;try{var o=JSON.parse(localStorage.getItem(PINF)||"null");if(o&&Number.isSafeInteger(o.n)&&o.n>=0&&Number.isFinite(o.u)&&o.u>=0){PINMEM={n:Math.min(o.n,8),u:o.u};return PINMEM}}catch(e){PINSTORE=false}return PINMEM}
 function pinWait(){return Math.max(0,pinSt().u-Date.now())}
-function pinFail(){var o=pinSt();o.n++;if(o.n>=5){o.u=Date.now()+PINSTEP[Math.min(o.n-5,PINSTEP.length-1)]*1000}PINMEM={n:o.n,u:o.u};if(PINSTORE){try{localStorage.setItem(PINF,JSON.stringify(o))}catch(e){PINSTORE=false}}}
+function pinFail(){var o=pinSt();o.n=Math.min(8,o.n+1);if(o.n>=5){o.u=Date.now()+PINSTEP[Math.min(o.n-5,PINSTEP.length-1)]*1000}PINMEM={n:o.n,u:o.u};if(PINSTORE){try{localStorage.setItem(PINF,JSON.stringify(o))}catch(e){PINSTORE=false}}}
 function pinOk(){PINMEM={n:0,u:0};if(PINSTORE){try{localStorage.removeItem(PINF)}catch(e){PINSTORE=false}}}
 function waitTxt(ms){var sec=Math.ceil(ms/1000);return sec>=60?Math.ceil(sec/60)+(S.lang==="hi"?" मिनट":" min"):sec+(S.lang==="hi"?" सेकंड":" s")}
 (function(){var bEn=L.en.pinBad,bHi=L.hi.pinBad;
