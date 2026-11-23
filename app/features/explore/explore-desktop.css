@@ -1,5 +1,15 @@
-/* Tazvera wallet · app/features/explore/desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
-/* Desktop Explore page: six tools in one row. */
+/* Tazvera wallet · app/features/explore/explore-desktop.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Desktop Explore page: title on the left, a small search icon in the top-right corner (it opens when clicked),
+   the Browser card right below the title, then tools in six columns and prices. Desktop only (900px and up). */
 @media (min-width: 900px){
+  .scr.tab-exp{ display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; align-items: center !important; column-gap: 16px !important; }
+  .scr.tab-exp > *:not(.tb):not(.srch){ grid-column: 1 / -1 !important; }
+  .scr.tab-exp .tb{ grid-column: 1 !important; }
+  .scr.tab-exp .srch{ grid-column: 2 !important; position: relative !important; width: 46px !important; height: 46px !important; border-radius: 50% !important; background: var(--card) !important; border: 1px solid var(--line) !important; overflow: hidden !important; transition: width .25s ease !important; margin: 0 !important; }
+  .scr.tab-exp .srch:focus-within{ width: 300px !important; border-radius: 16px !important; }
+  .scr.tab-exp .srch > svg{ position: absolute !important; left: 13px !important; top: 13px !important; pointer-events: none !important; }
+  .scr.tab-exp .srch input{ position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; opacity: 0 !important; cursor: pointer !important; border: 0 !important; background: transparent !important; }
+  .scr.tab-exp .srch:focus-within input{ opacity: 1 !important; cursor: text !important; padding: 0 14px 0 44px !important; }
+  .scr.tab-exp .brwrow{ margin-top: 18px !important; }
   .scr.tab-exp .grid6{ grid-template-columns: repeat(6, 1fr) !important; gap: 12px !important; }
 }
