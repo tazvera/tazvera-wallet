@@ -498,7 +498,7 @@ svg{-webkit-touch-callout:none;user-select:none}
 .nav.n3 .nv:active{background:var(--soft)}
 
 /* the assistant floats above the bar, never on it */
-.aifab{bottom:calc(94px + env(safe-area-inset-bottom,0px))!important;right:max(10px,calc(50% - 158px))!important;width:46px!important;height:46px!important}
+.aifab{bottom:calc(27px + env(safe-area-inset-bottom,0px))!important;right:2px!important;width:46px!important;height:46px!important}
 .aifab svg{width:40px!important;height:40px!important}
 
 /* ---------- home header: the three round buttons, made consistent (2026-11-17) ---------- */
