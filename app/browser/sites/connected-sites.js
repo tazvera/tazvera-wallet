@@ -22,8 +22,8 @@ function siteIsOn(domain){
   var d=String(domain||"").toLowerCase();
   return sitesList().some(function(x){return x.domain===d});
 }
-function sitesWhen(t){
-  try{var d=Math.round((Date.now()-(t||0))/60000);
+function sitesWhen(timestamp){
+  try{var d=Math.round((Date.now()-(timestamp||0))/60000);
     if(d<1)return t("justNow"); if(d<60)return d+" "+t("min");
     if(d<1440)return Math.round(d/60)+" "+t("hourAgo");
     return Math.round(d/1440)+" "+t("dayAgo")}catch(e){return ""}
