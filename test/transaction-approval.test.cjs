@@ -16,7 +16,8 @@ ctx.window=ctx;vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(require("node:path").join(__dirname,"..","wallet.js"),"utf8"),ctx);
 const tx={from:address,to:recipient,value:"0x01",data:"0x"};
 async function send(payload=tx){return ctx.tazveraProvider.request({method:"eth_sendTransaction",params:[payload]})}
-test("unapproved direct transaction is rejected",async()=>{await ctx.CPW.unlockKs("{}", "pw",address);await assert.rejects(send(),/fresh approval/);assert.equal(sends,0)});
+function hasMessage(s){return e=>String(e&&e.message||e).includes(s)}
+test("unapproved direct transaction is rejected",async()=>{await ctx.CPW.unlockKs("{}", "pw",address);await assert.rejects(send(),hasMessage("fresh approval"));assert.equal(sends,0)});
 test("approval is bound to exact transaction and consumed once",async()=>{
  ctx.CPW.approveTransaction(tx);
  await assert.rejects(send({...tx,value:"0x02"}),/fresh approval/);
@@ -32,7 +33,7 @@ test("approval cannot survive wallet lock",async()=>{
  const permit=ctx.CPW; // expiry is checked against the real clock
  // Locking the wallet clears any outstanding approval before another request.
  ctx.CPW.lock();
- await assert.rejects(send(),/Wallet is locked/);
+ await assert.rejects(send(),hasMessage("Wallet is locked"));
  await ctx.CPW.unlockKs("{}", "pw",address);
  ctx.CPW.approveTransaction(tx);
  ctx.CPW.lock();
@@ -41,7 +42,8 @@ test("approval cannot survive wallet lock",async()=>{
  assert.equal(sends,1);
 });
 test("approval details reject mismatched sender and malformed destination",async()=>{
- await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,from:recipient})),/Invalid transaction/);
+ await ctx.CPW.unlockKs("{}", "pw",address);
+ await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,from:recipient})),hasMessage("Invalid transaction"));
  await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,to:"not-an-address"})),/Invalid transaction/);
 });
 
