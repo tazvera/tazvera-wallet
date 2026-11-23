@@ -112,7 +112,15 @@ function browserHTML(){
       (tr==="ok"?'':'<div class="bnew">'+esc(t("brwNew"))+'</div>')+
       '<p>'+esc(t("brwNote"))+'</p>'+
       '<button class="btn" data-brwtab="1">'+esc(t("brwTab"))+'</button>'+
-      '<button class="btnw" data-brwhome="1">'+esc(t("brwHome"))+'</button></div>';
+      '<button class="btnw" data-brwhome="1">'+esc(t("brwHome"))+'</button>'+
+      '<div class="brwtb">'+
+        '<button class="tbb" data-brwback="1" aria-label="back">'+ic("back",21)+'</button>'+
+        '<button class="tbb" data-brwhome="1" aria-label="'+esc(t("brwHome"))+'">'+ic("grid",21)+'</button>'+
+        '<button class="tbb" data-brwpin="1" aria-label="'+esc(t("brwPinAdd"))+'">'+
+          '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+          '<path d="M12 20s-7-4.4-7-9.2A4 4 0 0 1 12 8a4 4 0 0 1 7 2.8C19 15.6 12 20 12 20z"/></svg></button>'+
+        '<button class="tbb" data-brwtab="1" aria-label="'+esc(t("brwTab"))+'">'+ic("globe",21)+'</button>'+
+      '</div></div>';
   }else{
     body='<div class="brwstart">'+
       '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
