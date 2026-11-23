@@ -40,3 +40,26 @@
   #app:has(.scr.tab-brw) .nav{ display: none !important; }
   #app:has(.scr.tab-brw) .aifab{ display: none !important; }
 }
+
+/* ---------- responsive browser layout polish ---------- */
+@media (max-width: 899px){
+  .scr.tab-brw .tb{padding:8px 14px 4px}
+  .scr.tab-brw .brwbar{
+    display:grid !important;
+    grid-template-columns:40px minmax(0,1fr) 40px 40px;
+    align-items:center; gap:7px; padding:10px 12px;
+  }
+  .scr.tab-brw .brwbar .ib{width:40px;height:40px;min-width:40px;border-radius:13px}
+  .scr.tab-brw .baddr{min-width:0;width:100%;box-sizing:border-box;padding:9px 10px;border-radius:14px}
+  .scr.tab-brw .binput{min-width:0;width:100%;font-size:13px}
+  .scr.tab-brw .bstrip{margin:0 12px;border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+  .scr.tab-brw .brwstart{padding:18px 14px 28px}
+  .scr.tab-brw .brwsite{padding:18px 14px 96px}
+  .scr.tab-brw .brwli{min-height:58px}
+}
+@media (min-width: 900px){
+  .scr.tab-brw .brwstart{padding:24px 22px 36px}
+  .scr.tab-brw .brwsite{max-width:760px;margin:0 auto;padding:30px 24px}
+  .scr.tab-brw .brwli{min-height:64px}
+  .scr.tab-brw .brwli:hover{border-color:var(--green);background:var(--pill)}
+}
