@@ -22,4 +22,3 @@ npm-debug.log*
 # Generated Android build output
 android/
 www/
-package-lock.json
