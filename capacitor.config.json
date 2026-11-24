@@ -1,0 +1,8 @@
+{
+  "appId": "com.tazvera.wallet",
+  "appName": "Tazvera",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}
