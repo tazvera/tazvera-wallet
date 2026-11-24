@@ -26,7 +26,11 @@ function brwState(){ if(!S.brw||typeof S.brw!=="object")S.brw={url:"",hist:[],id
 function brwClean(v){
   var s=String(v||"").trim();
   if(!s)return "";
-  if(/^[a-z][a-z0-9+.-]*:/i.test(s)) return /^https?:\/\//i.test(s) ? s : "";
+  if(/^[a-z][a-z0-9+.-]*:/i.test(s)){
+    if(!/^https?:\/\//i.test(s)) return "";
+    /* refuse user:pass@host tricks: the address the user sees must be the address opened */
+    try{ var u=new URL(s); if(u.username||u.password||!u.hostname) return ""; return u.href }catch(e){ return "" }
+  }
   if(!/^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(s)) return "";
   return "https://" + s;
 }
@@ -62,7 +66,7 @@ function brwTrust(host){
   for(var i=0;i<BRW_SHORTCUTS.length;i++){
     if(brwHost(BRW_SHORTCUTS[i].url)===h)return "ok";
   }
-  try{ if(sitesList().some(function(x){return x.domain===h}))return "ok" }catch(e){}
+  /* sites the user added with Connect are NOT marked verified: a typed address is exactly what an attacker wants trusted */
   return "new";
 }
 function brwHost(u){ try{ return String(u).replace(/^https?:\/\//i,"").split("/")[0] }catch(e){ return u } }
