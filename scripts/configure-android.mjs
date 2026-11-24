@@ -1,0 +1,15 @@
+import fs from "node:fs";
+
+const manifestPath = "android/app/src/main/AndroidManifest.xml";
+if (!fs.existsSync(manifestPath)) {
+  throw new Error("Android project is missing. Run npx cap add android first.");
+}
+let xml = fs.readFileSync(manifestPath, "utf8");
+if (!xml.includes('android.permission.CAMERA')) {
+  xml = xml.replace(
+    /(<manifest\\b[^>]*>)/,
+    '$1\\n    <uses-permission android:name="android.permission.CAMERA" />\\n    <uses-feature android:name="android.hardware.camera" android:required="false" />'
+  );
+}
+fs.writeFileSync(manifestPath, xml);
+console.log("Added camera permission declaration for the wallet QR scanner.");
