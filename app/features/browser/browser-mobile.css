@@ -1,0 +1,24 @@
+/* Tazvera wallet · app/features/browser/browser-mobile.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Phone (below 900px) rules for the browser only. Moved unchanged from browser-desktop.css; loads right after it. */
+/* ---------- PHONE: the browser's bottom toolbar ----------
+   This file is linked on every screen size, so the phone rules live here too — that keeps app.css
+   untouched. Below 900px the site view gets a bar with back, apps, pin and open. */
+@media (max-width: 899px){
+  .brwtb{
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    display: flex; align-items: center; justify-content: space-around; gap: 4px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: var(--card); border-top: 1px solid var(--line);
+  }
+  .brwtb .tbb{
+    flex: 1; height: 44px; display: flex; align-items: center; justify-content: center;
+    background: none; border: 0; border-radius: 12px; color: var(--mu); padding: 0;
+  }
+  .brwtb .tbb:active{ background: var(--soft); }
+  .brwtb .tbb svg{ display: block; }
+  .brwsite{ padding-bottom: 90px !important; }
+  /* inside the browser there is only ONE bottom bar: the browser's own.
+     The app's Home/Explore/Learn bar is hidden while a site is open. */
+  #app:has(.scr.tab-brw) .nav{ display: none !important; }
+  #app:has(.scr.tab-brw) .aifab{ display: none !important; }
+}
