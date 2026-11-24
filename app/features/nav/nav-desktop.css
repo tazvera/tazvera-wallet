@@ -25,5 +25,8 @@
   .nav.n3 .nv.on{ color: var(--green) !important; background: var(--pill) !important; }
   .nav.n3 .nv-extra{ display: flex !important; }
   .nav.n3 .nv-ai{ margin-top: auto !important; }
+  /* Keep the assistant mark the same visual size as the phone's floating assistant button. */
+  .nav.n3 .nv.nv-ai svg{ width:40px !important; height:40px !important; }
+
   .aifab{ display: none !important; }
 }
