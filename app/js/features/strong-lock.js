@@ -9,6 +9,10 @@ Object.assign(L.hi,{lockSP:"खोलने के लिए पासवर्�
  slInfo:"लंबा पासवर्ड 6 अंकों के PIN से कहीं ज़्यादा मुश्किल से टूटता है। Tazvera में असली पैसा रखते हों, तो यही अच्छा। यह हर जगह PIN की जगह लेगा।",
  slNew:"नया पासवर्ड (कम से कम 10 अक्षर)",slNew2:"पासवर्ड दोबारा लिखिए",slSet:"यही पासवर्ड रखें",slDone:"मज़बूत ताला चालू",slBack:"वापस 6 अंकों का PIN",slBackDone:"फिर से 6 अंकों का PIN",slCur:"अपना अभी का PIN डालिए",slCurP:"अपना अभी का पासवर्ड डालिए",slTick:"मैंने यह पासवर्ड काग़ज़ पर लिख लिया"});
 function passOn(){return raw("tz_lockmode","")==="pass"}
+Object.assign(L.en,{pwNudge:"For safety, set a long password: Settings, then Strong lock."});
+Object.assign(L.hi,{pwNudge:"सुरक्षा के लिए Settings में जाकर मज़बूत ताला में लंबा पासवर्ड सेट करें।"});
+/* After a PIN unlock, remind a PIN-only user once per browser session. Changes no key or lock behaviour. */
+function pwNudge(){try{if(passOn()||sessionStorage.getItem("tz_pwnudge"))return;sessionStorage.setItem("tz_pwnudge","1");setTimeout(function(){toast(t("pwNudge"))},1500)}catch(e){}}
 function passForm(id,btn){return '<div class="passw"><input id="'+id+'" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" aria-label="password"><button class="btn" id="'+id+'Go">'+esc(btn)+'</button></div>'}
 function passBind(id,cb){var i=$(id),g=$(id+"Go");if(!i||!g)return;setTimeout(function(){try{i.focus()}catch(e){}},80);function go(){var v=i.value;if(!v)return;i.value="";cb(v)}g.onclick=go;i.onkeydown=function(e){if(e.key==="Enter")go()}}
 (function(){var _ps=pinScreen,_ap=askPin,_pp=pinPad2,_np=newPinFlow;window.askPin6=_ap;
