@@ -16,3 +16,7 @@ if (!xml.includes('android.permission.CAMERA')) {
 }
 fs.writeFileSync(manifestPath, xml);
 console.log("Added camera permission declaration for the wallet QR scanner.");
+
+// Launcher icons: the Tazvera logo (brand/android/res) replaces the default Capacitor icon.
+fs.cpSync("brand/android/res", "android/app/src/main/res", { recursive: true, force: true });
+console.log("Copied the Tazvera launcher icons.");
