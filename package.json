@@ -2,6 +2,15 @@
   "name": "tazvera-wallet",
   "private": true,
   "dependencies": {
-    "ethers": "6.17.0"
+    "ethers": "6.17.0",
+    "@capacitor/core": "8.6.2",
+    "@capacitor/android": "8.6.2"
+  },
+  "scripts": {
+    "android:prepare": "node scripts/prepare-android.mjs",
+    "android:configure": "node scripts/configure-android.mjs"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.2"
   }
 }
