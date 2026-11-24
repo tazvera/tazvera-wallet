@@ -126,7 +126,9 @@ function browserHTML(){
         '<button class="tbb" data-brwtab="1" aria-label="'+esc(t("brwTab"))+'">'+ic("globe",21)+'</button>'+
       '</div></div>';
   }else{
+    var fe=BRW_SHORTCUTS[0];
     body='<div class="brwstart">'+
+      (q?'':'<button class="brwfeat" data-brwopen="0"><img src="'+esc(fe.logo)+'" alt=""><span class="ft"><b>'+esc(fe.name)+'</b><small>'+esc(fe.tag)+' · '+esc(fe.url.replace(/^https?:\/\//,""))+'</small></span>'+ic("right",16)+'</button>')+
       '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
         (q?'':brwPins().map(function(i){var x=BRW_SHORTCUTS[i];return '<button class="brwpin2" data-brwopen="'+i+'"><img src="'+esc(x.logo)+'" alt="">'+esc(x.name)+'</button>'}).join(""))+
         '<button class="brwpin2 add" data-brwpin="1">'+ic("plus",14)+' '+esc(t("brwPinAdd"))+'</button>'+
