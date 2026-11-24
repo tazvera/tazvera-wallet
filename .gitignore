@@ -18,3 +18,7 @@ npm-debug.log*
 
 # Vercel
 .vercel/
+
+# Generated Android build output
+/android/
+www/
