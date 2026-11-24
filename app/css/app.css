@@ -248,7 +248,7 @@ html[data-theme=dark] .sc.warn{background:#0F2A17;color:#4CF07A}
 .tl span{width:42px;height:42px;border-radius:13px;background:var(--soft);display:flex;align-items:center;justify-content:center}
 
 .up2{color:var(--green)!important}
-.dn2{color:var(--red)!important}
+.dn2{color:#E5484D!important}
 
 .wc{margin:14px 20px 0;border-radius:22px;padding:16px;background:linear-gradient(150deg,#000000,#0E2A17);color:#fff;display:flex;align-items:center;gap:12px;width:calc(100% - 40px);text-align:left}
 .wc img{width:44px;height:44px;border-radius:13px}
