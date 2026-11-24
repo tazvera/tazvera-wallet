@@ -57,6 +57,9 @@ function netReset(){
         if(cid==null){stopSend(t("chainNo"));return}
         if(parseInt(cid,16)!==parseInt(N().chainId,16)){stopSend(t("chainBad2"));return}
       }
+      /* In-app: the node was just checked to be on N().chainId, so point the in-app provider at the same chain
+         before comparing. Without this, a user on any network other than the default could never send. */
+      if(S.mode!=="mm"&&p&&p.request){try{await p.request({method:"wallet_switchEthereumChain",params:[{chainId:N().chainId}]})}catch(e){}}
       try{have=p&&p.request?await chainNow(p):null}catch(e){have=null}
       if(have!==want&&S.mode==="mm"&&p&&p.request){
         try{await p.request({method:"wallet_switchEthereumChain",params:[{chainId:N().chainId}]});have=await chainNow(p)}catch(e){}
