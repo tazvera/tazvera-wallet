@@ -259,11 +259,6 @@ html[data-theme=dark] .sc.warn{background:#0F2A17;color:#4CF07A}
 .srow .si{width:36px;height:36px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .srow b{flex:1;min-width:0;text-align:left;font-size:14.5px;font-weight:500}
 .srow em{margin-left:auto;flex-shrink:0;white-space:nowrap;font-style:normal;font-size:13px;color:var(--mu);font-weight:500}
-/* Settings rows must outrank the later transaction-signing .srow rules below. */
-.scr.tab-set .srow{display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:11px 16px;text-align:left}
-.scr.tab-set .srow b{flex:1;min-width:0;text-align:left;word-break:normal}
-.scr.tab-set .srow em{margin-left:auto;flex-shrink:0;white-space:nowrap;text-align:right}
-
 .sw{width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;flex-shrink:0;transition:background .2s}
 .sw:after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .sw.on{background:var(--green)}

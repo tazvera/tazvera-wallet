@@ -1,0 +1,6 @@
+/* Tazvera wallet · app/features/settings/settings-shared.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Settings rows, for BOTH phone and desktop. Moved unchanged from app.css; loads right after it so the order is the same. */
+/* Settings rows must outrank the later transaction-signing .srow rules below. */
+.scr.tab-set .srow{display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:11px 16px;text-align:left}
+.scr.tab-set .srow b{flex:1;min-width:0;text-align:left;word-break:normal}
+.scr.tab-set .srow em{margin-left:auto;flex-shrink:0;white-space:nowrap;text-align:right}
