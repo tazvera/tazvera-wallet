@@ -11,6 +11,7 @@ jobs:
         with:
           node-version: "20"
       - run: node test/run.js
+      - run: node --test test/index-guard.test.cjs
   vendor:
     runs-on: ubuntu-latest
     steps:
