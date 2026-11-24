@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - android/pwa-install-readiness-2026-11
+  pull_request:
+    branches:
+      - security/pin-and-keystore-hardening-2026-11
   workflow_dispatch:
 
 permissions:
