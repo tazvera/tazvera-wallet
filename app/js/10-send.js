@@ -75,6 +75,7 @@ async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=S.mode==="mm
   else{await prov.request({method:"wallet_switchEthereumChain",params:[{chainId:n.chainId}]})}
   if(k.id!=="native"&&!/^0x[0-9a-fA-F]{40}$/.test(k.addr||""))throw new Error(t("eTok"));
   var tx=k.id==="native"?{from:S.addr,to:to,value:toHex(wei)}:{from:S.addr,to:k.addr,value:"0x0",data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+BigInt(wei).toString(16).padStart(64,"0")};
+  if(S.mode==="inapp"){if(!CPW||typeof CPW.approveTransaction!=="function")throw new Error("Transaction approval is unavailable. Nothing was sent.");CPW.approveTransaction(tx)}
   var hash=await prov.request({method:"eth_sendTransaction",params:[tx]});
   var list=txsAll();list.unshift({type:"out",amt:String(S.snd.amt),symbol:k.sym,hash:hash||"",time:Date.now(),net:S.net,st:"pending"});lss("txs",list.slice(0,300));
   var sl=sentList();if(sl.indexOf(to.toLowerCase())<0){sl.unshift(to.toLowerCase());rawSet("tz_sent_to",JSON.stringify(sl.slice(0,500)))}
