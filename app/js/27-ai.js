@@ -19,7 +19,7 @@ var AI_TX={en:{name:"Tazvera Assistant",hi:"Hello! I am the Tazvera Assistant. A
 var AI_T={};function aiLang(){var L2=(S.lang==="hi")?"hi":"en";var src=AI_TX[L2];for(var k in src)AI_T[k]=src[k]}aiLang();
 var AI_SVG='<svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 30C14 19 22 10 32 10C42 10 50 19 50 30" stroke="#8C96A8" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="8" y="26" width="6" height="15" rx="3" fill="#4CF07A"/><rect x="50" y="26" width="6" height="15" rx="3" fill="#4CF07A"/><path d="M52 38L44 48H36" stroke="#4CF07A" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="35" cy="48" r="2.5" fill="#4CF07A"/><rect x="16" y="18" width="32" height="28" rx="9" fill="#282828" stroke="#4CF07A" stroke-width="2"/><circle cx="26" cy="28" r="3" fill="#4CF07A"/><circle cx="38" cy="28" r="3" fill="#4CF07A"/><line x1="26" y1="37" x2="38" y2="37" stroke="#5B6370" stroke-width="2" stroke-linecap="round"/></svg>';
 /* same test as the server: 12+ plain words in a row, or 64 hex characters */
-var BIP={};try{var WL=ethers.wordlists.en;for(var bi=0;bi<2048;bi++)BIP[WL.getWord(bi)]=1}catch(e){BIP=null}
+var BIP=Object.create(null);try{var WL=ethers.wordlists.en;for(var bi=0;bi<2048;bi++)BIP[WL.getWord(bi)]=1}catch(e){BIP=null}
 /* true only for 12+ words in a row from the real 12-word list (BIP39), or a 64-character private key; normal long questions in Hinglish pass */
 /* 10 or more real BIP39 words inside any 14 words: catches a seed with one or two typos or extra words */
 function nearSeed(w){var sum=0,c=w.map(function(x){return BIP[x]?1:0});for(var i=0;i<c.length;i++){sum+=c[i];if(i>=14)sum-=c[i-14];if(sum>=10)return true}return false}
