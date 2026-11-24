@@ -12,6 +12,7 @@ jobs:
           node-version: "20"
       - run: node test/run.js
       - run: node --test test/index-guard.test.cjs
+      - run: node --test test/idle-lock.test.cjs test/pin-change-wallets.test.cjs test/pin-wait.test.cjs test/transaction-approval.test.cjs
   vendor:
     runs-on: ubuntu-latest
     steps:

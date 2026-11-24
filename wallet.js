@@ -1,7 +1,9 @@
 /* Tazvera in-app wallet: Shardeum Mainnet + test networks (Shardeum Testnet, BNB Testnet, Sepolia). Keys are encrypted with your PIN and never leave this device. */
 (function(){
 var E=window.ethers;if(!E)return;
-var KS="cp3_inapp_keystore",W=null;
+var KS="cp3_inapp_keystore",W=null,SEND_PERMIT=null;
+function txKey(t){return [CHAIN,W&&W.address||"",String(t.from||"").toLowerCase(),String(t.to||"").toLowerCase(),String(t.value||"0x0").toLowerCase(),String(t.data||"0x").toLowerCase()].join("|")}
+function clearSendPermit(){SEND_PERMIT=null}
 /* Test networks; Shardeum Mainnet is added in nets() unless switched off */
 var NETS={"0x38":{id:56,r:["https://bsc-rpc.publicnode.com"]},"0x1":{id:1,r:["https://ethereum-rpc.publicnode.com"]},"0x1fb7":{id:8119,r:["https://api-mezame.shardeum.org"]},"0x61":{id:97,r:["https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://bsc-testnet-rpc.publicnode.com"]},"0xaa36a7":{id:11155111,r:["https://ethereum-sepolia-rpc.publicnode.com","https://sepolia.drpc.org"]}};
 /* Shardeum Mainnet is on unless the user switched it off in About (cp3_mainnet_beta = "0") */
@@ -10,7 +12,7 @@ var CHAIN="0x1fb7";try{var sc=localStorage.getItem("cp3_inapp_chain");if(sc&&net
 var RI=0;
 function prov(){var n=nets()[CHAIN]||NETS["0x1fb7"];return new E.JsonRpcProvider(n.r[RI%n.r.length],n.id,{staticNetwork:true})}
 async function tryP(f){try{return await f(prov())}catch(e){if((nets()[CHAIN]||NETS["0x1fb7"]).r.length>1){RI++;return await f(prov())}throw e}}
-function setChain(c){c=String(c||"").toLowerCase();if(!nets()[c])throw{code:4902,message:"This network is not available in the Tazvera wallet."};if(c!==CHAIN){CHAIN=c;RI=0;try{localStorage.setItem("cp3_inapp_chain",c)}catch(e){}}return null}
+function setChain(c){c=String(c||"").toLowerCase();if(!nets()[c])throw{code:4902,message:"This network is not available in the Tazvera wallet."};if(c!==CHAIN){CHAIN=c;RI=0;clearSendPermit();try{localStorage.setItem("cp3_inapp_chain",c)}catch(e){}}return null}
 var P={isCpWallet:true,
 request:async function(a){var m=a.method,p=a.params||[];
 if(m==="eth_chainId")return CHAIN;
@@ -24,7 +26,7 @@ case"eth_estimateGas":return"0x"+(await tryP(function(v){return v.estimateGas(p[
 case"eth_requestAccounts":case"eth_accounts":{var ad=window.CPW.address();if(ad)return[ad];break}}
 if(!W)throw{code:4100,message:"Wallet is locked"};
 switch(m){
-case"eth_sendTransaction":{var t=p[0],pv=prov(),gp=await pv.send("eth_gasPrice",[]),est=await pv.estimateGas({from:W.address,to:t.to,data:t.data,value:t.value}),r=await W.connect(pv).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:gp,gasLimit:est*12n/10n});return r.hash}
+case"eth_sendTransaction":{var t=p[0];if(!SEND_PERMIT||SEND_PERMIT.until<Date.now()||SEND_PERMIT.key!==txKey(t)){clearSendPermit();throw{code:4001,message:"Transaction needs a fresh approval in the Tazvera confirmation screen."}}clearSendPermit();var pv=prov(),gp=await pv.send("eth_gasPrice",[]),est=await pv.estimateGas({from:W.address,to:t.to,data:t.data,value:t.value}),r=await W.connect(pv).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:gp,gasLimit:est*12n/10n});return r.hash}
 default:throw{code:-32601,message:"Not supported: "+m}}},
 on:function(){},removeListener:function(){}};
 function ks(){return localStorage.getItem(KS)}
@@ -34,7 +36,8 @@ create:async function(pin){var w=E.Wallet.createRandom();localStorage.setItem(KS
 imp:async function(phrase,pin){var w=E.Wallet.fromPhrase(String(phrase).trim().toLowerCase().replace(/\s+/g," "));localStorage.setItem(KS,await w.encrypt(pin));W=w},
 unlock:async function(pin){W=await E.Wallet.fromEncryptedJson(ks(),pin)},
 phrase:async function(pin){var w=await E.Wallet.fromEncryptedJson(ks(),pin);return w.mnemonic?w.mnemonic.phrase:""},
-unlockKs:async function(js,pw,expect){var x=await E.Wallet.fromEncryptedJson(js,pw);if(expect&&x.address.toLowerCase()!==String(expect).toLowerCase())throw new Error("wrong wallet");W=x},
-lock:function(){W=null},remove:function(){localStorage.removeItem(KS);W=null}};
+unlockKs:async function(js,pw,expect){var x=await E.Wallet.fromEncryptedJson(js,pw);if(expect&&x.address.toLowerCase()!==String(expect).toLowerCase())throw new Error("wrong wallet");W=x;clearSendPermit()},
+approveTransaction:function(tx){if(!W)throw{code:4100,message:"Wallet is locked"};if(!tx||String(tx.from||"").toLowerCase()!==W.address.toLowerCase()||!/^0x[0-9a-fA-F]{40}$/.test(String(tx.to||""))||!/^0x[0-9a-fA-F]*$/.test(String(tx.value||"0x0"))||!/^0x[0-9a-fA-F]*$/.test(String(tx.data||"0x")))throw new Error("Invalid transaction approval details");SEND_PERMIT={key:txKey(tx),until:Date.now()+30000};return true},
+lock:function(){W=null;clearSendPermit()},remove:function(){localStorage.removeItem(KS);W=null;clearSendPermit()}};
 window.tazveraProvider=P; /* used only by the Tazvera app itself; it is not exposed as window.ethereum */
 })();
