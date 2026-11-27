@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "lastReviewed": "2026-11-28",
+  "items": [
+    {
+      "id": "pancake",
+      "name": "Pancake",
+      "description": "Trade tokens and explore liquidity on BNB Chain.",
+      "domain": "pancake.xyz",
+      "networks": [
+        "bsc"
+      ],
+      "icon": {
+        "shape": "circle",
+        "color": "#F0B90B",
+        "mark": "P"
+      },
+      "featured": true,
+      "popular": true,
+      "bookmark": true,
+      "verification": {
+        "status": "official-domain-source-found",
+        "checkedAt": "2026-11-28",
+        "sourceUrl": "https://blog.pancakeswap.finance/articles/pancake"
+      },
+      "securityAudit": "not-verified",
+      "riskNote": "Review token details and every approval carefully."
+    },
+    {
+      "id": "sikka",
+      "name": "Sikka.Fun",
+      "description": "Discover and create community tokens on Shardeum.",
+      "domain": "sikka.fun",
+      "networks": [
+        "shardeum"
+      ],
+      "icon": {
+        "shape": "rounded-square",
+        "color": "#7C5CFC",
+        "mark": "S"
+      },
+      "featured": true,
+      "popular": true,
+      "bookmark": true,
+      "verification": {
+        "status": "official-domain-source-found",
+        "checkedAt": "2026-11-28",
+        "sourceUrl": "https://shardeum.org/blog/sikka-fun-goes-live-on-shardeum/"
+      },
+      "securityAudit": "not-verified",
+      "riskNote": "Community tokens are highly volatile; you may lose the full amount."
+    },
+    {
+      "id": "venus",
+      "name": "Venus",
+      "description": "A lending and borrowing protocol on BNB Chain.",
+      "domain": "venus.io",
+      "networks": [
+        "bsc"
+      ],
+      "icon": {
+        "shape": "circle",
+        "color": "#3B82F6",
+        "mark": "V"
+      },
+      "featured": false,
+      "popular": true,
+      "bookmark": true,
+      "verification": {
+        "status": "official-domain-source-found",
+        "checkedAt": "2026-11-28",
+        "sourceUrl": "https://github.com/VenusProtocol"
+      },
+      "securityAudit": "not-verified",
+      "riskNote": "Lending, borrowing and liquidation carry financial risk."
+    },
+    {
+      "id": "nfts2me",
+      "name": "NFTs2Me",
+      "description": "Create, deploy and manage NFT collections on Shardeum.",
+      "domain": "nfts2me.com",
+      "networks": [
+        "shardeum"
+      ],
+      "icon": {
+        "shape": "rounded-square",
+        "color": "#D97706",
+        "mark": "N"
+      },
+      "featured": false,
+      "popular": true,
+      "bookmark": true,
+      "verification": {
+        "status": "official-domain-source-found",
+        "checkedAt": "2026-11-28",
+        "sourceUrl": "https://shardeum.org/blog/nfts2me-on-shardeum-mainnet/"
+      },
+      "securityAudit": "not-verified",
+      "riskNote": "Check the collection, contract and deployment fees before confirming."
+    },
+    {
+      "id": "shardeum-dashboard",
+      "name": "Shardeum Dashboard",
+      "description": "View validators and manage SHM staking on Shardeum.",
+      "domain": "dashboard.shardeum.org",
+      "networks": [
+        "shardeum"
+      ],
+      "icon": {
+        "shape": "circle",
+        "color": "#16A34A",
+        "mark": "D"
+      },
+      "featured": false,
+      "popular": true,
+      "bookmark": true,
+      "verification": {
+        "status": "official-domain-source-found",
+        "checkedAt": "2026-11-28",
+        "sourceUrl": "https://dashboard.shardeum.org/"
+      },
+      "securityAudit": "not-verified",
+      "riskNote": "Staking involves validator, lock-up and reward risks."
+    }
+  ]
+}
