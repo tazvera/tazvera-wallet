@@ -1,0 +1,48 @@
+"use strict";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const root = path.resolve(__dirname, "..");
+const catalog = JSON.parse(fs.readFileSync(path.join(root, "app/browser/dapps/catalog.json"), "utf8"));
+const ui = fs.readFileSync(path.join(root, "app/browser/dapps/dapps.js"), "utf8");
+const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
+
+test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
+  assert.equal(catalog.schemaVersion, 1);
+  assert.ok(catalog.items.length >= 5);
+  for (const item of catalog.items) {
+    assert.ok(item.networks.length > 0);
+    assert.ok(item.networks.every(n => ["bsc", "shardeum"].includes(n)), item.id);
+    assert.match(item.domain, /^[a-z0-9.-]+\.[a-z]{2,}$/i);
+    assert.equal(item.securityAudit, "not-verified");
+  }
+});
+
+test("catalogue has five local bookmarks and self-generated icons only", () => {
+  assert.equal(catalog.items.filter(x => x.bookmark).length, 5);
+  for (const item of catalog.items) {
+    assert.match(item.icon.color, /^#[0-9a-f]{6}$/i);
+    assert.ok(["circle", "rounded-square"].includes(item.icon.shape));
+    assert.ok(item.icon.mark.length > 0 && item.icon.mark.length <= 2);
+    assert.equal("image" in item.icon, false);
+    assert.equal("logo" in item, false);
+  }
+  assert.doesNotMatch(ui, /<img\b|background-image\s*:/i);
+  assert.doesNotMatch(ui, /window\.open|TazveraBrowser\.open|signSheet|WalletConnect/i);
+});
+
+test("catalogue JSON and UI are loaded from the same origin and cached offline", () => {
+  assert.match(ui, /fetch\("\/app\/browser\/dapps\/catalog\.json"/);
+  assert.match(index, /app\/browser\/dapps\/dapps\.js/);
+  assert.match(serviceWorker, /\/app\/browser\/dapps\/catalog\.json/);
+  assert.match(serviceWorker, /\/app\/browser\/dapps\/dapps\.js/);
+});
+
+test("Open and browser toolbar actions remain disabled in this data-only layer", () => {
+  assert.match(ui, /class="tz-open-inert"[^>]*disabled/);
+  assert.match(ui, /class="tz-browser-toolbar"/);
+  assert.match(ui, /brwOpen=function\(\)\{ toast/);
+});
