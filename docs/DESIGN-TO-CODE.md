@@ -31,6 +31,18 @@ visual redesign.
 | Settings | `app/features/settings/settings-shared.css` and `app/features/settings/settings-desktop.css` | Shared settings rows and desktop settings layout |
 | Assistant | `app/features/assistant/assistant-desktop.css` | Desktop assistant layout |
 
+## dApps marketplace and browser start page
+
+| Design area | Existing file | Responsibility |
+|---|---|---|
+| Local dApps data | `app/browser/dapps/catalog.json` | Single curated source of names, descriptions, exact domains, supported networks, generated icon marks, bookmarks, featured/popular flags and provenance metadata |
+| dApps and browser start-page markup | `app/browser/dapps/dapps.js` | Reads only the same-origin catalogue JSON and renders only entries with documented WalletConnect support; no site opening, connection, permission or signing action |
+| dApps and browser styling | `app/features/browser/dapps-catalog.css` | Approved Gemini layout measurements, dark palette and supplied Space Grotesk, Mukta and IBM Plex Mono fonts |
+
+Approved dApps measurements: outer frame `100%`, max-width `1280px`, padding `28px 36px 56px`; main section gap `24px`; header gap `16px`; icon chip `44px` minimum; card radius `18px`; chip radius `12px`; small container radius `14px`; card padding `24px` (up to `28px` where specified); popular row approximately `72px` with `1px` dividers. Desktop uses two columns; narrow screens stack the columns. Featured cards scroll horizontally with the next card partly visible.
+
+Approved dApps palette: background `#050806`, card `#0B100D`, bright green `#4CF27E`, deep green `#016B57`; text on green is near-black. Use only `SpaceGrotesk-Medium`, `SpaceGrotesk-Bold`, `Mukta-Regular`, `Mukta-Bold`, and `IBMPlexMono-Regular` for this screen. dApp marks are generated locally from a letter or simple mark; no external logos or image URLs. Candidate entries without confirmed WalletConnect support remain in the same JSON but are not rendered until verified.
+
 ## Implementation rules
 
 - Prefer the narrowest existing stylesheet that owns the visual component.
