@@ -69,5 +69,5 @@ test("catalogue JSON and UI are loaded from the same origin and cached offline",
 test("Open and browser toolbar actions remain disabled in this data-only layer", () => {
   assert.match(ui, /class="tz-open-inert"[^>]*disabled/);
   assert.match(ui, /class="tz-browser-toolbar"/);
-  assert.match(ui, /brwOpen=function\(\)\{ toast/);
+  assert.doesNotMatch(ui, /brwOpen=function/);
 });
