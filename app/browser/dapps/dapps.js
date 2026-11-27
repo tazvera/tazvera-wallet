@@ -1,0 +1,89 @@
+/* Tazvera wallet · local dApps catalogue UI · MIT License */
+"use strict";
+
+/* This screen is deliberately data-only. It does not navigate to a dApp, connect a wallet,
+   request permissions, or sign. The only fetch is the same-origin JSON catalogue. */
+var TAZVERA_DAPPS = [];
+var TAZVERA_DAPPS_READY = false;
+var TAZVERA_DAPPS_LOADING = false;
+
+function dappsLoad(){
+  if(TAZVERA_DAPPS_READY || TAZVERA_DAPPS_LOADING) return;
+  TAZVERA_DAPPS_LOADING = true;
+  fetch("/app/browser/dapps/catalog.json", {cache:"no-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("catalog unavailable"); return r.json(); })
+    .then(function(data){
+      if(!data || data.schemaVersion !== 1 || !Array.isArray(data.items)) throw new Error("invalid catalogue");
+      var allowed = {bsc:true, shardeum:true};
+      TAZVERA_DAPPS = data.items.filter(function(x){
+        return x && typeof x.id==="string" && typeof x.name==="string" &&
+          typeof x.description==="string" && /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(x.domain||"") &&
+          Array.isArray(x.networks) && x.networks.length>0 &&
+          x.networks.every(function(n){return !!allowed[n]}) &&
+          x.icon && /^#[0-9a-f]{6}$/i.test(x.icon.color||"") &&
+          typeof x.icon.mark==="string" && x.icon.mark.length<=2;
+      });
+      TAZVERA_DAPPS_READY = true;
+      if(S.tab==="brw") render();
+    })
+    .catch(function(){ TAZVERA_DAPPS=[]; TAZVERA_DAPPS_READY=true; if(S.tab==="brw") render(); })
+    .finally(function(){ TAZVERA_DAPPS_LOADING=false; });
+}
+function dappNetworkLabel(x){
+  return x.networks.map(function(n){return n==="bsc"?"BNB Chain":"Shardeum"}).join(" · ");
+}
+function dappIcon(x, extra){
+  var shape=x.icon.shape==="circle"?"circle":"square";
+  return '<span class="tz-dapp-icon '+shape+(extra?" "+extra:"")+'" style="--dapp-icon:'+esc(x.icon.color)+'" aria-hidden="true">'+esc(x.icon.mark)+'</span>';
+}
+function dappCard(x){
+  return '<article class="tz-dapp-feature" aria-label="'+esc(x.name)+'">'+
+    '<div class="tz-dapp-feature-top"><span class="tz-featured-label">FEATURED</span><span class="tz-network-label">'+esc(dappNetworkLabel(x))+'</span></div>'+
+    '<div class="tz-dapp-feature-main">'+dappIcon(x)+
+      '<div class="tz-dapp-feature-copy"><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><code>'+esc(x.domain)+'</code></div>'+
+    '</div><button class="tz-open-inert" type="button" disabled aria-disabled="true">Open</button>'+
+    '<p class="tz-dapp-status">Catalogue entry only · opening is disabled in this release</p>'+
+  '</article>';
+}
+function dappPopularRow(x){
+  return '<div class="tz-dapp-popular-row">'+dappIcon(x)+
+    '<div class="tz-dapp-popular-copy"><b>'+esc(x.name)+'</b><small>'+esc(x.description)+'</small><code>'+esc(x.domain)+'</code></div>'+
+    '<span class="tz-dapp-chevron" aria-hidden="true">›</span></div>';
+}
+function browserHTML(){
+  dappsLoad();
+  var q=String(S.dappQuery||"").trim().toLowerCase();
+  var items=TAZVERA_DAPPS.filter(function(x){
+    return !q || [x.name,x.description,x.domain,dappNetworkLabel(x)].join(" ").toLowerCase().indexOf(q)>=0;
+  });
+  var bookmarks=items.filter(function(x){return x.bookmark}).slice(0,5);
+  var featured=items.filter(function(x){return x.featured});
+  var popular=items.filter(function(x){return x.popular});
+  var featuredHtml=featured.length?featured.map(dappCard).join(""):'<p class="tz-dapp-empty">No featured dApps match your search.</p>';
+  var popularHtml=popular.length?popular.map(dappPopularRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>';
+  var bookmarkHtml=bookmarks.map(function(x){return '<div class="tz-bookmark">'+dappIcon(x)+'<span>'+esc(x.name)+'</span></div>'}).join("");
+  return '<main class="tz-dapps-shell">'+
+    '<header class="tz-dapps-header"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1><span class="tz-dapps-header-spacer"></span></header>'+
+    '<div class="tz-browser-address" aria-label="Tazvera local dApps catalogue"><span class="tz-lock" aria-hidden="true">⌑</span><span class="tz-address-text">Tazvera dApps</span><span class="tz-address-network">BNB · SHARDEUM</span></div>'+
+    '<label class="tz-dapps-search"><span aria-hidden="true">⌕</span><input id="tzDappSearch" type="search" value="'+esc(S.dappQuery||"")+'" placeholder="Search dApps" autocomplete="off" spellcheck="false" aria-label="Search local dApps"></label>'+
+    '<div class="tz-dapps-columns"><section class="tz-dapps-left">'+
+      '<section class="tz-dapps-bookmarks"><div class="tz-dapps-section-head"><h2>BOOKMARKS</h2><span class="tz-see-all">See All</span></div><div class="tz-bookmark-row">'+bookmarkHtml+'</div></section>'+
+      '<section class="tz-dapps-featured"><div class="tz-dapps-section-head"><h2>FEATURED</h2></div><div class="tz-featured-track">'+featuredHtml+'</div></section>'+
+    '</section><section class="tz-dapps-popular"><div class="tz-dapps-section-head"><h2>POPULAR</h2></div><div class="tz-popular-list">'+popularHtml+'</div></section></div>'+
+    '<footer class="tz-browser-toolbar" aria-label="Browser toolbar">'+
+      '<button type="button" disabled aria-label="Back">‹</button><button type="button" disabled aria-label="Forward">›</button>'+
+      '<button type="button" disabled aria-label="Tabs">▢</button><button type="button" disabled aria-label="Bookmarks">♡</button><button type="button" disabled aria-label="Menu">☰</button>'+
+    '</footer></main>';
+}
+
+/* The legacy browser opener is intentionally blocked while this first, data-only layer is shipped. */
+brwOpen=function(){ toast("Opening dApps is disabled in this release."); };
+
+document.addEventListener("input",function(e){
+  if(!e.target || e.target.id!=="tzDappSearch") return;
+  S.dappQuery=e.target.value;
+  var pos=e.target.selectionStart;
+  render();
+  var next=document.getElementById("tzDappSearch");
+  if(next){next.focus();try{next.setSelectionRange(pos,pos)}catch(ignore){}}
+});
