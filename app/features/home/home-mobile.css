@@ -1,0 +1,13 @@
+/* Tazvera wallet · app/features/home/home-mobile.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* Home screen only. Cards get 18px corners and a 1px border. The dark Home colours are set on the
+   Home screen alone, so Send, Receive, Request, Activity and the other pages keep their own colours.
+   Nothing here changes text, buttons, links or the bottom bar. */
+
+/* Phone (under 900px) */
+@media (max-width: 899px){
+  .scr.tab-home .card{ border-radius: 18px; }
+}
+
+/* Dark theme, Home screen only: deep green-black background, card #0B100D, bright green accent */
+html[data-theme=dark] .scr.tab-home{ --card:#0B100D; --line:#1B2A21; --green:#4CF27E; --greenTx:#050806; }
+html[data-theme=dark] .scr.tab-home .card{ border-radius: 18px; }
