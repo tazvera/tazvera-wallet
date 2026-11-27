@@ -10,6 +10,16 @@ const ui = fs.readFileSync(path.join(root, "app/browser/dapps/dapps.js"), "utf8"
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
 
+test("Explore Browser card opens the dApps screen while legacy browser remains separate", () => {
+  const explore = fs.readFileSync(path.join(root, "app/js/24-explore.js"), "utf8");
+  const renderBoot = fs.readFileSync(path.join(root, "app/js/30-render-boot.js"), "utf8");
+  assert.match(explore, /class="brwrow" data-tab="dapps"/);
+  assert.match(renderBoot, /dapps:dappsHTML/);
+  assert.match(renderBoot, /brw:browserHTML/);
+  assert.match(ui, /function dappsHTML\(\)/);
+  assert.match(ui, /data-tab="exp" aria-label="Back to Explore"/);
+});
+
 test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
   assert.equal(catalog.schemaVersion, 1);
   assert.ok(catalog.items.length >= 5);
