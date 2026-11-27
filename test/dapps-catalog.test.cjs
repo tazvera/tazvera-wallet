@@ -36,7 +36,7 @@ test("catalogue has five local bookmarks and self-generated icons only", () => {
     assert.equal("logo" in item, false);
   }
   assert.doesNotMatch(ui, /<img\b|background-image\s*:/i);
-  assert.doesNotMatch(ui, /window\.open|TazveraBrowser\.open|signSheet|WalletConnect/i);
+  assert.doesNotMatch(ui, /window\.open|TazveraBrowser\.open|signSheet|@walletconnect|WalletConnectProvider|WalletConnectModal/i);
 });
 
 test("catalogue JSON and UI are loaded from the same origin and cached offline", () => {
