@@ -27,7 +27,7 @@ test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
   }
 });
 
-test("catalogue has five local bookmarks and self-generated icons only", () => {
+test("only confirmed apps are bookmarked and all icons are self-generated", () => {
   assert.equal(catalog.items.filter(x => x.bookmark).length, 3);
   assert.ok(catalog.items.filter(x => x.walletConnectSupport === "unconfirmed").every(x => !x.bookmark && !x.featured && !x.popular));
   for (const item of catalog.items) {
