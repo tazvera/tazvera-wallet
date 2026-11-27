@@ -1,0 +1,97 @@
+/* Tazvera wallet · local dApps catalogue · approved Gemini measurements */
+.scr.tab-brw{background:#050806!important;color:#F2F5F4!important}
+.scr.tab-brw .tz-dapps-shell{
+  width:100%;max-width:1280px;margin:0 auto;padding:28px 36px 56px;
+  display:flex;flex-direction:column;gap:24px;box-sizing:border-box;
+  color:#F2F5F4;font-family:"Mukta",sans-serif;
+}
+.scr.tab-brw .tz-dapps-header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.scr.tab-brw .tz-dapps-back{
+  width:44px;height:44px;min-width:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  color:#F2F5F4;background:#0B100D;border:1px solid #26332B;font:500 28px "Space Grotesk",sans-serif;
+}
+.scr.tab-brw .tz-dapps-header h1{margin:0;font:700 1.45rem/1.2 "Space Grotesk",sans-serif;letter-spacing:-.02em}
+.scr.tab-brw .tz-dapps-header-spacer{flex:1}
+.scr.tab-brw .tz-browser-address{
+  min-height:52px;border-radius:999px;background:#0B100D;border:1px solid #26332B;
+  display:flex;align-items:center;gap:12px;padding:0 16px;
+}
+.scr.tab-brw .tz-lock{font-size:18px;color:#4CF27E}
+.scr.tab-brw .tz-address-text{flex:1;min-width:0;color:#D7E0D9;font:400 13px "IBM Plex Mono",monospace}
+.scr.tab-brw .tz-address-network{background:#016B57;color:#E9FFF1;border-radius:999px;padding:7px 11px;font:700 10px "Space Grotesk",sans-serif;letter-spacing:.04em}
+.scr.tab-brw .tz-dapps-search{
+  height:48px;border:1px solid #26332B;border-radius:14px;background:#0B100D;
+  display:flex;align-items:center;gap:10px;padding:0 14px;color:#9EAEA3;
+}
+.scr.tab-brw .tz-dapps-search>span{font:400 24px "Space Grotesk",sans-serif}
+.scr.tab-brw .tz-dapps-search input{
+  width:100%;min-width:0;border:0;outline:0;background:transparent;color:#F2F5F4;
+  font:500 14px "Space Grotesk",sans-serif;
+}
+.scr.tab-brw .tz-dapps-search input::placeholder{color:#87958B}
+.scr.tab-brw .tz-dapps-columns{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:24px;align-items:start}
+.scr.tab-brw .tz-dapps-left{display:flex;flex-direction:column;gap:24px;min-width:0}
+.scr.tab-brw .tz-dapps-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.scr.tab-brw .tz-dapps-section-head h2{margin:0;color:#A8B6AC;font:700 12px/1.3 "Space Grotesk",sans-serif;letter-spacing:.11em}
+.scr.tab-brw .tz-see-all{color:#4CF27E;font:500 12px "Space Grotesk",sans-serif}
+.scr.tab-brw .tz-bookmark-row{display:flex;align-items:flex-start;gap:16px;overflow-x:auto;padding:2px 0 4px}
+.scr.tab-brw .tz-bookmark{width:64px;min-width:64px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.scr.tab-brw .tz-bookmark>span:last-child{max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#A8B6AC;font:400 11px "Mukta",sans-serif}
+.scr.tab-brw .tz-dapp-icon{
+  width:44px;height:44px;min-width:44px;border-radius:12px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--dapp-icon) 22%,#0B100D);
+  border:1px solid color-mix(in srgb,var(--dapp-icon) 55%,#26332B);
+  color:var(--dapp-icon);font:700 18px "Space Grotesk",sans-serif;
+}
+.scr.tab-brw .tz-dapp-icon.circle{border-radius:50%}
+.scr.tab-brw .tz-featured-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 36px 10px 0}
+.scr.tab-brw .tz-dapp-feature{
+  position:relative;flex:0 0 min(84%,430px);min-width:260px;min-height:238px;
+  padding:24px;border-radius:18px;background:#0B100D;border:1px solid #1D2A22;
+  display:flex;flex-direction:column;gap:14px;scroll-snap-align:start;box-sizing:border-box;
+}
+.scr.tab-brw .tz-dapp-feature-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.scr.tab-brw .tz-featured-label{background:#016B57;color:#4CF27E;border-radius:999px;padding:6px 10px;font:700 10px "Space Grotesk",sans-serif;letter-spacing:.07em}
+.scr.tab-brw .tz-network-label{color:#9EAEA3;font:500 11px "Space Grotesk",sans-serif;text-align:right}
+.scr.tab-brw .tz-dapp-feature-main{display:flex;align-items:flex-start;gap:14px;min-width:0}
+.scr.tab-brw .tz-dapp-feature-main .tz-dapp-icon{width:48px;height:48px;min-width:48px}
+.scr.tab-brw .tz-dapp-feature-copy{min-width:0}
+.scr.tab-brw .tz-dapp-feature-copy h3{margin:0 0 4px;color:#F2F5F4;font:700 21px/1.25 "Space Grotesk",sans-serif}
+.scr.tab-brw .tz-dapp-feature-copy p{margin:0 0 8px;color:#A8B6AC;font:400 13px/1.5 "Mukta",sans-serif}
+.scr.tab-brw .tz-dapp-feature-copy code,.scr.tab-brw .tz-dapp-popular-copy code{color:#B5C4BA;font:400 11px "IBM Plex Mono",monospace;overflow-wrap:anywhere}
+.scr.tab-brw .tz-open-inert{
+  align-self:flex-end;min-width:82px;min-height:38px;border:0;border-radius:12px;
+  background:#4CF27E;color:#050806;padding:0 16px;font:700 12px "Space Grotesk",sans-serif;
+  opacity:.55;cursor:not-allowed;
+}
+.scr.tab-brw .tz-dapp-status{margin:0;color:#78877D;font:400 10px/1.4 "Mukta",sans-serif}
+.scr.tab-brw .tz-dapps-popular{min-width:0}
+.scr.tab-brw .tz-popular-list{background:#0B100D;border:1px solid #1D2A22;border-radius:18px;padding:4px 18px}
+.scr.tab-brw .tz-dapp-popular-row{
+  min-height:72px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #26332B;padding:10px 0;
+}
+.scr.tab-brw .tz-dapp-popular-row:last-child{border-bottom:0}
+.scr.tab-brw .tz-dapp-popular-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.scr.tab-brw .tz-dapp-popular-copy b{color:#F2F5F4;font:700 14px "Space Grotesk",sans-serif}
+.scr.tab-brw .tz-dapp-popular-copy small{color:#A8B6AC;font:400 12px/1.35 "Mukta",sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scr.tab-brw .tz-dapp-chevron{color:#87958B;font:400 24px "Space Grotesk",sans-serif}
+.scr.tab-brw .tz-dapp-empty{color:#9EAEA3;font:400 13px "Mukta",sans-serif;padding:14px 0}
+.scr.tab-brw .tz-browser-toolbar{display:flex;align-items:center;justify-content:space-around;gap:12px;padding:12px 0 0;border-top:1px solid #26332B}
+.scr.tab-brw .tz-browser-toolbar button{
+  width:44px;height:44px;min-width:44px;border-radius:12px;border:1px solid #26332B;
+  background:#0B100D;color:#87958B;font:400 22px "Space Grotesk",sans-serif;opacity:.55;cursor:not-allowed;
+}
+@media(max-width:899px){
+  .scr.tab-brw .tz-dapps-shell{padding:28px 36px 56px}
+  .scr.tab-brw .tz-dapps-columns{grid-template-columns:minmax(0,1fr);gap:24px}
+  .scr.tab-brw .tz-dapps-left{gap:24px}
+  .scr.tab-brw .tz-dapp-feature{flex-basis:84%}
+  .scr.tab-brw .tz-bookmark-row{gap:12px}
+}
+@media(max-width:420px){
+  .scr.tab-brw .tz-dapps-shell{padding-left:22px;padding-right:22px}
+  .scr.tab-brw .tz-dapp-feature{padding:24px;min-width:245px}
+  .scr.tab-brw .tz-network-label{font-size:10px}
+}
