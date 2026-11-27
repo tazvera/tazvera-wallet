@@ -2,8 +2,9 @@
 // Needs the environment variable AIRDROP_KEY (the airdrop wallet's private key, kept only in Vercel).
 const ethers = require("ethers");
 const guard = require("../lib/guard");
+const SHARDEUM = require("../app/config/shardeum");
 
-const RPC = "https://api-mezame.shardeum.org";
+const RPC = SHARDEUM.testnetRpc;
 const CHAIN_ID = 8119;
 const TOKEN = "0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0";   // Tazvera Test (TZT)
 const AMOUNT = "100";            // TZT per person
