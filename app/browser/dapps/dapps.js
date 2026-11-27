@@ -24,9 +24,9 @@ function dappsLoad(){
           typeof x.icon.mark==="string" && x.icon.mark.length<=2;
       });
       TAZVERA_DAPPS_READY = true;
-      if(S.tab==="brw") render();
+      if(S.tab==="dapps") render();
     })
-    .catch(function(){ TAZVERA_DAPPS=[]; TAZVERA_DAPPS_READY=true; if(S.tab==="brw") render(); })
+    .catch(function(){ TAZVERA_DAPPS=[]; TAZVERA_DAPPS_READY=true; if(S.tab==="dapps") render(); })
     .finally(function(){ TAZVERA_DAPPS_LOADING=false; });
 }
 function dappNetworkLabel(x){
@@ -53,7 +53,7 @@ function dappPopularRow(x){
     '<div class="tz-dapp-popular-copy"><b>'+esc(x.name)+'</b><small>'+esc(x.description)+'</small><code>'+esc(x.domain)+'</code>'+dappDomainStatus(x)+'</div>'+
     '<span class="tz-dapp-chevron" aria-hidden="true">›</span></div>';
 }
-function browserHTML(){
+function dappsHTML(){
   dappsLoad();
   var q=String(S.dappQuery||"").trim().toLowerCase();
   var items=TAZVERA_DAPPS.filter(function(x){
@@ -79,8 +79,6 @@ function browserHTML(){
     '</footer></main>';
 }
 
-/* The legacy browser opener is intentionally blocked while this first, data-only layer is shipped. */
-brwOpen=function(){ toast("Opening dApps is disabled in this release."); };
 
 document.addEventListener("input",function(e){
   if(!e.target || e.target.id!=="tzDappSearch") return;
