@@ -63,7 +63,7 @@ function browserHTML(){
   var popularHtml=popular.length?popular.map(dappPopularRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>';
   var bookmarkHtml=bookmarks.map(function(x){return '<div class="tz-bookmark">'+dappIcon(x)+'<span>'+esc(x.name)+'</span></div>'}).join("");
   return '<main class="tz-dapps-shell">'+
-    '<header class="tz-dapps-header"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1><span class="tz-dapps-header-spacer"></span></header>'+
+    '<header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1></div><span class="tz-dapps-header-spacer"></span></header>'+
     '<div class="tz-browser-address" aria-label="Tazvera local dApps catalogue"><span class="tz-lock" aria-hidden="true">⌑</span><span class="tz-address-text">Tazvera dApps</span><span class="tz-address-network">BNB · SHARDEUM</span></div>'+
     '<label class="tz-dapps-search"><span aria-hidden="true">⌕</span><input id="tzDappSearch" type="search" value="'+esc(S.dappQuery||"")+'" placeholder="Search dApps" autocomplete="off" spellcheck="false" aria-label="Search local dApps"></label>'+
     '<div class="tz-dapps-columns"><section class="tz-dapps-left">'+
