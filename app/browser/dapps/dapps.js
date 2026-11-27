@@ -34,7 +34,7 @@ function dappNetworkLabel(x){
 }
 function dappIcon(x, extra){
   var shape=x.icon.shape==="circle"?"circle":"square";
-  return '<span class="tz-dapp-icon '+shape+(extra?" "+extra:"")+'" style="--dapp-icon:'+esc(x.icon.color)+'" aria-hidden="true">'+esc(x.icon.mark)+'</span>';
+  return '<span class="tz-dapp-icon '+shape+(extra?" "+extra:"")+'" data-icon-color="'+esc(x.icon.color)+'" aria-hidden="true">'+esc(x.icon.mark)+'</span>';
 }
 function dappCard(x){
   return '<article class="tz-dapp-feature" aria-label="'+esc(x.name)+'">'+
