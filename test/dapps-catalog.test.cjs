@@ -13,16 +13,21 @@ const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
 test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
   assert.equal(catalog.schemaVersion, 1);
   assert.ok(catalog.items.length >= 5);
+  const visible = catalog.items.filter(x => x.walletConnectSupport === "confirmed");
+  assert.equal(visible.length, 3);
+  assert.ok(visible.every(x => x.networks.every(n => n === "bsc")));
   for (const item of catalog.items) {
     assert.ok(item.networks.length > 0);
     assert.ok(item.networks.every(n => ["bsc", "shardeum"].includes(n)), item.id);
     assert.match(item.domain, /^[a-z0-9.-]+\.[a-z]{2,}$/i);
     assert.equal(item.securityAudit, "not-verified");
+    assert.ok(["confirmed", "unconfirmed"].includes(item.walletConnectSupport));
   }
 });
 
 test("catalogue has five local bookmarks and self-generated icons only", () => {
-  assert.equal(catalog.items.filter(x => x.bookmark).length, 5);
+  assert.equal(catalog.items.filter(x => x.bookmark).length, 3);
+  assert.ok(catalog.items.filter(x => x.walletConnectSupport === "unconfirmed").every(x => !x.bookmark && !x.featured && !x.popular));
   for (const item of catalog.items) {
     assert.match(item.icon.color, /^#[0-9a-f]{6}$/i);
     assert.ok(["circle", "rounded-square"].includes(item.icon.shape));
@@ -36,6 +41,7 @@ test("catalogue has five local bookmarks and self-generated icons only", () => {
 
 test("catalogue JSON and UI are loaded from the same origin and cached offline", () => {
   assert.match(ui, /fetch\("\/app\/browser\/dapps\/catalog\.json"/);
+  assert.match(ui, /x\.walletConnectSupport==="confirmed"/);
   assert.match(index, /app\/browser\/dapps\/dapps\.js/);
   assert.match(serviceWorker, /\/app\/browser\/dapps\/catalog\.json/);
   assert.match(serviceWorker, /\/app\/browser\/dapps\/dapps\.js/);
