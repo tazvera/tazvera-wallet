@@ -29,7 +29,9 @@
       },
       "securityAudit": "not-verified",
       "riskNote": "Review token details and every approval carefully.",
-      "walletConnectSupport": "confirmed"
+      "walletConnectSupport": "confirmed",
+      "domainVerified": true,
+      "domainVerificationMethod": "Cross-checked exact domain against the project's official site, official announcement/docs, or official project repository; see verification.sourceUrl(s)."
     },
     {
       "id": "sikka",
@@ -55,7 +57,9 @@
       },
       "securityAudit": "not-verified",
       "riskNote": "Community tokens are highly volatile; you may lose the full amount.",
-      "walletConnectSupport": "unconfirmed"
+      "walletConnectSupport": "unconfirmed",
+      "domainVerified": true,
+      "domainVerificationMethod": "Cross-checked exact domain against the project's official site, official announcement/docs, or official project repository; see verification.sourceUrl(s)."
     },
     {
       "id": "venus",
@@ -85,7 +89,9 @@
       },
       "securityAudit": "not-verified",
       "riskNote": "Lending, borrowing and liquidation carry financial risk.",
-      "walletConnectSupport": "confirmed"
+      "walletConnectSupport": "confirmed",
+      "domainVerified": true,
+      "domainVerificationMethod": "Cross-checked exact domain against the project's official site, official announcement/docs, or official project repository; see verification.sourceUrl(s)."
     },
     {
       "id": "nfts2me",
@@ -111,7 +117,9 @@
       },
       "securityAudit": "not-verified",
       "riskNote": "Check the collection, contract and deployment fees before confirming.",
-      "walletConnectSupport": "unconfirmed"
+      "walletConnectSupport": "unconfirmed",
+      "domainVerified": true,
+      "domainVerificationMethod": "Cross-checked exact domain against the project's official site, official announcement/docs, or official project repository; see verification.sourceUrl(s)."
     },
     {
       "id": "shardeum-dashboard",
@@ -137,7 +145,9 @@
       },
       "securityAudit": "not-verified",
       "riskNote": "Staking involves validator, lock-up and reward risks.",
-      "walletConnectSupport": "unconfirmed"
+      "walletConnectSupport": "unconfirmed",
+      "domainVerified": true,
+      "domainVerificationMethod": "Cross-checked exact domain against the project's official site, official announcement/docs, or official project repository; see verification.sourceUrl(s)."
     },
     {
       "id": "oneinch",
@@ -167,7 +177,9 @@
         "checkedBy": "ChatGPT-assisted source review"
       },
       "securityAudit": "not-verified",
-      "riskNote": "Check the token, network, quote and approvals before confirming."
+      "riskNote": "Check the token, network, quote and approvals before confirming.",
+      "domainVerified": true,
+      "domainVerificationMethod": "Cross-checked exact domain against the project's official site, official announcement/docs, or official project repository; see verification.sourceUrl(s)."
     }
   ]
 }
