@@ -20,6 +20,8 @@ test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
     assert.ok(item.networks.length > 0);
     assert.ok(item.networks.every(n => ["bsc", "shardeum"].includes(n)), item.id);
     assert.match(item.domain, /^[a-z0-9.-]+\.[a-z]{2,}$/i);
+    assert.equal(typeof item.domainVerified, "boolean");
+    assert.ok(item.domainVerificationMethod.length > 0);
     assert.equal(item.securityAudit, "not-verified");
     assert.equal(item.verification.checkedBy, "ChatGPT-assisted source review");
     assert.equal(item.verification.checkedAt, "2026-11-28");
@@ -45,6 +47,8 @@ test("only confirmed apps are bookmarked and all icons are self-generated", () =
 test("catalogue JSON and UI are loaded from the same origin and cached offline", () => {
   assert.match(ui, /fetch\("\/app\/browser\/dapps\/catalog\.json"/);
   assert.match(ui, /x\.walletConnectSupport==="confirmed"/);
+  assert.match(ui, /function dappDomainStatus\(x\)/);
+  assert.match(ui, /Domain not verified/);
   assert.match(index, /app\/browser\/dapps\/dapps\.js/);
   assert.match(serviceWorker, /\/app\/browser\/dapps\/catalog\.json/);
   assert.match(serviceWorker, /\/app\/browser\/dapps\/dapps\.js/);
