@@ -21,6 +21,8 @@ test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
     assert.ok(item.networks.every(n => ["bsc", "shardeum"].includes(n)), item.id);
     assert.match(item.domain, /^[a-z0-9.-]+\.[a-z]{2,}$/i);
     assert.equal(item.securityAudit, "not-verified");
+    assert.equal(item.verification.checkedBy, "ChatGPT-assisted source review");
+    assert.equal(item.verification.checkedAt, "2026-11-28");
     assert.ok(["confirmed", "unconfirmed"].includes(item.walletConnectSupport));
   }
 });
