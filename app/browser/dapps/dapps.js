@@ -16,7 +16,7 @@ function dappsLoad(){
       if(!data || data.schemaVersion !== 1 || !Array.isArray(data.items)) throw new Error("invalid catalogue");
       var allowed = {bsc:true, shardeum:true};
       TAZVERA_DAPPS = data.items.filter(function(x){
-        return x && typeof x.id==="string" && typeof x.name==="string" &&
+        return x && x.walletConnectSupport==="confirmed" && typeof x.id==="string" && typeof x.name==="string" &&
           typeof x.description==="string" && /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(x.domain||"") &&
           Array.isArray(x.networks) && x.networks.length>0 &&
           x.networks.every(function(n){return !!allowed[n]}) &&
