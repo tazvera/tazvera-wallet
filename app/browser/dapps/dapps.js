@@ -64,7 +64,7 @@ function browserHTML(){
   var bookmarkHtml=bookmarks.map(function(x){return '<div class="tz-bookmark">'+dappIcon(x)+'<span>'+esc(x.name)+'</span></div>'}).join("");
   return '<main class="tz-dapps-shell">'+
     '<header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1></div><span class="tz-dapps-header-spacer"></span></header>'+
-    '<div class="tz-browser-address" aria-label="Tazvera local dApps catalogue"><span class="tz-lock" aria-hidden="true">⌑</span><span class="tz-address-text">Tazvera dApps</span><span class="tz-address-network">BNB · SHARDEUM</span></div>'+
+    '<div class="tz-browser-address" aria-label="Tazvera local dApps catalogue"><span class="tz-lock" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="tz-address-text">Tazvera dApps</span><span class="tz-address-network">BNB · SHARDEUM</span></div>'+
     '<label class="tz-dapps-search"><span aria-hidden="true">⌕</span><input id="tzDappSearch" type="search" value="'+esc(S.dappQuery||"")+'" placeholder="Search dApps" autocomplete="off" spellcheck="false" aria-label="Search local dApps"></label>'+
     '<div class="tz-dapps-columns"><section class="tz-dapps-left">'+
       '<section class="tz-dapps-bookmarks"><div class="tz-dapps-section-head"><h2>BOOKMARKS</h2><span class="tz-see-all">See All</span></div><div class="tz-bookmark-row">'+bookmarkHtml+'</div></section>'+
