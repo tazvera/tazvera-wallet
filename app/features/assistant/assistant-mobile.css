@@ -1,0 +1,6 @@
+/* Tazvera wallet · app/features/assistant/assistant-mobile.css · MIT License · https://github.com/tazvera/tazvera-wallet */
+/* The floating assistant button on the phone. Same robot picture as the desktop sidebar: the old
+   blue glow is removed, so the phone shows the same colours. Size and position are not changed. */
+@media (max-width: 899px){
+  .aifab svg{ filter: none !important; }
+}
