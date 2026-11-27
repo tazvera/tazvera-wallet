@@ -12,7 +12,7 @@
       ],
       "icon": {
         "shape": "circle",
-        "color": "#F0B90B",
+        "color": "#FDE68A",
         "mark": "P"
       },
       "featured": true,
@@ -36,7 +36,7 @@
       ],
       "icon": {
         "shape": "rounded-square",
-        "color": "#7C5CFC",
+        "color": "#DDD6FE",
         "mark": "S"
       },
       "featured": true,
@@ -60,7 +60,7 @@
       ],
       "icon": {
         "shape": "circle",
-        "color": "#3B82F6",
+        "color": "#DBEAFE",
         "mark": "V"
       },
       "featured": false,
@@ -84,7 +84,7 @@
       ],
       "icon": {
         "shape": "rounded-square",
-        "color": "#D97706",
+        "color": "#FED7AA",
         "mark": "N"
       },
       "featured": false,
@@ -108,7 +108,7 @@
       ],
       "icon": {
         "shape": "circle",
-        "color": "#16A34A",
+        "color": "#DCFCE7",
         "mark": "D"
       },
       "featured": false,
