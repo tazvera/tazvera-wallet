@@ -2,12 +2,12 @@
 "use strict";
 /* Everything about networks lives here. To add a chain, add one entry to NETS and, if it needs a
    second node, one line to RPCB in features/send-safety.js. Nothing else has to be touched. */
-var NETS={"shardeum-testnet":{name:"Shardeum Testnet",chainId:"0x1fb7",dec:8119,sym:"SHM",rpc:"https://api-mezame.shardeum.org",exp:"https://explorer-mezame.shardeum.org",test:true,tzt:"0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0"},
+var NETS={"shardeum-testnet":{name:"Shardeum Testnet",chainId:"0x1fb7",dec:8119,sym:"SHM",rpc:TAZVERA_SHARDEUM.testnetRpc,exp:"https://explorer-mezame.shardeum.org",test:true,tzt:"0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0"},
 "bsc-testnet":{name:"BNB Testnet",chainId:"0x61",dec:97,sym:"tBNB",rpc:"https://data-seed-prebsc-1-s1.bnbchain.org:8545",exp:"https://testnet.bscscan.com",test:true},
 "sepolia":{name:"Sepolia",chainId:"0xaa36a7",dec:11155111,sym:"SepoliaETH",rpc:"https://ethereum-sepolia-rpc.publicnode.com",exp:"https://sepolia.etherscan.io",test:true},
 "bsc":{name:"BNB Chain",chainId:"0x38",dec:56,sym:"BNB",rpc:"https://bsc-rpc.publicnode.com",exp:"https://bscscan.com",test:false},
 "ethereum":{name:"Ethereum",chainId:"0x1",dec:1,sym:"ETH",rpc:"https://ethereum-rpc.publicnode.com",exp:"https://etherscan.io",test:false},
-"shardeum":{name:"Shardeum Mainnet",chainId:"0x1fb6",dec:8118,sym:"SHM",rpc:"https://api.shardeum.org",exp:"https://explorer.shardeum.org",test:false,beta:true,tzv:"0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73"}};
+"shardeum":{name:"Shardeum Mainnet",chainId:"0x1fb6",dec:8118,sym:"SHM",rpc:TAZVERA_SHARDEUM.mainnetRpc,exp:"https://explorer.shardeum.org",test:false,beta:true,tzv:"0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73"}};
 
 function coinName(n){var y=String(n&&n.sym||"").toLowerCase();
   if(y==="shm")return "Shardeum";
