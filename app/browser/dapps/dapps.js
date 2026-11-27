@@ -36,18 +36,21 @@ function dappIcon(x, extra){
   var shape=x.icon.shape==="circle"?"circle":"square";
   return '<span class="tz-dapp-icon '+shape+(extra?" "+extra:"")+'" data-icon-color="'+esc(x.icon.color)+'" aria-hidden="true">'+esc(x.icon.mark)+'</span>';
 }
+function dappDomainStatus(x){
+  return x.domainVerified===true ? "" : '<small class="tz-domain-unverified" role="note" aria-label="Domain not verified">⚠ Domain not verified</small>';
+}
 function dappCard(x){
   return '<article class="tz-dapp-feature" aria-label="'+esc(x.name)+'">'+
     '<div class="tz-dapp-feature-top"><span class="tz-featured-label">FEATURED</span><span class="tz-network-label">'+esc(dappNetworkLabel(x))+'</span></div>'+
     '<div class="tz-dapp-feature-main">'+dappIcon(x)+
-      '<div class="tz-dapp-feature-copy"><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><code>'+esc(x.domain)+'</code></div>'+
+      '<div class="tz-dapp-feature-copy"><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><code>'+esc(x.domain)+'</code>'+dappDomainStatus(x)+'</div>'+
     '</div><button class="tz-open-inert" type="button" disabled aria-disabled="true">Open</button>'+
     '<p class="tz-dapp-status">Catalogue entry only · opening is disabled in this release</p>'+
   '</article>';
 }
 function dappPopularRow(x){
   return '<div class="tz-dapp-popular-row">'+dappIcon(x)+
-    '<div class="tz-dapp-popular-copy"><b>'+esc(x.name)+'</b><small>'+esc(x.description)+'</small><code>'+esc(x.domain)+'</code></div>'+
+    '<div class="tz-dapp-popular-copy"><b>'+esc(x.name)+'</b><small>'+esc(x.description)+'</small><code>'+esc(x.domain)+'</code>'+dappDomainStatus(x)+'</div>'+
     '<span class="tz-dapp-chevron" aria-hidden="true">›</span></div>';
 }
 function browserHTML(){
