@@ -42,7 +42,7 @@
 .scr.tab-brw .tz-dapp-icon{
   width:44px;height:44px;min-width:44px;border-radius:12px;
   display:inline-flex;align-items:center;justify-content:center;
-  background:var(--dapp-icon);border:1px solid transparent;color:#050806;font:700 18px "Space Grotesk",sans-serif;
+  background:#E5E7EB;border:1px solid transparent;color:#050806;font:700 18px "Space Grotesk",sans-serif;
 }
 .scr.tab-brw .tz-dapp-icon.circle{border-radius:50%}
 .scr.tab-brw .tz-featured-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 36px 10px 0}
@@ -85,3 +85,10 @@
 @media(max-width:899px){
   .scr.tab-brw .tz-dapps-columns{grid-template-columns:minmax(0,1fr);gap:24px}
 }
+
+.scr.tab-brw .tz-dapp-icon[data-icon-color="#FDE68A"]{background:#FDE68A}
+.scr.tab-brw .tz-dapp-icon[data-icon-color="#DDD6FE"]{background:#DDD6FE}
+.scr.tab-brw .tz-dapp-icon[data-icon-color="#DBEAFE"]{background:#DBEAFE}
+.scr.tab-brw .tz-dapp-icon[data-icon-color="#FED7AA"]{background:#FED7AA}
+.scr.tab-brw .tz-dapp-icon[data-icon-color="#DCFCE7"]{background:#DCFCE7}
+.scr.tab-brw .tz-dapp-icon[data-icon-color="#C7F9E9"]{background:#C7F9E9}
