@@ -31,6 +31,8 @@ Your keys stay on your phone, locked by your PIN. No MetaMask needed. Built in t
 
 The app (Version 9) is plain HTML, CSS and JavaScript. No framework and no build step.
 
+- Bundled ethers.js: **6.17.0** (`ethers.min.js`).
+
 | Path | What it is |
 |------|-----------|
 | `index.html` | App page. Loads the files below in order |
