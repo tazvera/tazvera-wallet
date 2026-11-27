@@ -24,7 +24,8 @@
         "sourceUrl": "https://blog.pancakeswap.finance/articles/pancake"
       },
       "securityAudit": "not-verified",
-      "riskNote": "Review token details and every approval carefully."
+      "riskNote": "Review token details and every approval carefully.",
+      "walletConnectSupport": "confirmed"
     },
     {
       "id": "sikka",
@@ -39,16 +40,17 @@
         "color": "#DDD6FE",
         "mark": "S"
       },
-      "featured": true,
-      "popular": true,
-      "bookmark": true,
+      "featured": false,
+      "popular": false,
+      "bookmark": false,
       "verification": {
         "status": "official-domain-source-found",
         "checkedAt": "2026-11-28",
         "sourceUrl": "https://shardeum.org/blog/sikka-fun-goes-live-on-shardeum/"
       },
       "securityAudit": "not-verified",
-      "riskNote": "Community tokens are highly volatile; you may lose the full amount."
+      "riskNote": "Community tokens are highly volatile; you may lose the full amount.",
+      "walletConnectSupport": "unconfirmed"
     },
     {
       "id": "venus",
@@ -72,7 +74,8 @@
         "sourceUrl": "https://github.com/VenusProtocol"
       },
       "securityAudit": "not-verified",
-      "riskNote": "Lending, borrowing and liquidation carry financial risk."
+      "riskNote": "Lending, borrowing and liquidation carry financial risk.",
+      "walletConnectSupport": "confirmed"
     },
     {
       "id": "nfts2me",
@@ -88,15 +91,16 @@
         "mark": "N"
       },
       "featured": false,
-      "popular": true,
-      "bookmark": true,
+      "popular": false,
+      "bookmark": false,
       "verification": {
         "status": "official-domain-source-found",
         "checkedAt": "2026-11-28",
         "sourceUrl": "https://shardeum.org/blog/nfts2me-on-shardeum-mainnet/"
       },
       "securityAudit": "not-verified",
-      "riskNote": "Check the collection, contract and deployment fees before confirming."
+      "riskNote": "Check the collection, contract and deployment fees before confirming.",
+      "walletConnectSupport": "unconfirmed"
     },
     {
       "id": "shardeum-dashboard",
@@ -112,15 +116,45 @@
         "mark": "D"
       },
       "featured": false,
-      "popular": true,
-      "bookmark": true,
+      "popular": false,
+      "bookmark": false,
       "verification": {
         "status": "official-domain-source-found",
         "checkedAt": "2026-11-28",
         "sourceUrl": "https://dashboard.shardeum.org/"
       },
       "securityAudit": "not-verified",
-      "riskNote": "Staking involves validator, lock-up and reward risks."
+      "riskNote": "Staking involves validator, lock-up and reward risks.",
+      "walletConnectSupport": "unconfirmed"
+    },
+    {
+      "id": "oneinch",
+      "name": "1inch",
+      "description": "Swap tokens across supported networks.",
+      "domain": "1inch.com",
+      "networks": [
+        "bsc"
+      ],
+      "icon": {
+        "shape": "rounded-square",
+        "color": "#C7F9E9",
+        "mark": "1"
+      },
+      "featured": true,
+      "popular": true,
+      "bookmark": true,
+      "walletConnectSupport": "confirmed",
+      "verification": {
+        "status": "official-domain-and-connection-sources-found",
+        "checkedAt": "2026-11-28",
+        "sourceUrls": [
+          "https://help.1inch.com/en/articles/4585124-which-wallets-does-1inch-support",
+          "https://help.1inch.com/en/articles/5528619-how-to-use-different-networks-on-1inch",
+          "https://help.1inch.com/en/articles/4585122-how-to-connect-or-disconnect-your-wallet"
+        ]
+      },
+      "securityAudit": "not-verified",
+      "riskNote": "Check the token, network, quote and approvals before confirming."
     }
   ]
 }
