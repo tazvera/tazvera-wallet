@@ -38,6 +38,7 @@ test("only confirmed apps are bookmarked and all icons are self-generated", () =
     assert.equal("logo" in item, false);
   }
   assert.doesNotMatch(ui, /<img\b|background-image\s*:/i);
+  assert.doesNotMatch(ui, /\bstyle\s*=/i);
   assert.doesNotMatch(ui, /window\.open|TazveraBrowser\.open|signSheet|@walletconnect|WalletConnectProvider|WalletConnectModal/i);
 });
 
