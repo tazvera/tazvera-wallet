@@ -19,9 +19,13 @@
       "popular": true,
       "bookmark": true,
       "verification": {
-        "status": "official-domain-source-found",
+        "status": "official-domain-and-walletconnect-source-found",
         "checkedAt": "2026-11-28",
-        "sourceUrl": "https://blog.pancakeswap.finance/articles/pancake"
+        "checkedBy": "ChatGPT-assisted source review",
+        "sourceUrls": [
+          "https://blog.pancakeswap.finance/articles/pancake",
+          "https://docs.pancakeswap.finance/welcome-to-pancakeswap/how-to-guides/get-started/connection-guide"
+        ]
       },
       "securityAudit": "not-verified",
       "riskNote": "Review token details and every approval carefully.",
@@ -44,9 +48,10 @@
       "popular": false,
       "bookmark": false,
       "verification": {
-        "status": "official-domain-source-found",
+        "status": "official-domain-source-found-walletconnect-unconfirmed",
         "checkedAt": "2026-11-28",
-        "sourceUrl": "https://shardeum.org/blog/sikka-fun-goes-live-on-shardeum/"
+        "sourceUrl": "https://shardeum.org/blog/sikka-fun-goes-live-on-shardeum/",
+        "checkedBy": "ChatGPT-assisted source review"
       },
       "securityAudit": "not-verified",
       "riskNote": "Community tokens are highly volatile; you may lose the full amount.",
@@ -75,7 +80,8 @@
           "https://github.com/VenusProtocol/venus-protocol-interface/blob/2b62e9eaf4ebedd1b95cb5843351692c05e6c76a/apps/evm/src/libs/wallet/Web3Wrapper/config.ts",
           "https://github.com/VenusProtocol/venus-protocol-interface/blob/2b62e9eaf4ebedd1b95cb5843351692c05e6c76a/apps/evm/src/libs/wallet/chains.ts",
           "https://community.venus.io/t/how-to-connect-your-wallet-to-venus-dapp-via-trust-wallet-browser-extension/3160"
-        ]
+        ],
+        "checkedBy": "ChatGPT-assisted source review"
       },
       "securityAudit": "not-verified",
       "riskNote": "Lending, borrowing and liquidation carry financial risk.",
@@ -98,9 +104,10 @@
       "popular": false,
       "bookmark": false,
       "verification": {
-        "status": "official-domain-source-found",
+        "status": "official-domain-source-found-walletconnect-unconfirmed",
         "checkedAt": "2026-11-28",
-        "sourceUrl": "https://shardeum.org/blog/nfts2me-on-shardeum-mainnet/"
+        "sourceUrl": "https://shardeum.org/blog/nfts2me-on-shardeum-mainnet/",
+        "checkedBy": "ChatGPT-assisted source review"
       },
       "securityAudit": "not-verified",
       "riskNote": "Check the collection, contract and deployment fees before confirming.",
@@ -123,9 +130,10 @@
       "popular": false,
       "bookmark": false,
       "verification": {
-        "status": "official-domain-source-found",
+        "status": "official-domain-source-found-walletconnect-unconfirmed",
         "checkedAt": "2026-11-28",
-        "sourceUrl": "https://dashboard.shardeum.org/"
+        "sourceUrl": "https://dashboard.shardeum.org/",
+        "checkedBy": "ChatGPT-assisted source review"
       },
       "securityAudit": "not-verified",
       "riskNote": "Staking involves validator, lock-up and reward risks.",
@@ -155,7 +163,8 @@
           "https://help.1inch.com/en/articles/4585124-which-wallets-does-1inch-support",
           "https://help.1inch.com/en/articles/5528619-how-to-use-different-networks-on-1inch",
           "https://help.1inch.com/en/articles/4585122-how-to-connect-or-disconnect-your-wallet"
-        ]
+        ],
+        "checkedBy": "ChatGPT-assisted source review"
       },
       "securityAudit": "not-verified",
       "riskNote": "Check the token, network, quote and approvals before confirming."
