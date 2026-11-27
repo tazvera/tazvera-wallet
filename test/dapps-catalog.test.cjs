@@ -21,7 +21,9 @@ test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
     assert.ok(item.networks.every(n => ["bsc", "shardeum"].includes(n)), item.id);
     assert.match(item.domain, /^[a-z0-9.-]+\.[a-z]{2,}$/i);
     assert.equal(typeof item.domainVerified, "boolean");
-    assert.match(item.domainVerifiedAt, /^\\d{4}-\\d{2}-\\d{2}$/);\n    assert.ok(item.domainVerificationSource.length > 0);\n    assert.ok(item.verification.sourceUrls.length > 0);
+    assert.match(item.domainVerifiedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(item.domainVerificationSource.length > 0);
+    assert.ok(item.verification.sourceUrls.length > 0);
     assert.equal(item.securityAudit, "not-verified");
     assert.equal(item.verification.checkedBy, "ChatGPT-assisted official-source review");
     assert.equal(item.verification.checkedAt, "2026-11-28");
