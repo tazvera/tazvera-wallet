@@ -1,8 +1,8 @@
 "use strict";
 const test=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path");
 const root=path.resolve(__dirname,".."),read=p=>fs.readFileSync(path.join(root,p),"utf8"),ui=read("app/browser/dapps/dapps.js"),catalog=JSON.parse(read("app/browser/dapps/catalog.json"));
-test("dApps is the first app screen and has working chain/address controls",()=>{
- const config=read("app/js/00-config.js");assert.match(config,/tab:"dapps"/);
+test("dApps is in the second nav slot and has working chain/address controls",()=>{
+ const config=read("app/js/00-config.js");assert.match(config,/tab:"home"/);
  assert.match(ui,/<h1>dApps<\/h1>/);assert.match(ui,/data-chain-toggle="1"/);assert.match(ui,/id="tzDappSearch"/);
  assert.match(ui,/data-chain-select=/);assert.match(ui,/lss\("dappSelectedChain"/);assert.match(ui,/data-dapp-address=/);assert.match(ui,/brwLaunch\(u\)/);
 });

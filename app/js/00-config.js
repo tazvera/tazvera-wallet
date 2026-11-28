@@ -14,7 +14,7 @@ function lss(k,v){try{localStorage.setItem("cp3_"+k,JSON.stringify(v))}catch(e){
 function raw(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function rawSet(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}}
 function beta(){return raw("cp3_mainnet_beta","1")!=="0"}
-var S={lang:ls("lang","en"),net:ls("v2net","shardeum-testnet"),addr:"",mode:"",bal:null,tzt:null,inr:null,hide:ls("hide",false),tab:"dapps",flt:"all",
+var S={lang:ls("lang","en"),net:ls("v2net","shardeum-testnet"),addr:"",mode:"",bal:null,tzt:null,inr:null,hide:ls("hide",false),tab:"home",flt:"all",
  snd:{tok:"native",to:"",amt:"",fee:null,err:"",cur:"tok",rs:""},mk:null};
 if(!NETS[S.net]||(NETS[S.net].beta&&!beta()))S.net="shardeum-testnet";
 
