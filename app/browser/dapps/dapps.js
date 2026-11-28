@@ -119,7 +119,7 @@ document.addEventListener("click",function(e){
   if(!target)return;
   if(target.hasAttribute("data-chain-toggle")){S.dappChainPickerOpen=!S.dappChainPickerOpen;render();return}
   if(target.hasAttribute("data-chain-select")){lss("dappSelectedChain",target.getAttribute("data-chain-select"));S.dappChainPickerOpen=false;render();return}
-  if(target.hasAttribute("data-chain-close")){if(target.classList.contains("tz-chain-backdrop")||target.closest(".tz-chain-sheet-heading")){S.dappChainPickerOpen=false;render();return}}
+  if(target.hasAttribute("data-chain-close")){if(target.classList.contains("tz-chain-backdrop")&&e.target!==target)return;S.dappChainPickerOpen=false;render();return}
   if(target.hasAttribute("data-dapp-open")){dappOpenById(target.getAttribute("data-dapp-open"));return}
   if(target.hasAttribute("data-dapp-back")){brwBack();return}
   if(target.hasAttribute("data-dapp-forward")){brwForward();return}
