@@ -62,7 +62,11 @@ document.addEventListener("input",function(e){
  if(!e.target||e.target.id!=="tzDappSearch")return;S.dappQuery=e.target.value;var pos=e.target.selectionStart;render();
  var next=document.getElementById("tzDappSearch");if(next){next.focus();try{next.setSelectionRange(pos,pos)}catch(ignore){}}
 });
+document.addEventListener("load",function(e){
+ var img=e.target;if(!img||!img.classList||!img.classList.contains("tz-dapp-logo"))return;
+ if(img.parentNode&&img.parentNode.classList)img.parentNode.classList.add("has-logo");
+},true);
 document.addEventListener("error",function(e){
  var img=e.target;if(!img||!img.classList||!img.classList.contains("tz-dapp-logo"))return;
- img.style.display="none";var fallback=img.parentNode&&img.parentNode.querySelector(".tz-dapp-fallback");if(fallback)fallback.style.opacity="1";
+ img.style.display="none";if(img.parentNode&&img.parentNode.classList)img.parentNode.classList.remove("has-logo");var fallback=img.parentNode&&img.parentNode.querySelector(".tz-dapp-fallback");if(fallback)fallback.style.opacity="1";
 },true);
