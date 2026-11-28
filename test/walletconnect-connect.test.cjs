@@ -256,3 +256,88 @@ test("other parameters are kept when the switch is removed", () => {
   const { replaced } = loadWithUrl("?wc=1&ref=abc");
   assert.equal(replaced[0], "/?ref=abc");
 });
+
+/* ---- failure reasons on the status line (#1 bundle, #2 relay, #3 init) ---- */
+const sleepMs = ms => new Promise(r => setTimeout(r, ms));
+function loadStart(opts) {
+  const o = opts || {};
+  const store = { tz_wc_on: "1" };
+  const els = {};
+  const ctx = {
+    console, Promise, Date, Math, JSON, String, Object, Array, Number, Error, URL, URLSearchParams, setTimeout, clearTimeout,
+    localStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v) }, removeItem: k => { delete store[k] } },
+    location: { search: "", href: "https://app.tazvera.com/", pathname: "/", replace() {} },
+    document: { getElementById: id => els[id] || null, createElement: () => ({}), head: { appendChild() {} } },
+    L: { en: {}, hi: {} }, t: k => k, esc: x => String(x), beta: () => false, toast() {}, sheet() {}, closeSheet() {},
+    $: id => (els[id] = els[id] || { onclick: null }),
+    CPW: { unlocked: () => true, address: () => ADDR },
+    WC_PROJECT_ID: "p", WC_RELAY: "wss://relay.walletconnect.com", WC_META: {},
+  };
+  vm.createContext(ctx);
+  vm.runInContext(connect, ctx);
+  ctx.window = ctx;
+  ctx.WC_TIMEOUT_MS = o.timeout || 30;
+  if (o.bundle) ctx.wcLoadBundle = o.bundle;
+  if (o.kit) ctx.TAZVERA_WC = o.kit;
+  els.wcStatus = { attrs: {}, textContent: "", setAttribute(k, v) { this.attrs[k] = v } };
+  return { ctx, status: els.wcStatus, handlers: o.handlers || {} };
+}
+function fakeKit(initImpl, handlers) {
+  return {
+    Core: class { constructor(){ this.relayer = { on: (ev, fn) => { handlers[ev] = fn } } } },
+    WalletKit: { init: initImpl },
+  };
+}
+test("#1 the bundle did not load: says so, with code #1", async () => {
+  const { ctx, status } = loadStart({ bundle: () => Promise.reject(new Error("load")) });
+  ctx.wcStart();
+  await sleepMs(5);
+  assert.equal(status.attrs["data-reason"], "bundle");
+  assert.ok(status.textContent.includes("wcNoBundle") && status.textContent.includes("#1"), status.textContent);
+});
+test("#1 a bundle that never finishes loading is also reported as bundle, not relay", async () => {
+  const { ctx, status } = loadStart({ bundle: () => new Promise(() => {}), timeout: 20 });
+  ctx.wcStart();
+  await sleepMs(60);
+  assert.equal(status.attrs["data-reason"], "bundle");
+});
+test("#2 the bundle loaded but the relay never connects: relay unreachable, code #2", async () => {
+  const handlers = {};
+  const { ctx, status } = loadStart({ bundle: () => Promise.resolve(), kit: fakeKit(() => Promise.resolve({ on() {} }), handlers), timeout: 20 });
+  ctx.wcStart();
+  await sleepMs(60);
+  assert.equal(status.attrs["data-reason"], "relay");
+  assert.ok(status.textContent.includes("wcNoRelay") && status.textContent.includes("#2"), status.textContent);
+});
+test("#3 init fails before the relay connects: init failed, code #3", async () => {
+  const { ctx, status } = loadStart({ bundle: () => Promise.resolve(), kit: fakeKit(() => Promise.reject(new Error("x")), {}) });
+  ctx.wcStart();
+  await sleepMs(5);
+  assert.equal(status.attrs["data-reason"], "init");
+  assert.ok(status.textContent.includes("wcInitFail") && status.textContent.includes("#3"), status.textContent);
+});
+test("#3 the relay connected, then init failed: init failed, code #3", async () => {
+  const handlers = {};
+  let rejectInit;
+  const init = new Promise((_, rej) => { rejectInit = rej });
+  const { ctx, status } = loadStart({ bundle: () => Promise.resolve(), kit: fakeKit(() => init, handlers), timeout: 200 });
+  ctx.wcStart();
+  await sleepMs(5);
+  handlers.relayer_connect();
+  assert.equal(status.attrs["data-state"], "connected");
+  rejectInit(new Error("boom"));
+  await sleepMs(5);
+  assert.equal(status.attrs["data-reason"], "init");
+  assert.ok(status.textContent.includes("#3"), status.textContent);
+});
+test("connected: the status shows connected, and no reason", async () => {
+  const handlers = {};
+  const { ctx, status } = loadStart({ bundle: () => Promise.resolve(), kit: fakeKit(() => new Promise(() => {}), handlers), timeout: 20 });
+  ctx.wcStart();
+  await sleepMs(5);
+  handlers.relayer_connect();
+  await sleepMs(50);
+  assert.equal(status.attrs["data-state"], "connected");
+  assert.equal(status.attrs["data-reason"], "", "no reason when connected");
+  assert.equal(status.textContent, "wcConnected");
+});

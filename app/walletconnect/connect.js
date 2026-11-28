@@ -18,6 +18,9 @@ Object.assign(L.en,{
  wcConnecting:"WalletConnect: connecting",
  wcConnected:"WalletConnect: connected",
  wcFailed:"WalletConnect: not connected",
+ wcNoBundle:"WalletConnect: bundle did not load",
+ wcNoRelay:"WalletConnect: relay unreachable",
+ wcInitFail:"WalletConnect: init failed",
  wcAskT:"Connection request",
  wcAskS:"This site wants to connect to your wallet. It will see your address and the networks below. It cannot move money or sign anything without asking you again.",
  wcOk:"Connect",
@@ -37,6 +40,9 @@ Object.assign(L.hi,{
  wcConnecting:"WalletConnect: जुड़ रहा है",
  wcConnected:"WalletConnect: जुड़ गया",
  wcFailed:"WalletConnect: नहीं जुड़ा",
+ wcNoBundle:"WalletConnect: bundle did not load",
+ wcNoRelay:"WalletConnect: relay unreachable",
+ wcInitFail:"WalletConnect: init failed",
  wcAskT:"कनेक्शन की माँग",
  wcAskS:"यह साइट आपके वॉलेट से जुड़ना चाहती है। उसे आपका पता और नीचे की नेटवर्क सूची दिखेगी। आपसे दोबारा पूछे बिना वह पैसा नहीं भेज सकती और कुछ साइन नहीं कर सकती।",
  wcOk:"जुड़ें",
@@ -57,22 +63,33 @@ var WC_TIMEOUT_MS = 20000;
 var WC_STATE = "connecting";
 var WC_STARTED = false;
 var WC_KIT = null;
+/* why it failed: "bundle" (#1), "relay" (#2, no connection in time or dropped), "init" (#3) */
+var WC_REASON = "";
+var WC_PHASE = "";
 
 /* default off: the flag must be set on purpose in this browser */
 function wcOn(){ try { return localStorage.getItem("tz_wc_on")==="1" } catch(e){ return false } }
 
-function wcLabel(s){ return t(s==="connected" ? "wcConnected" : s==="failed" ? "wcFailed" : "wcConnecting") }
+var WC_REASON_KEY = {bundle:["wcNoBundle","#1"], relay:["wcNoRelay","#2"], init:["wcInitFail","#3"]};
+function wcLabel(s){
+  if(s==="connected") return t("wcConnected");
+  if(s!=="failed") return t("wcConnecting");
+  var r = WC_REASON_KEY[WC_REASON];
+  return r ? t(r[0])+" · "+r[1] : t("wcFailed");
+}
 
 function wcStatusHTML(){
   if(!wcOn()) return "";
-  return '<div class="tz-wc-status" id="wcStatus" role="status" aria-live="polite" data-state="'+WC_STATE+'">'+esc(wcLabel(WC_STATE))+'</div>';
+  return '<div class="tz-wc-status" id="wcStatus" role="status" aria-live="polite" data-state="'+WC_STATE+'" data-reason="'+(WC_STATE==="failed"?WC_REASON:"")+'">'+esc(wcLabel(WC_STATE))+'</div>';
 }
 
 function wcSet(s){
   WC_STATE = s;
+  if(s!=="failed") WC_REASON = "";
   var el = document.getElementById("wcStatus");
-  if(el){ el.textContent = wcLabel(s); el.setAttribute("data-state", s) }
+  if(el){ el.textContent = wcLabel(s); el.setAttribute("data-state", s); el.setAttribute("data-reason", s==="failed"?WC_REASON:"") }
 }
+function wcFailWith(reason){ WC_REASON = reason; wcSet("failed") }
 
 /* loads the bundle once, only when needed */
 function wcLoadBundle(){
@@ -86,19 +103,30 @@ function wcLoadBundle(){
   });
 }
 
-/* starts once per page. Says "connected" only when the relay confirms it. */
+/* starts once per page. Says "connected" only when the relay confirms it. A failure names its reason. */
 function wcStart(){
   if(!wcOn() || WC_STARTED) return;
   WC_STARTED = true;
+  WC_PHASE = "bundle";
   wcSet("connecting");
-  var timer = setTimeout(function(){ if(WC_STATE!=="connected") wcSet("failed") }, WC_TIMEOUT_MS);
+  var timer = setTimeout(function(){
+    if(WC_STATE==="connected") return;
+    /* still loading the file: bundle; otherwise the relay did not answer in time */
+    wcFailWith(WC_PHASE==="bundle" ? "bundle" : "relay");
+  }, WC_TIMEOUT_MS);
   wcLoadBundle().then(function(){
+    WC_PHASE = "init";
     var W = window.TAZVERA_WC;
+    if(!W || !W.Core || !W.WalletKit) throw new Error("bundle");
     var core = new W.Core({ projectId: WC_PROJECT_ID, relayUrl: WC_RELAY });
     core.relayer.on("relayer_connect", function(){ clearTimeout(timer); wcSet("connected") });
-    core.relayer.on("relayer_disconnect", function(){ wcSet("failed") });
+    core.relayer.on("relayer_disconnect", function(){ wcFailWith("relay") });
     return W.WalletKit.init({ core: core, metadata: WC_META }).then(function(kit){ WC_KIT = kit; kit.on("session_proposal", wcOnProposal) });
-  }).catch(function(){ clearTimeout(timer); wcSet("failed") });
+  }).catch(function(){
+    clearTimeout(timer);
+    /* before init starts, the file did not load (#1); after that, init failed (#3) */
+    wcFailWith(WC_PHASE==="bundle" ? "bundle" : "init");
+  });
 }
 
 /* ---- sessions (step 2) ---- */
