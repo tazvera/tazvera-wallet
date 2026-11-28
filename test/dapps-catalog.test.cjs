@@ -33,3 +33,22 @@ test("false connected status, legacy browser toolbar and old Pancake domain stay
  const browser=read("app/browser/browser.js");assert.match(browser,/pancake\.xyz/);assert.doesNotMatch(browser,/pancakeswap\.finance|brwtb|Wallet connected/);assert.match(browser,/Wallet not connected/);
 });
 test("Explore contains tools and market prices, not the old Browser shortcut",()=>assert.doesNotMatch(read("app/js/24-explore.js"),/brwrow|Browser/));
+
+test("dApp rows and the WalletConnect status line are not selectable text, and each state has its own colour", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "app/css/app.css"), "utf8");
+  assert.match(css, /button,\[role="button"\],\[data-dapp-open\],\.tz-dapp-row\{-webkit-user-select:none;user-select:none/);
+  assert.match(css, /\.tz-wc-status\{[^}]*color:#7d848c/);
+  assert.match(css, /\.tz-wc-status\[data-state="connected"\]\{color:#1f9d55\}/);
+  assert.match(css, /\.tz-wc-status\[data-state="failed"\]\{color:#d64545\}/);
+});
+
+test("the three named dApps are in the catalog as verified, with a domain and a network", () => {
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "app/browser/dapps/catalog.json"), "utf8"));
+  for (const id of ["pancake", "venus", "oneinch"]) {
+    const x = data.items.find(i => i.id === id);
+    assert.ok(x, id + " is listed");
+    assert.equal(x.domainVerified, true, id + " domain verified");
+    assert.match(x.domain, /^[a-z0-9.-]+\.[a-z]{2,}$/i, id + " has a valid domain");
+    assert.ok(x.networks.length > 0, id + " has a network");
+  }
+});
