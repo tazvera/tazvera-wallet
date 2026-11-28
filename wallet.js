@@ -2,8 +2,10 @@
 (function(){
 var E=window.ethers;if(!E)return;
 var KS="cp3_inapp_keystore",W=null,SEND_PERMIT=null;
-function txKey(t){return [CHAIN,W&&W.address||"",String(t.from||"").toLowerCase(),String(t.to||"").toLowerCase(),String(t.value||"0x0").toLowerCase(),String(t.data||"0x").toLowerCase()].join("|")}
+function txKey(t,g){return [CHAIN,W&&W.address||"",String(t.from||"").toLowerCase(),String(t.to||"").toLowerCase(),String(t.value||"0x0").toLowerCase(),String(t.data||"0x").toLowerCase(),g||""].join("|")}
 function clearSendPermit(){SEND_PERMIT=null}
+/* The gas the wallet would send with now: price and limit (estimate + 20%). An approval stores this; a send with other numbers needs a new approval. */
+async function gasFor(tx){var pv=prov(),gp=BigInt(await pv.send("eth_gasPrice",[])),est=BigInt(await pv.estimateGas({from:W.address,to:tx.to,data:tx.data,value:tx.value}));return gp.toString()+"|"+(est*12n/10n).toString()}
 /* Test networks; Shardeum Mainnet is added in nets() unless switched off */
 var NETS={"0x38":{id:56,r:["https://bsc-rpc.publicnode.com"]},"0x1":{id:1,r:["https://ethereum-rpc.publicnode.com"]},"0x1fb7":{id:8119,r:["https://api-mezame.shardeum.org"]},"0x61":{id:97,r:["https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://bsc-testnet-rpc.publicnode.com"]},"0xaa36a7":{id:11155111,r:["https://ethereum-sepolia-rpc.publicnode.com","https://sepolia.drpc.org"]}};
 /* Shardeum Mainnet is on unless the user switched it off in About (cp3_mainnet_beta = "0") */
@@ -26,7 +28,7 @@ case"eth_estimateGas":return"0x"+(await tryP(function(v){return v.estimateGas(p[
 case"eth_requestAccounts":case"eth_accounts":{var ad=window.CPW.address();if(ad)return[ad];break}}
 if(!W)throw{code:4100,message:"Wallet is locked"};
 switch(m){
-case"eth_sendTransaction":{var t=p[0];if(!SEND_PERMIT||SEND_PERMIT.until<Date.now()||SEND_PERMIT.key!==txKey(t)){clearSendPermit();throw{code:4001,message:"Transaction needs a fresh approval in the Tazvera confirmation screen."}}clearSendPermit();var pv=prov(),gp=await pv.send("eth_gasPrice",[]),est=await pv.estimateGas({from:W.address,to:t.to,data:t.data,value:t.value}),r=await W.connect(pv).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:gp,gasLimit:est*12n/10n});return r.hash}
+case"eth_sendTransaction":{var t=p[0],pm=SEND_PERMIT;clearSendPermit();if(!pm||pm.until<Date.now()||pm.base!==txKey(t,""))throw{code:4001,message:"Transaction needs a fresh approval in the Tazvera confirmation screen."};var g=await gasFor(t),ak=await pm.keyP;if(!ak||ak!==txKey(t,g))throw{code:4001,message:"Gas price or limit changed since approval. Approve the transaction again."};var gs=g.split("|"),r=await W.connect(prov()).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:BigInt(gs[0]),gasLimit:BigInt(gs[1])});return r.hash}
 default:throw{code:-32601,message:"Not supported: "+m}}},
 on:function(){},removeListener:function(){}};
 function ks(){return localStorage.getItem(KS)}
@@ -37,7 +39,7 @@ imp:async function(phrase,pin){var w=E.Wallet.fromPhrase(String(phrase).trim().t
 unlock:async function(pin){W=await E.Wallet.fromEncryptedJson(ks(),pin)},
 phrase:async function(pin){var w=await E.Wallet.fromEncryptedJson(ks(),pin);return w.mnemonic?w.mnemonic.phrase:""},
 unlockKs:async function(js,pw,expect){var x=await E.Wallet.fromEncryptedJson(js,pw);if(expect&&x.address.toLowerCase()!==String(expect).toLowerCase())throw new Error("wrong wallet");W=x;clearSendPermit()},
-approveTransaction:function(tx){if(!W)throw{code:4100,message:"Wallet is locked"};if(!tx||String(tx.from||"").toLowerCase()!==W.address.toLowerCase()||!/^0x[0-9a-fA-F]{40}$/.test(String(tx.to||""))||!/^0x[0-9a-fA-F]*$/.test(String(tx.value||"0x0"))||!/^0x[0-9a-fA-F]*$/.test(String(tx.data||"0x")))throw new Error("Invalid transaction approval details");SEND_PERMIT={key:txKey(tx),until:Date.now()+30000};return true},
+approveTransaction:function(tx){if(!W)throw{code:4100,message:"Wallet is locked"};if(!tx||String(tx.from||"").toLowerCase()!==W.address.toLowerCase()||!/^0x[0-9a-fA-F]{40}$/.test(String(tx.to||""))||!/^0x[0-9a-fA-F]*$/.test(String(tx.value||"0x0"))||!/^0x[0-9a-fA-F]*$/.test(String(tx.data||"0x")))throw new Error("Invalid transaction approval details");var gasP=gasFor(tx).catch(function(){return null});SEND_PERMIT={base:txKey(tx,""),keyP:gasP.then(function(g){return g?txKey(tx,g):null}),until:Date.now()+30000};return true},
 lock:function(){W=null;clearSendPermit()},remove:function(){localStorage.removeItem(KS);W=null;clearSendPermit()}};
 window.tazveraProvider=P; /* used only by the Tazvera app itself; it is not exposed as window.ethereum */
 })();
