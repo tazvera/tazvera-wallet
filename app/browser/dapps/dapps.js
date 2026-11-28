@@ -15,11 +15,22 @@ function dappChainName(v){return v==="bsc"?"BNB Chain":v==="shardeum"?"Shardeum"
 function dappChainCount(v){return TAZVERA_DAPPS.filter(function(x){return v==="all"||x.networks.indexOf(v)>=0}).length}
 /* network names and icons. The button shows only the icon; the list shows icon + name + count. */
 function chainName(v){return v==="all"?"All networks":v==="bsc"?"BNB Chain":"Shardeum"}
+/* Chain logos come from logos/chains/. Until a file is there, the circle shows the chain's first letter (B, S). */
+var CHAIN_LOGO={};
+function chainLogoFile(v){return v==="bsc"?"bnb-chain":"shardeum"}
+function chainLogoCheck(v){
+ if(CHAIN_LOGO[v])return;CHAIN_LOGO[v]="checking";
+ var im=new Image();
+ im.onload=function(){CHAIN_LOGO[v]="ok";if(typeof render==="function")render()};
+ im.onerror=function(){CHAIN_LOGO[v]="missing"};
+ im.src="app/browser/layout/logos/chains/"+chainLogoFile(v)+".svg";
+}
 function chainIcon(v,size){
  var px='width:'+size+'px;height:'+size+'px';
  if(v==="all")return '<span class="tz-chain-ico tz-chain-grid" style="'+px+'" aria-hidden="true"><svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="currentColor"/></svg></span>';
- var file=v==="bsc"?"bnb-chain":"shardeum";
- return '<span class="tz-chain-ico" style="'+px+';background-image:url(app/browser/layout/logos/chains/'+file+'.svg)" aria-hidden="true"></span>';
+ chainLogoCheck(v);
+ if(CHAIN_LOGO[v]==="ok")return '<span class="tz-chain-ico" style="'+px+';background-image:url(app/browser/layout/logos/chains/'+chainLogoFile(v)+'.svg)" aria-hidden="true"></span>';
+ return '<span class="tz-chain-ico tz-chain-letter" style="'+px+';font-size:'+Math.round(size*0.5)+'px" aria-hidden="true">'+esc(chainName(v).charAt(0))+'</span>';
 }
 function dappChainPicker(){
  if(!S.dappChainPickerOpen)return "";var selected=dappSelectedChain();
@@ -54,10 +65,9 @@ function dappsHTML(){
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&S.dappChainPickerOpen){S.dappChainPickerOpen=false;render()}});
 document.addEventListener("click",function(e){
  if(S.dappChainPickerOpen&&!(e.target&&e.target.closest&&e.target.closest(".tz-chain-wrap"))){S.dappChainPickerOpen=false;render()}
- var t=e.target&&e.target.closest?e.target.closest("[data-chain-toggle],[data-chain-select],[data-chain-close],[data-dapp-open],[data-dapp-address]"):null;if(!t)return;
+ var t=e.target&&e.target.closest?e.target.closest("[data-chain-toggle],[data-chain-select],[data-dapp-open],[data-dapp-address]"):null;if(!t)return;
  if(t.hasAttribute("data-chain-toggle")){S.dappChainPickerOpen=!S.dappChainPickerOpen;render();return}
  if(t.hasAttribute("data-chain-select")){lss("dappSelectedChain",t.getAttribute("data-chain-select"));S.dappChainPickerOpen=false;render();return}
- if(t.hasAttribute("data-chain-close")){if(t.classList.contains("tz-chain-backdrop")&&e.target!==t)return;S.dappChainPickerOpen=false;render();return}
  if(t.hasAttribute("data-dapp-open")){dappOpenById(t.getAttribute("data-dapp-open"));return}
  if(t.hasAttribute("data-dapp-address"))dappOpenAddress(t.getAttribute("data-dapp-address"));
 });
