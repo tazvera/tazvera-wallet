@@ -1,0 +1,12 @@
+{
+  "name": "tazvera-walletkit-build",
+  "private": true,
+  "description": "Builds the WalletKit browser bundle in CI. Not shipped as a package.",
+  "dependencies": {
+    "@reown/walletkit": "1.7.0",
+    "@walletconnect/core": "2.26.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

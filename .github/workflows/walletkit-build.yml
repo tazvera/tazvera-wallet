@@ -1,0 +1,62 @@
+name: walletkit-build
+# Builds the WalletKit browser bundle from npm in CI and reports its SHA-256 and size.
+# The bundle is NOT committed here. A later PR commits it only when the hash matches.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "walletkit-build/**"
+      - ".github/workflows/walletkit-build.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      EXPECTED_SHA256: 6b77137edccf8df154271c365a4d7a737e80da38fd73a79b80551ee1ab0bcb36
+      EXPECTED_BYTES: "845974"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install exact versions from npm
+        working-directory: walletkit-build
+        run: npm install --no-audit --no-fund
+      - name: Show the resolved dependency tree
+        working-directory: walletkit-build
+        run: npm ls --all > tree.txt || true; head -c 20000 tree.txt
+      - name: Build the IIFE bundle (same flags as the local build)
+        working-directory: walletkit-build
+        run: |
+          npx esbuild entry.js --bundle --format=iife --minify --platform=browser \
+            --target=es2020 --outfile=tazvera-walletkit.js
+      - name: Compare with the expected hash and size
+        working-directory: walletkit-build
+        run: |
+          sha=$(sha256sum tazvera-walletkit.js | cut -d' ' -f1)
+          bytes=$(stat -c %s tazvera-walletkit.js)
+          echo "built sha256: $sha"
+          echo "built bytes:  $bytes"
+          echo "expected sha256: $EXPECTED_SHA256"
+          echo "expected bytes:  $EXPECTED_BYTES"
+          if [ "$sha" = "$EXPECTED_SHA256" ] && [ "$bytes" = "$EXPECTED_BYTES" ]; then r="MATCH"; else r="NO MATCH"; fi
+          echo "result: $r"
+          {
+            echo "### WalletKit build"
+            echo "- built sha256: \`$sha\`"
+            echo "- built bytes: $bytes"
+            echo "- expected sha256: \`$EXPECTED_SHA256\`"
+            echo "- expected bytes: $EXPECTED_BYTES"
+            echo "- **result: $r**"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the lockfile and tree for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: walletkit-build
+          path: |
+            walletkit-build/package-lock.json
+            walletkit-build/tree.txt
+            walletkit-build/tazvera-walletkit.js
+          if-no-files-found: warn
