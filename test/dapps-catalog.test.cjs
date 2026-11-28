@@ -64,11 +64,35 @@ test("the network picker is a small popover: icon-only button, no dialog, no dim
   assert.match(js, /chainIcon\(chain,24\)/, "trigger shows the chain icon at 24px");
   assert.match(js, /chainIcon\(v,20\)/, "list rows show the icon at 20px");
   assert.match(js, /aria-selected=/);
-  assert.match(js, /app\/browser\/layout\/logos\/chains\/'\+file\+'\.svg/, "chain logos come from logos/chains/");
+  assert.match(js, /logos\/chains\//, "chain logos come from logos/chains/");
   assert.match(js, /e\.key==="Escape"/);
   assert.match(js, /closest\(["']\.tz-chain-wrap["']\)/, "outside click closes via the wrapper");
   for (const css of [mob, desk]) {
     assert.match(css, /\.scr\.tab-brw \.tz-chain-pop\{[^}]*width:200px/);
     assert.match(css, /\.scr\.tab-brw \.tz-chain-opt\{[^}]*height:40px/);
   }
+});
+
+const vm = require("node:vm");
+test("chain circle: the first letter until the logo file exists; no dimming layer; no dead backdrop rules", () => {
+  const js = fs.readFileSync(path.join(__dirname, "..", "app/browser/dapps/dapps.js"), "utf8");
+  const mob = fs.readFileSync(path.join(__dirname, "..", "app/features/browser/dapps-mobile.css"), "utf8");
+  const desk = fs.readFileSync(path.join(__dirname, "..", "app/features/browser/dapps-desktop.css"), "utf8");
+  // run the real helpers from dapps.js in a sandbox
+  const grab = name => { const a = js.indexOf("function " + name + "("); let i = js.indexOf("{", a), d = 0; for (; i < js.length; i++) { if (js[i] === "{") d++; else if (js[i] === "}") { d--; if (d === 0) break } } return js.slice(a, i + 1) };
+  const src = ["var CHAIN_LOGO={};", grab("chainName"), grab("chainLogoFile"), grab("chainLogoCheck"), grab("chainIcon")].join("\n");
+  const images = [];
+  const ctx = { Image: function(){ const im = { set src(v){ images.push(v) } }; return im }, esc: x => String(x), render() {}, console };
+  vm.createContext(ctx);
+  vm.runInContext(src, ctx);
+  const bsc = ctx.chainIcon("bsc", 24);
+  assert.match(bsc, /tz-chain-letter/, "no logo yet: shows the first letter");
+  assert.match(bsc, />B</);
+  assert.match(ctx.chainIcon("shardeum", 24), />S</);
+  assert.equal(images.length, 2, "checks each logo file once");
+  assert.match(images[0], /logos\/chains\/bnb-chain\.svg$/);
+  assert.match(images[1], /logos\/chains\/shardeum\.svg$/);
+  ctx.CHAIN_LOGO.bsc = "ok";
+  assert.match(ctx.chainIcon("bsc", 24), /background-image:url\(app\/browser\/layout\/logos\/chains\/bnb-chain\.svg\)/, "logo present: shows it");
+  assert.equal(/tz-chain-backdrop/.test(js) || /tz-chain-backdrop/.test(mob) || /tz-chain-backdrop/.test(desk), false, "no backdrop left");
 });

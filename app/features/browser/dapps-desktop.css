@@ -47,13 +47,6 @@
 .scr.tab-brw .tz-dapp-row-copy small{color:#899195;font:400 12px "IBM Plex Mono",monospace}
 .scr.tab-brw .tz-dapp-chevron{color:#929a9e;font-size:24px}
 .scr.tab-brw .tz-dapp-empty{color:#8b9397;font:400 13px "Poppins",sans-serif}
-.scr.tab-brw .tz-chain-backdrop{position:fixed;inset:0;z-index:9998;display:flex;align-items:flex-end;justify-content:center;background:rgba(12,18,20,.35)}
-.scr.tab-brw .tz-chain-sheet{width:min(100%,520px);padding:18px 22px calc(22px + env(safe-area-inset-bottom));background:#fff;color:#171b1d;border-radius:18px 18px 0 0}
-.scr.tab-brw .tz-chain-sheet-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.scr.tab-brw .tz-chain-sheet-heading h2{margin:0;font:600 17px "Space Grotesk",sans-serif}
-.scr.tab-brw .tz-chain-sheet-heading button{border:0;background:transparent;color:#687176;font-size:23px}
-.scr.tab-brw .tz-chain-option{width:100%;display:grid;grid-template-columns:1fr auto 24px;gap:10px;align-items:center;padding:15px 2px;border:0;border-bottom:1px solid #e7eaeb;background:#fff;text-align:left;color:#252a2d;font:500 14px "Space Grotesk",sans-serif}
-.scr.tab-brw .tz-chain-option[aria-pressed=true] .tz-chain-check{color:#16a05d}
 .scr.tab-brw .tz-chain-count{color:#8a9296;font:400 12px "IBM Plex Mono",monospace}
 .scr.tab-brw .tz-chain-check{text-align:center}
 .scr.tab-brw .tz-dapp-row,.scr.tab-brw .tz-bookmark,.scr.tab-brw .tz-feature-open,.scr.tab-brw .tz-dapps-back,.scr.tab-brw .tz-address-suggestion{transition:transform 120ms ease-out}
@@ -88,3 +81,5 @@
 .scr.tab-brw .tz-chain-opt[aria-selected=true] .tz-chain-check{color:#16a05d}
 .scr.tab-brw .tz-chain-count{color:#8a9296;font:400 12px "IBM Plex Mono",monospace}
 .scr.tab-brw .tz-chain-check{text-align:center}
+
+.scr.tab-brw .tz-chain-trigger .tz-chain-letter,.scr.tab-brw .tz-chain-letter{color:#fff;display:inline-flex;align-items:center;justify-content:center;background-color:#252a2d;color:#fff;font-family:"Space Grotesk",sans-serif;font-weight:600;line-height:1}
