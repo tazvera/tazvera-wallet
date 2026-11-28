@@ -11,7 +11,7 @@ function dappsLoad(){
  }).catch(function(){TAZVERA_DAPPS=[];TAZVERA_DAPPS_READY=true;if(S.tab==="dapps")render()}).finally(function(){TAZVERA_DAPPS_LOADING=false});
 }
 function dappSelectedChain(){var v=ls("dappSelectedChain","all");return ["all","bsc","shardeum"].indexOf(v)>=0?v:"all"}
-function dappChainName(v){return v==="bsc"?"BNB":v==="shardeum"?"Shardeum":"All"}
+function dappChainName(v){return v==="bsc"?"BNB Chain":v==="shardeum"?"Shardeum":"All"}
 function dappChainCount(v){return TAZVERA_DAPPS.filter(function(x){return v==="all"||x.networks.indexOf(v)>=0}).length}
 function dappChainPicker(){
  if(!S.dappChainPickerOpen)return "";var selected=dappSelectedChain();
@@ -24,9 +24,6 @@ function dappIcon(x,kind){
  return '<span class="tz-dapp-mark '+(kind||"")+'" aria-hidden="true"><span class="tz-dapp-fallback">'+esc((x.icon&&x.icon.mark)||x.name.slice(0,1))+'</span>'+(file?'<img class="tz-dapp-logo" src="'+esc(file)+'" alt="" loading="lazy">':"")+'</span>';
 }
 function dappDomainStatus(x){return x.domainVerified===true?"":'<small class="tz-domain-unverified">Domain not verified</small>'}
-function dappFeature(x){
- return '<article class="tz-dapp-feature tz-feature-'+esc(x.id)+'" aria-label="'+esc(x.name)+'"><div class="tz-feature-meta">'+esc(dappNetworkLabel(x))+' <span>FEATURED</span></div><div class="tz-feature-body">'+dappIcon(x,"hero")+'<div class="tz-feature-copy"><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><code>'+esc(x.domain)+'</code>'+dappDomainStatus(x)+'</div></div><button class="tz-feature-open" type="button" data-dapp-open="'+esc(x.id)+'">Open dApp <span aria-hidden="true">↗</span></button></article>';
-}
 function dappRow(x){
  return '<button type="button" class="tz-dapp-row" data-dapp-open="'+esc(x.id)+'" aria-label="Open '+esc(x.name)+'"><span class="tz-dapp-row-icon">'+dappIcon(x)+'</span><span class="tz-dapp-row-copy"><b>'+esc(x.name)+'</b><small>'+esc(x.domain)+'</small>'+dappDomainStatus(x)+'</span><span class="tz-dapp-chevron" aria-hidden="true">›</span></button>';
 }

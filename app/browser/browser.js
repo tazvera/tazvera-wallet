@@ -111,13 +111,13 @@ function browserHTML(){
       '<p>'+esc(t("brwNote"))+'</p>'+
       '<button class="btn" data-brwtab="1">'+esc(t("brwTab"))+'</button>'+
       '<button class="btnw" data-brwhome="1">'+esc(t("brwHome"))+'</button>'+
-      '</div>'+
+      '</div>';
   }else{
     var fe=BRW_SHORTCUTS[0];
     body='<div class="brwstart">'+
       (q?'':'<button class="brwfeat" data-brwopen="0"><span class="blg">'+(fe.logo?'<img src="'+esc(fe.logo)+'" alt="">':esc(fe.name.slice(0,1)))+'</span><span class="ft"><b>'+esc(fe.name)+'</b><small>'+esc(fe.tag)+' · '+esc(fe.url.replace(/^https?:\/\//,""))+'</small></span>'+ic("right",16)+'</button>')+
       '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
-        (q?'':brwPins().map(function(i){var x=BRW_SHORTCUTS[i];return '<button class="brwpin2" data-brwopen="'+i+'"><img src="'+esc(x.logo)+'" alt="">'+esc(x.name)+'</button>'}).join(""))+
+        (q?'':brwPins().map(function(i){var x=BRW_SHORTCUTS[i];return '<button class="brwpin2" data-brwopen="'+i+'">'+(x.logo?'<img src="'+esc(x.logo)+'" alt="">':esc(x.name.slice(0,1)))+esc(x.name)+'</button>'}).join(""))+
         '<button class="brwpin2 add" data-brwpin="1">'+ic("plus",14)+' '+esc(t("brwPinAdd"))+'</button>'+
       '</div>'+
       catRows+

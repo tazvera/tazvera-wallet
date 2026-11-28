@@ -4,7 +4,7 @@
 function soonHTML(){return homeHTML()}
 
 function render(){var h;if(!S.addr){$("app").innerHTML=welHTML();return}
- var m={home:homeHTML,act:actHTML,recv:recvHTML,send:sendHTML,exp:expHTML,set:setHTML,req:reqHTML,chk:chkHTML,helpc:helpHTML,brw:browserHTML,dapps:dappsHTML}[S.tab]||homeHTML;h=m();
+ var m={home:homeHTML,act:actHTML,recv:recvHTML,send:sendHTML,exp:expHTML,set:setHTML,req:reqHTML,chk:chkHTML,helpc:helpHTML,dapps:dappsHTML}[S.tab]||homeHTML;h=m();
  var an=S.tab!==S._lt;if(an&&!H.pop){if(S.tab!=="home"&&!H.page){H.page=true;hPush()}else if(S.tab==="home"&&H.page){H.page=false;hBack()}}S._lt=S.tab;var y=window.scrollY;$("app").innerHTML='<div class="scr on tab-'+S.tab+(S.tab==="dapps"?" tab-brw":"")+(an?" anim":"")+'">'+h+'</div>'+((S.tab==="recv"||S.tab==="send"||S.tab==="req"||S.tab==="chk")?"":nav());if(!an)window.scrollTo(0,y);
  if(S.tab==="req"){drawReqQR();var ra=$("rAmt");ra.oninput=function(){REQ.amt=ra.value.replace(/,/g,"");clearTimeout(ra._t);ra._t=setTimeout(drawReqQR,250)}}
  if(S.tab==="recv"){try{new QRCode($("qrbox"),{text:rcvURI(),width:212,height:212,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})}catch(e){}}
