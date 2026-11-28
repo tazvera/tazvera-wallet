@@ -101,7 +101,7 @@ test("browser URL normalization and app history",()=>{
   vm.runInContext('brwOpen("pancakeswap.finance/swap?foo=1")',sandbox);vm.runInContext('brwOpen("trx.forsage.io")',sandbox);
   vm.runInContext('brwBack()',sandbox);vm.runInContext('brwForward()',sandbox);vm.runInContext('brwOpen("javascript:alert(1)")',sandbox);
   assert.deepEqual(opened,["https://pancakeswap.finance/swap?foo=1","https://trx.forsage.io/","https://pancakeswap.finance/swap?foo=1","https://trx.forsage.io/"]);
-  assert.deepEqual(messages,["brwBad"]);assert.equal(sandbox.S.brw.url,"https://trx.forsage.io");
+  assert.deepEqual(messages,["brwBad"]);assert.equal(sandbox.S.brw.url,"https://trx.forsage.io/");
 });
 test("legacy browser opener remains separate and rejects invalid URLs", () => {
   const vm = require("node:vm");
