@@ -66,13 +66,29 @@ test("catalogue JSON and UI are loaded from the same origin and cached offline",
   assert.match(serviceWorker, /\/app\/browser\/dapps\/dapps\.js/);
 });
 
-test("Open and browser toolbar actions remain disabled in this data-only layer", () => {
-  assert.match(ui, /class="tz-open-inert"[^>]*disabled/);
-  assert.match(ui, /class="tz-browser-toolbar"/);
-  assert.match(ui, /brwOpen=function\(\)\{ toast\("Opening dApps is disabled in this release\."\); \};/);
+test("dApp entries, Open buttons and bookmarks open the catalog domain without wallet signing", () => {
+  assert.match(ui, /data-dapp-open=/);
+  assert.match(ui, /function dappOpenById\(id\)/);
+  assert.match(ui, /brwOpen\(item\.domain\)/);
+  assert.match(ui, /class="tz-open-inert" type="button" data-dapp-open=/);
+  assert.match(ui, /class="tz-bookmark" data-dapp-open=/);
+  const dappsCss=fs.readFileSync(path.join(root,"app/features/browser/dapps-catalog.css"),"utf8");
+  assert.match(dappsCss, /user-select:none/);
+  assert.match(dappsCss, /min-height:340px/);
+  assert.doesNotMatch(ui, /signSheet|@walletconnect|WalletConnectProvider|WalletConnectModal/i);
+  const vm=require("node:vm"), opened=[], messages=[];
+  const sandbox={toast:m=>messages.push(m),brwOpen:u=>opened.push(u),document:{addEventListener(){}},S:{}};
+  vm.createContext(sandbox); vm.runInContext(ui,sandbox);
+  sandbox.TAZVERA_DAPPS=[{id:"pancake",domain:"pancake.xyz"}];
+  vm.runInContext('dappOpenById("pancake")',sandbox);
+  vm.runInContext('dappOpenById("missing")',sandbox);
+  sandbox.TAZVERA_DAPPS[0].domain="javascript:alert(1)";
+  vm.runInContext('dappOpenById("pancake")',sandbox);
+  assert.deepEqual(opened,["pancake.xyz"]);
+  assert.deepEqual(messages,["Invalid dApp URL.","Invalid dApp URL."]);
 });
 
-test("legacy browser opener stays blocked: only a message, no URL, no Android bridge call", () => {
+test("legacy browser opener remains separate and rejects invalid URLs", () => {
   const vm = require("node:vm");
   const browser = fs.readFileSync(path.join(root, "app/browser/browser.js"), "utf8");
   const calls = { toast: [], bridgeOpen: [], windowOpen: [], render: 0 };
@@ -93,10 +109,9 @@ test("legacy browser opener stays blocked: only a message, no URL, no Android br
   vm.createContext(sandbox);
   vm.runInContext(browser + "\n" + ui, sandbox);
 
-  vm.runInContext('brwOpen("https://pancakeswap.finance")', sandbox);
   vm.runInContext('brwOpen("javascript:alert(1)")', sandbox);
 
-  assert.deepEqual(calls.toast, ["Opening dApps is disabled in this release.", "Opening dApps is disabled in this release."]);
+  assert.deepEqual(calls.toast, ["brwBad"]);
   assert.deepEqual(calls.bridgeOpen, []);
   assert.deepEqual(calls.windowOpen, []);
   assert.equal(sandbox.S.brw.hist.length, 0);

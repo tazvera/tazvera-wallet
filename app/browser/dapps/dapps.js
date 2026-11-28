@@ -41,17 +41,17 @@ function dappDomainStatus(x){
 }
 function dappCard(x){
   return '<article class="tz-dapp-feature" aria-label="'+esc(x.name)+'">'+
-    '<div class="tz-dapp-feature-top"><span class="tz-featured-label">FEATURED</span><span class="tz-network-label">'+esc(dappNetworkLabel(x))+'</span></div>'+
+    '<div class="tz-dapp-feature-top"><span class="tz-network-label">'+esc(dappNetworkLabel(x))+'</span></div>'+
     '<div class="tz-dapp-feature-main">'+dappIcon(x)+
       '<div class="tz-dapp-feature-copy"><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><code>'+esc(x.domain)+'</code>'+dappDomainStatus(x)+'</div>'+
-    '</div><button class="tz-open-inert" type="button" disabled aria-disabled="true">Open</button>'+
-    '<p class="tz-dapp-status">Catalogue entry only · opening is disabled in this release</p>'+
+    '</div><button class="tz-open-inert" type="button" data-dapp-open="'+esc(x.id)+'">Open</button>'+
+    '<p class="tz-dapp-status">Opens in your phone browser · no wallet connection</p>'+
   '</article>';
 }
 function dappPopularRow(x){
-  return '<div class="tz-dapp-popular-row">'+dappIcon(x)+
-    '<div class="tz-dapp-popular-copy"><b>'+esc(x.name)+'</b><small>'+esc(x.description)+'</small><code>'+esc(x.domain)+'</code>'+dappDomainStatus(x)+'</div>'+
-    '<span class="tz-dapp-chevron" aria-hidden="true">›</span></div>';
+  return '<button type="button" class="tz-dapp-popular-row" data-dapp-open="'+esc(x.id)+'" aria-label="Open '+esc(x.name)+' in phone browser">'+dappIcon(x)+
+    '<span class="tz-dapp-popular-copy"><b>'+esc(x.name)+'</b><small>'+esc(x.description)+'</small><code>'+esc(x.domain)+'</code>'+dappDomainStatus(x)+'</span>'+
+    '<span class="tz-dapp-chevron" aria-hidden="true">›</span></button>';
 }
 function dappsHTML(){
   dappsLoad();
@@ -64,7 +64,7 @@ function dappsHTML(){
   var popular=items.filter(function(x){return x.popular});
   var featuredHtml=featured.length?featured.map(dappCard).join(""):'<p class="tz-dapp-empty">No featured dApps match your search.</p>';
   var popularHtml=popular.length?popular.map(dappPopularRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>';
-  var bookmarkHtml=bookmarks.map(function(x){return '<div class="tz-bookmark">'+dappIcon(x)+'<span>'+esc(x.name)+'</span></div>'}).join("");
+  var bookmarkHtml=bookmarks.map(function(x){return '<button type="button" class="tz-bookmark" data-dapp-open="'+esc(x.id)+'" aria-label="Open '+esc(x.name)+' in phone browser">'+dappIcon(x)+'<span>'+esc(x.name)+'</span></button>'}).join("");
   return '<main class="tz-dapps-shell">'+
     '<header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1></div><span class="tz-dapps-header-spacer"></span></header>'+
     '<div class="tz-browser-address" aria-label="Tazvera local dApps catalogue"><span class="tz-lock" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="tz-address-text">Tazvera dApps</span><span class="tz-address-network">BNB · SHARDEUM</span></div>'+
@@ -79,9 +79,20 @@ function dappsHTML(){
     '</footer></main>';
 }
 
-/* The legacy browser opener is intentionally blocked while this first, data-only layer is shipped. */
-brwOpen=function(){ toast("Opening dApps is disabled in this release."); };
+function dappOpenById(id){
+  var item=TAZVERA_DAPPS.find(function(x){return x.id===id;});
+  if(!item || typeof item.domain!=="string" || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(item.domain)){
+    toast("Invalid dApp URL.");
+    return;
+  }
+  brwOpen(item.domain);
+}
 
+document.addEventListener("click",function(e){
+  var target=e.target && e.target.closest ? e.target.closest("[data-dapp-open]") : null;
+  if(!target) return;
+  dappOpenById(target.getAttribute("data-dapp-open"));
+});
 
 document.addEventListener("input",function(e){
   if(!e.target || e.target.id!=="tzDappSearch") return;
