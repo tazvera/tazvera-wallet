@@ -7,7 +7,8 @@ const address="0x1111111111111111111111111111111111111111";
 const recipient="0x2222222222222222222222222222222222222222";
 let sends=0;
 const fakeWallet={address,connect(){return{sendTransaction:async tx=>{sends++;return{hash:"0xabc"}}}}};
-class FakeProvider{async send(method){if(method==="eth_gasPrice")return 1n;throw new Error("unexpected RPC")}async estimateGas(){return 21000n}}
+let gasNow={gp:1n,est:21000n}; // what the RPC quotes right now; tests change it
+class FakeProvider{async send(method){if(method==="eth_gasPrice")return "0x"+gasNow.gp.toString(16);throw new Error("unexpected RPC")}async estimateGas(){return gasNow.est}}
 const store={};
 const ctx={console,Date,Promise,Math,JSON,String,Object,Array,RegExp,Error,BigInt,Number,
  localStorage:{getItem:k=>store[k]??null,setItem:(k,v)=>store[k]=String(v),removeItem:k=>delete store[k]},
@@ -56,4 +57,33 @@ test("approval expires after its short validity window",async()=>{
    await assert.rejects(send(),hasMessage("fresh approval"));
  } finally { Date.now=now; }
  assert.equal(sends,1);
+});
+
+test("a changed gas price after approval needs a new approval",async()=>{
+ await ctx.CPW.unlockKs("{}", "pw",address);
+ gasNow={gp:1n,est:21000n};
+ ctx.CPW.approveTransaction(tx);
+ await new Promise(r=>setTimeout(r,0)); // let the approval record the gas it sees
+ gasNow={gp:2n,est:21000n}; // RPC now quotes a higher price
+ const before=sends;
+ try {
+   await assert.rejects(send(),hasMessage("Approve the transaction again"));
+   assert.equal(sends,before);
+   ctx.CPW.approveTransaction(tx); // approve the new price
+   assert.equal(await send(),"0xabc");
+   assert.equal(sends,before+1);
+ } finally { gasNow={gp:1n,est:21000n}; }
+});
+
+test("a changed gas limit after approval needs a new approval",async()=>{
+ await ctx.CPW.unlockKs("{}", "pw",address);
+ gasNow={gp:1n,est:21000n};
+ ctx.CPW.approveTransaction(tx);
+ await new Promise(r=>setTimeout(r,0));
+ gasNow={gp:1n,est:30000n}; // estimate went up
+ const before=sends;
+ try {
+   await assert.rejects(send(),hasMessage("Approve the transaction again"));
+   assert.equal(sends,before);
+ } finally { gasNow={gp:1n,est:21000n}; }
 });
