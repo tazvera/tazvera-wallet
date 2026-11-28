@@ -95,3 +95,64 @@
 .scr.tab-brw .tz-dapp-icon[data-icon-color="#FED7AA"]{background:#FED7AA}
 .scr.tab-brw .tz-dapp-icon[data-icon-color="#DCFCE7"]{background:#DCFCE7}
 .scr.tab-brw .tz-dapp-icon[data-icon-color="#C7F9E9"]{background:#C7F9E9}
+
+/* Calm entrance and press feedback; respect system motion preferences. */
+@keyframes tz-dapp-enter{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.scr.tab-brw .tz-dapp-feature,
+.scr.tab-brw .tz-dapp-popular-row,
+.scr.tab-brw .tz-bookmark{
+  animation:tz-dapp-enter 200ms ease-out both;
+}
+.scr.tab-brw .tz-dapp-feature:nth-child(2){animation-delay:35ms}
+.scr.tab-brw .tz-dapp-feature:nth-child(3){animation-delay:70ms}
+.scr.tab-brw .tz-dapp-feature:nth-child(4){animation-delay:105ms}
+.scr.tab-brw .tz-dapp-popular-row:active,
+.scr.tab-brw .tz-open-inert:active,
+.scr.tab-brw .tz-bookmark:active,
+.scr.tab-brw .tz-dapps-back:active,
+.scr.tab-brw .tz-address-go:active,
+.scr.tab-brw .tz-browser-toolbar button:active{
+  transform:scale(.97);
+}
+.scr.tab-brw .tz-dapp-feature,
+.scr.tab-brw .tz-dapp-popular-row,
+.scr.tab-brw .tz-bookmark,
+.scr.tab-brw .tz-open-inert,
+.scr.tab-brw .tz-dapps-back,
+.scr.tab-brw .tz-address-go,
+.scr.tab-brw .tz-browser-toolbar button{
+  transition:transform 120ms ease-out;
+}
+.scr.tab-brw .tz-dapp-icon img{
+  width:100%;height:100%;object-fit:contain;border-radius:inherit;
+  opacity:0;animation:tz-dapp-logo-in 160ms ease-out forwards;
+}
+@keyframes tz-dapp-logo-in{to{opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  .scr.tab-brw .tz-dapp-feature,
+  .scr.tab-brw .tz-dapp-popular-row,
+  .scr.tab-brw .tz-bookmark,
+  .scr.tab-brw .tz-dapp-icon img{
+    animation:none!important;opacity:1;transform:none;
+  }
+  .scr.tab-brw .tz-dapp-popular-row:active,
+  .scr.tab-brw .tz-open-inert:active,
+  .scr.tab-brw .tz-bookmark:active,
+  .scr.tab-brw .tz-dapps-back:active,
+  .scr.tab-brw .tz-address-go:active,
+  .scr.tab-brw .tz-browser-toolbar button:active{
+    transform:none;
+  }
+  .scr.tab-brw .tz-dapp-feature,
+  .scr.tab-brw .tz-dapp-popular-row,
+  .scr.tab-brw .tz-bookmark,
+  .scr.tab-brw .tz-open-inert,
+  .scr.tab-brw .tz-dapps-back,
+  .scr.tab-brw .tz-address-go,
+  .scr.tab-brw .tz-browser-toolbar button{
+    transition:none;
+  }
+}
