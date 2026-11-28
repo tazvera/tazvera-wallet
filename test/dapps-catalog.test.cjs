@@ -27,7 +27,7 @@ test("logo initials remain until load succeeds and missing images restore initia
 test("mobile and desktop dApps styles remain separately loaded and compact",()=>{
  const m=read("app/features/browser/dapps-mobile.css"),d=read("app/features/browser/dapps-desktop.css"),index=read("index.html"),sw=read("sw.js");
  assert.match(index,/dapps-mobile\.css/);assert.match(index,/dapps-desktop\.css/);assert.match(d,/@media\(min-width:900px\)/);
- assert.match(m,/padding:6px 20px 40px/);assert.match(m,/height:72px/);assert.match(m,/font:500 16px\/1.2/);assert.match(m,/font:400 12px/);assert.match(sw,/tazvera-v9-103/);
+ assert.match(m,/padding:6px 20px 40px/);assert.match(m,/height:72px/);assert.match(m,/font:500 16px\/1.2/);assert.match(m,/font:400 12px/);assert.match(sw,/tazvera-v9-104/);
 });
 test("false connected status, legacy browser toolbar and old Pancake domain stay absent",()=>{
  const browser=read("app/browser/browser.js");assert.match(browser,/pancake\.xyz/);assert.doesNotMatch(browser,/pancakeswap\.finance|brwtb|Wallet connected/);assert.match(browser,/Wallet not connected/);

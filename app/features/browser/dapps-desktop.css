@@ -169,3 +169,15 @@ html[data-theme="dark"] .scr.tab-brw .tz-open-inert{align-self:flex-start;margin
 
 @media(min-width:900px){html[data-theme="dark"] .scr.tab-brw .tz-dapps-shell{padding:22px 0 56px;max-width:none}}
 html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature{min-height:0;justify-content:flex-start;gap:12px}
+
+/* ---- round 3: no watermark on this screen, flat featured card, full bookmark names, Shardeum bookmark letter ---- */
+@media(min-width:900px){body:has(.scr.tab-brw){background-image:none!important}}
+.scr.tab-brw .tz-dapp-feature:before{display:none}
+.scr.tab-brw .tz-dapp-feature{background:transparent;border-top:1px solid #e6e9ea;border-bottom:1px solid #e6e9ea}
+.scr.tab-brw .tz-bookmark{width:84px;min-width:84px}
+.scr.tab-brw .tz-bookmark>span:last-child{max-width:84px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25;text-align:center}
+
+html[data-theme="dark"] .scr.tab-brw .tz-bookmark{width:84px;min-width:84px}
+html[data-theme="dark"] .scr.tab-brw .tz-bookmark>span:last-child{max-width:84px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25;text-align:center}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature{border-top:1px solid #26332B;border-bottom:1px solid #26332B}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-mark[style] .tz-dapp-fallback{color:#0B100D}

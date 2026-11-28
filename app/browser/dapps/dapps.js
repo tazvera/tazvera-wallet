@@ -44,9 +44,10 @@ function dappChainPicker(){
 }
 function dappNetworkLabel(x){return x.networks.map(function(n){return n==="bsc"?"BNB Chain":"Shardeum"}).join(" · ")}
 function dappIcon(x,kind){
+ var wide=kind==="bookmark-icon"&&x.id==="shardeum-dashboard";
  var col=x.icon&&/^#[0-9a-f]{6}$/i.test(x.icon.color||"")?' style="background:'+x.icon.color+'"':"";
- var file=typeof x.iconFile==="string"&&/^app\/browser\/layout\/logos\/[a-z0-9._-]+\.(?:png|svg)$/i.test(x.iconFile)?"/"+x.iconFile:"";
- return '<span class="tz-dapp-mark '+(kind||"")+'"'+col+' aria-hidden="true"><span class="tz-dapp-fallback">'+esc((x.icon&&x.icon.mark)||x.name.slice(0,1))+'</span>'+(file?'<img class="tz-dapp-logo" src="'+esc(file)+'" alt="" loading="lazy">':"")+'</span>';
+ var file=!wide&&typeof x.iconFile==="string"&&/^app\/browser\/layout\/logos\/[a-z0-9._-]+\.(?:png|svg)$/i.test(x.iconFile)?"/"+x.iconFile:"";
+ return '<span class="tz-dapp-mark '+(kind||"")+'"'+col+' aria-hidden="true"><span class="tz-dapp-fallback">'+esc(wide?x.name.slice(0,1):((x.icon&&x.icon.mark)||x.name.slice(0,1)))+'</span>'+(file?'<img class="tz-dapp-logo" src="'+esc(file)+'" alt="" loading="lazy">':"")+'</span>';
 }
 function dappDomainStatus(x){return x.domainVerified===true?"":'<small class="tz-domain-unverified">Domain not verified</small>'}
 function dappRow(x){
@@ -71,16 +72,17 @@ function dappOpenById(id){
 }
 function dappsHTML(){
  wcStart();dappsLoad();var raw=String(S.dappQuery||"").trim(),q=raw.toLowerCase(),url=dappAddressUrl(raw),chain=dappSelectedChain();
- var featured=TAZVERA_DAPPS.find(function(x){return x.id==="pancake"})||TAZVERA_DAPPS[0];
  var items=TAZVERA_DAPPS.filter(function(x){return (chain==="all"||x.networks.indexOf(chain)>=0)&&(!q||url||[x.name,x.description,x.domain,dappNetworkLabel(x)].join(" ").toLowerCase().indexOf(q)>=0)});
+ var featured=q?null:(items.find(function(x){return x.id==="pancake"})||items[0]||null);
+ var popular=featured?items.filter(function(x){return x.id!==featured.id}):items;
  var suggestion=url?'<button type="button" class="tz-address-suggestion" data-dapp-address="'+esc(url)+'"><span aria-hidden="true">↗</span><span><b>Open '+esc(url)+'</b><small>Open website in a new tab</small></span><span>Enter ↵</span></button>':"";
  var addrShort=S.addr?S.addr.slice(0,6)+"…"+S.addr.slice(-4):"";
  return '<main class="tz-dapps-shell">'+(S.addr?'<div class="tz-dapps-strip"><span class="tz-strip-wallet">'+esc(addrShort)+'</span><button type="button" class="tz-strip-copy" data-dapp-copy="1" aria-label="Copy address">Copy</button><span class="tz-strip-net">'+esc(N()?N().name:"")+'</span></div>':'')+'<header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back">←</button><h1>dApps</h1></div><div class="tz-chain-wrap"><button class="tz-chain-trigger" type="button" data-chain-toggle="1" aria-haspopup="listbox" aria-expanded="'+(S.dappChainPickerOpen?'true':'false')+'" aria-label="'+esc(chainName(chain))+'">'+chainIcon(chain,24)+'<span aria-hidden="true" class="tz-chain-caret">▾</span></button>'+dappChainPicker()+'</div></header>'+
  '<form class="tz-dapps-search-wrap" id="tzDappSearchForm" autocomplete="off"><label class="tz-dapps-search"><span aria-hidden="true">⌕</span><input id="tzDappSearch" type="search" value="'+esc(raw)+'" placeholder="Search dApps or enter a website" autocomplete="off" spellcheck="false" aria-label="Search dApps or enter a website"></label>'+suggestion+'</form>'+
  ''+wcStatusHTML()+
- (q?'':'<section class="tz-dapps-section" aria-label="Bookmarks"><div class="tz-dapps-section-head"><h2>BOOKMARKS</h2></div><div class="tz-bookmark-row">'+items.slice(0,5).map(dappBookmark).join("")+'</div></section>'+
+ (q?'':'<section class="tz-dapps-section" aria-label="Quick access"><div class="tz-dapps-section-head"><h2>QUICK ACCESS</h2></div><div class="tz-bookmark-row">'+items.slice(0,5).map(dappBookmark).join("")+'</div></section>'+
  (featured?'<section class="tz-dapps-section" aria-label="Featured"><div class="tz-dapps-section-head"><h2>FEATURED</h2></div><div class="tz-featured-track">'+dappFeatured(featured)+'</div></section>':''))+
- '<section class="tz-dapps-section tz-all-section"><div class="tz-dapps-section-head"><h2>'+(q?'RESULTS':'POPULAR')+'</h2></div><div class="tz-popular-list">'+(items.length?items.map(dappRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>')+'</div></section>'+'</main>';
+ '<section class="tz-dapps-section tz-all-section"><div class="tz-dapps-section-head"><h2>'+(q?'RESULTS':'POPULAR')+'</h2></div><div class="tz-popular-list">'+(popular.length?popular.map(dappRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>')+'</div></section>'+'</main>';
 }
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&S.dappChainPickerOpen){S.dappChainPickerOpen=false;render()}});
 document.addEventListener("click",function(e){
