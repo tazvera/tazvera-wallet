@@ -19,7 +19,7 @@ test("desktop sidebar and mobile bottom bar use stable nav class and required or
  for(const token of order){const i=core.indexOf(token);assert.ok(i>last,"nav order: "+token);last=i}
  assert.match(desktop,/@media \(min-width: 900px\)/);assert.match(desktop,/\.nav\s*\{/);assert.doesNotMatch(desktop,/\.nav\.n3/);
  assert.match(mobile,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);assert.match(mobile,/\.nav \.nv-extra,.nav \.nv-ai\{display:none/);
- assert.match(mobile,/\.nav \.nv span/);assert.match(app,/\.nav \.nv\.on/);
+ assert.match(mobile,/\.nav \.nv span/);assert.match(app,/\.nav \.nv\.on/);assert.match(app,/\.aifab\{bottom:calc\(94px/);
 });
 test("logo initials remain until load succeeds and missing images restore initials",()=>{
  for(const f of ["app/features/browser/dapps-mobile.css","app/features/browser/dapps-desktop.css"]){const css=read(f);assert.match(css,/\.tz-dapp-mark \.tz-dapp-logo/);assert.match(css,/\.tz-dapp-mark\.has-logo \.tz-dapp-logo\{opacity:1\}/);assert.match(css,/\.tz-dapp-mark\.has-logo \.tz-dapp-fallback\{display:none\}/);assert.match(css,/object-fit:contain/);assert.match(css,/height:40px/);assert.match(css,/min-height:56px/);assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/translateY\(8px\)/);assert.match(css,/scale\(\.97\)/);assert.match(css,/animation-delay:30ms/)}

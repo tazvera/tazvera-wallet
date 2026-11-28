@@ -479,9 +479,7 @@ svg{-webkit-touch-callout:none;user-select:none}
 }
 
 /* ---------- bottom bar + assistant, redrawn (2026-11-17) ---------- */
-/* Before: three items in a wide pill, the active one a solid dark block, and the assistant bubble
-   sitting on top of the bar's right end. Now: a tighter pill, a soft green pill behind the active
-   icon, and the assistant floating clear above the bar so nothing overlaps. */
+/* Four-item mobile bar; keep the assistant clear above it. Desktop places the assistant in the rail. */
 .nav{
   max-width:320px!important;min-width:288px!important;
   height:64px!important;padding:0 10px!important;
@@ -497,7 +495,7 @@ svg{-webkit-touch-callout:none;user-select:none}
 .nav .nv:active{background:var(--soft)}
 
 /* the assistant floats above the bar, never on it */
-.aifab{bottom:calc(27px + env(safe-area-inset-bottom,0px))!important;right:2px!important;width:46px!important;height:46px!important}
+.aifab{bottom:calc(94px + env(safe-area-inset-bottom,0px))!important;right:16px!important;width:46px!important;height:46px!important}
 .aifab svg{width:40px!important;height:40px!important}
 
 /* ---------- home header: the three round buttons, made consistent (2026-11-17) ---------- */
