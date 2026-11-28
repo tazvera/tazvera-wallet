@@ -15,21 +15,26 @@ function dappChainName(v){return v==="bsc"?"BNB Chain":v==="shardeum"?"Shardeum"
 function dappChainCount(v){return TAZVERA_DAPPS.filter(function(x){return v==="all"||x.networks.indexOf(v)>=0}).length}
 /* network names and icons. The button shows only the icon; the list shows icon + name + count. */
 function chainName(v){return v==="all"?"All networks":v==="bsc"?"BNB Chain":"Shardeum"}
-/* Chain logos come from logos/chains/. Until a file is there, the circle shows the chain's first letter (B, S). */
+/* Chain logos, in this order: a file in logos/chains/ (if one is added), then the default (Shardeum: app/img/shm.png;
+   BNB Chain: CoinGecko's BNB icon). If neither loads, the circle shows the chain's first letter (B, S). */
 var CHAIN_LOGO={};
-function chainLogoFile(v){return v==="bsc"?"bnb-chain":"shardeum"}
+function chainLogoSources(v){return v==="bsc"?["app/browser/layout/logos/chains/bnb-chain.svg",CG.BNB]:["app/browser/layout/logos/chains/shardeum.svg",SHMLOGO]}
 function chainLogoCheck(v){
  if(CHAIN_LOGO[v])return;CHAIN_LOGO[v]="checking";
- var im=new Image();
- im.onload=function(){CHAIN_LOGO[v]="ok";if(typeof render==="function")render()};
- im.onerror=function(){CHAIN_LOGO[v]="missing"};
- im.src="app/browser/layout/logos/chains/"+chainLogoFile(v)+".svg";
+ var list=chainLogoSources(v),i=0;
+ (function next(){
+  if(i>=list.length){CHAIN_LOGO[v]="missing";return}
+  var u=list[i++],im=new Image();
+  im.onload=function(){CHAIN_LOGO[v]=u;if(typeof render==="function")render()};
+  im.onerror=next;
+  im.src=u;
+ })();
 }
 function chainIcon(v,size){
  var px='width:'+size+'px;height:'+size+'px';
  if(v==="all")return '<span class="tz-chain-ico tz-chain-grid" style="'+px+'" aria-hidden="true"><svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="currentColor"/></svg></span>';
  chainLogoCheck(v);
- if(CHAIN_LOGO[v]==="ok")return '<span class="tz-chain-ico" style="'+px+';background-image:url(app/browser/layout/logos/chains/'+chainLogoFile(v)+'.svg)" aria-hidden="true"></span>';
+ var u=CHAIN_LOGO[v];if(u&&u!=="checking"&&u!=="missing")return '<span class="tz-chain-ico" style="'+px+';background-image:url('+u+')" aria-hidden="true"></span>';
  return '<span class="tz-chain-ico tz-chain-letter" style="'+px+';font-size:'+Math.round(size*0.5)+'px" aria-hidden="true">'+esc(chainName(v).charAt(0))+'</span>';
 }
 function dappChainPicker(){

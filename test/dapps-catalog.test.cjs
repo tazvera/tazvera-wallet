@@ -74,25 +74,42 @@ test("the network picker is a small popover: icon-only button, no dialog, no dim
 });
 
 const vm = require("node:vm");
-test("chain circle: the first letter until the logo file exists; no dimming layer; no dead backdrop rules", () => {
+test("chain icon order: local file, then the default (BNB: CoinGecko; Shardeum: app/img/shm.png), then the letter", () => {
   const js = fs.readFileSync(path.join(__dirname, "..", "app/browser/dapps/dapps.js"), "utf8");
   const mob = fs.readFileSync(path.join(__dirname, "..", "app/features/browser/dapps-mobile.css"), "utf8");
   const desk = fs.readFileSync(path.join(__dirname, "..", "app/features/browser/dapps-desktop.css"), "utf8");
-  // run the real helpers from dapps.js in a sandbox
   const grab = name => { const a = js.indexOf("function " + name + "("); let i = js.indexOf("{", a), d = 0; for (; i < js.length; i++) { if (js[i] === "{") d++; else if (js[i] === "}") { d--; if (d === 0) break } } return js.slice(a, i + 1) };
-  const src = ["var CHAIN_LOGO={};", grab("chainName"), grab("chainLogoFile"), grab("chainLogoCheck"), grab("chainIcon")].join("\n");
-  const images = [];
-  const ctx = { Image: function(){ const im = { set src(v){ images.push(v) } }; return im }, esc: x => String(x), render() {}, console };
-  vm.createContext(ctx);
-  vm.runInContext(src, ctx);
-  const bsc = ctx.chainIcon("bsc", 24);
-  assert.match(bsc, /tz-chain-letter/, "no logo yet: shows the first letter");
-  assert.match(bsc, />B</);
-  assert.match(ctx.chainIcon("shardeum", 24), />S</);
-  assert.equal(images.length, 2, "checks each logo file once");
-  assert.match(images[0], /logos\/chains\/bnb-chain\.svg$/);
-  assert.match(images[1], /logos\/chains\/shardeum\.svg$/);
-  ctx.CHAIN_LOGO.bsc = "ok";
-  assert.match(ctx.chainIcon("bsc", 24), /background-image:url\(app\/browser\/layout\/logos\/chains\/bnb-chain\.svg\)/, "logo present: shows it");
+  const src = ["var CHAIN_LOGO={};", grab("chainName"), grab("chainLogoSources"), grab("chainLogoCheck"), grab("chainIcon")].join("\n");
+  const BNB_CG = "https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png";
+  function sandbox(available) {
+    const tried = [];
+    const ctx = {
+      CG: { BNB: BNB_CG }, SHMLOGO: "app/img/shm.png", esc: x => String(x), render() {}, console,
+      Image: function () { const im = {}; Object.defineProperty(im, "src", { set(u) { tried.push(u); if (available.indexOf(u) >= 0) { im.onload && im.onload() } else { im.onerror && im.onerror() } } }); return im },
+    };
+    vm.createContext(ctx);
+    vm.runInContext(src, ctx);
+    return { ctx, tried };
+  }
+  // nothing loads: letters, and each chain tried its sources in order
+  let r = sandbox([]);
+  assert.match(r.ctx.chainIcon("bsc", 24), /tz-chain-letter/);
+  assert.match(r.ctx.chainIcon("bsc", 24), />B</);
+  assert.match(r.ctx.chainIcon("shardeum", 24), />S</);
+  assert.deepEqual(r.tried, ["app/browser/layout/logos/chains/bnb-chain.svg", BNB_CG, "app/browser/layout/logos/chains/shardeum.svg", "app/img/shm.png"]);
+  // a local file added later wins over CoinGecko
+  r = sandbox(["app/browser/layout/logos/chains/bnb-chain.svg", BNB_CG]);
+  assert.match(r.ctx.chainIcon("bsc", 24), /background-image:url\(app\/browser\/layout\/logos\/chains\/bnb-chain\.svg\)/);
+  // no local file: CoinGecko's BNB icon
+  r = sandbox([BNB_CG]);
+  assert.match(r.ctx.chainIcon("bsc", 24), /background-image:url\(https:\/\/assets\.coingecko\.com\/coins\/images\/825\/small\/bnb-icon2_2x\.png\)/);
+  // Shardeum uses the file already in the repo
+  r = sandbox(["app/img/shm.png"]);
+  assert.match(r.ctx.chainIcon("shardeum", 24), /background-image:url\(app\/img\/shm\.png\)/);
+  // each file is checked once, however often the icon is drawn
+  r = sandbox([]);
+  r.ctx.chainIcon("bsc", 24); r.ctx.chainIcon("bsc", 24);
+  assert.equal(r.tried.length, 2);
+  // no dimming layer left
   assert.equal(/tz-chain-backdrop/.test(js) || /tz-chain-backdrop/.test(mob) || /tz-chain-backdrop/.test(desk), false, "no backdrop left");
 });
