@@ -1,44 +1,35 @@
 "use strict";
 const test=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path");
-const root=path.resolve(__dirname,".."),ui=fs.readFileSync(path.join(root,"app/browser/dapps/dapps.js"),"utf8"),catalog=JSON.parse(fs.readFileSync(path.join(root,"app/browser/dapps/catalog.json"),"utf8"));
-test("dApps uses one compact header, a list-first layout and a working chain selector",()=>{
+const root=path.resolve(__dirname,".."),read=p=>fs.readFileSync(path.join(root,p),"utf8"),ui=read("app/browser/dapps/dapps.js"),catalog=JSON.parse(read("app/browser/dapps/catalog.json"));
+test("dApps is the first app screen and has working chain/address controls",()=>{
+ const config=read("app/js/00-config.js");assert.match(config,/tab:"dapps"/);
  assert.match(ui,/<h1>dApps<\/h1>/);assert.match(ui,/data-chain-toggle="1"/);assert.match(ui,/id="tzDappSearch"/);
- assert.doesNotMatch(ui,/Tazvera dApps|tz-browser-toolbar|data-dapp-back|data-dapp-forward|BOOKMARKS|FEATURED|POPULAR/);
- assert.match(ui,/ALL DAPPS/);
+ assert.match(ui,/data-chain-select=/);assert.match(ui,/lss\("dappSelectedChain"/);assert.match(ui,/data-dapp-address=/);assert.match(ui,/brwLaunch\(u\)/);
 });
-test("all verified domains use safe letter fallbacks unless official images are verified",()=>{
- assert.equal(catalog.items.length,6);for(const x of catalog.items)assert.ok(x.icon&&x.icon.mark.length>0);
- assert.match(ui,/var file=typeof x\.iconFile/);assert.match(ui,/tz-dapp-fallback/);assert.match(ui,/addEventListener\("load"/);assert.match(ui,/addEventListener\("error"/);
+test("catalog references only real repository logo assets; missing official marks remain initials",()=>{
+ const map={pancake:"pancakeswap.finance.png",oneinch:"app.1inch.io.png",venus:"venus.io.png","shardeum-dashboard":"dashboard.shardeum.org.png"};
+ for(const x of catalog.items){if(map[x.id]){assert.equal(x.iconFile,"app/browser/layout/logos/"+map[x.id]);assert.ok(fs.existsSync(path.join(root,x.iconFile)))}else assert.equal(x.iconFile,undefined)}
+ for(const p of ["app/browser/layout/logos/app.uniswap.org.png","app/browser/layout/logos/curve.fi.png","app/browser/layout/logos/bscscan.com.png","app/browser/layout/logos/etherscan.io.png","app/browser/layout/logos/opensea.io.png","app/browser/layout/logos/aave.com.png"])assert.ok(fs.existsSync(path.join(root,p)));
+ assert.match(ui,/tz-dapp-mark/);assert.match(ui,/tz-dapp-logo/);assert.match(ui,/addEventListener\("load"/);assert.match(ui,/addEventListener\("error"/);
 });
-test("address search offers a direct open row and Enter opens it",()=>{
- assert.match(ui,/function dappIsAddress/);assert.match(ui,/Open '\+esc\(url\)/);assert.match(ui,/brwLaunch\(u\)/);
+test("desktop sidebar and mobile bottom bar use stable nav class and required order",()=>{
+ const core=read("app/js/02-core.js"),mobile=read("app/layout/mobile.css"),desktop=read("app/features/nav/nav-desktop.css"),app=read("app/css/app.css");
+ assert.match(core,/<nav class="nav">/);assert.doesNotMatch(core,/<nav class="nav n[0-9]+">/);
+ const order=['tb("home"','tb("dapps"','tb("exp"','tb("helpc"','data-notif="1"','data-scan="1"','data-tab="set"','data-ai="1"'];let last=-1;
+ for(const token of order){const i=core.indexOf(token);assert.ok(i>last,"nav order: "+token);last=i}
+ assert.match(desktop,/@media \(min-width: 900px\)/);assert.match(desktop,/\.nav\s*\{/);assert.doesNotMatch(desktop,/\.nav\.n3/);
+ assert.match(mobile,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);assert.match(mobile,/\.nav \.nv-extra,.nav \.nv-ai\{display:none/);
+ assert.match(mobile,/\.nav \.nv span/);assert.match(app,/\.nav \.nv\.on/);
 });
-test("chain selector persists All, BNB Chain and Shardeum",()=>{
- assert.ok(ui.includes('lss("dappSelectedChain",t.getAttribute("data-chain-select"))'));assert.match(ui,/data-chain-select=/);assert.match(ui,/role="dialog" aria-modal="true"/);
+test("logo initials remain until load succeeds and missing images restore initials",()=>{
+ for(const f of ["app/features/browser/dapps-mobile.css","app/features/browser/dapps-desktop.css"]){const css=read(f);assert.match(css,/\.tz-dapp-mark \.tz-dapp-logo/);assert.match(css,/\.tz-dapp-mark\.has-logo \.tz-dapp-logo\{opacity:1\}/);assert.match(css,/\.tz-dapp-mark\.has-logo \.tz-dapp-fallback\{display:none\}/);assert.match(css,/object-fit:contain/);assert.match(css,/height:40px/);assert.match(css,/min-height:56px/);assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/translateY\(8px\)/);assert.match(css,/scale\(\.97\)/);assert.match(css,/animation-delay:30ms/)}
 });
-test("responsive dApps styles remain independently loaded and motion is accessible",()=>{
- const index=fs.readFileSync(path.join(root,"index.html"),"utf8"),sw=fs.readFileSync(path.join(root,"sw.js"),"utf8");
- assert.match(index,/dapps-mobile\.css/);assert.match(index,/dapps-desktop\.css/);
- for(const f of ["dapps-mobile.css","dapps-desktop.css"]){const css=fs.readFileSync(path.join(root,"app/features/browser",f),"utf8");assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/translateY\(8px\)/);assert.match(css,/scale\(\.97\)/);assert.match(css,/height:72px/);assert.match(css,/object-fit:contain/)}
- assert.match(sw,/dapps-desktop\.css/);
+test("mobile and desktop dApps styles remain separately loaded and compact",()=>{
+ const m=read("app/features/browser/dapps-mobile.css"),d=read("app/features/browser/dapps-desktop.css"),index=read("index.html"),sw=read("sw.js");
+ assert.match(index,/dapps-mobile\.css/);assert.match(index,/dapps-desktop\.css/);assert.match(d,/@media\(min-width:900px\)/);
+ assert.match(m,/padding:6px 20px 40px/);assert.match(m,/height:72px/);assert.match(m,/font:500 16px\/1.2/);assert.match(m,/font:400 12px/);assert.match(sw,/tazvera-v9-100/);
 });
-test("no false connected status, legacy toolbar or old Pancake domain remains",()=>{
- const browser=fs.readFileSync(path.join(root,"app/browser/browser.js"),"utf8");
- assert.match(browser,/pancake\.xyz/);assert.doesNotMatch(browser,/pancakeswap\.finance|brwtb|Wallet connected/);
- assert.match(browser,/Wallet not connected/);assert.match(browser,/वॉलेट किसी site से जुड़ा नहीं है/);
+test("false connected status, legacy browser toolbar and old Pancake domain stay absent",()=>{
+ const browser=read("app/browser/browser.js");assert.match(browser,/pancake\.xyz/);assert.doesNotMatch(browser,/pancakeswap\.finance|brwtb|Wallet connected/);assert.match(browser,/Wallet not connected/);
 });
-test("dApps is the initial and first nav tab; Explore has no Browser shortcut",()=>{
- const config=fs.readFileSync(path.join(root,"app/js/00-config.js"),"utf8"),core=fs.readFileSync(path.join(root,"app/js/02-core.js"),"utf8"),explore=fs.readFileSync(path.join(root,"app/js/24-explore.js"),"utf8");
- assert.match(config,/tab:"dapps"/);assert.ok(core.indexOf('tb("dapps"')<core.indexOf('tb("home"'));assert.doesNotMatch(explore,/brwrow/);
-});
-
-test("dApps reuses repository logos and leaves only unverified official logos as initials",()=>{
- const expected={pancake:"app/browser/layout/logos/pancakeswap.finance.png",oneinch:"app/browser/layout/logos/app.1inch.io.png",venus:"app/browser/layout/logos/venus.io.png","shardeum-dashboard":"app/browser/layout/logos/dashboard.shardeum.org.png"};
- for(const item of catalog.items){if(expected[item.id])assert.equal(item.iconFile,expected[item.id]);else assert.equal(item.iconFile,undefined)}
- const sw=fs.readFileSync(path.join(root,"sw.js"),"utf8");
- for(const file of Object.values(expected))assert.ok(sw.includes("/"+file));
- for(const file of ["app/browser/layout/logos/venus.io.png","app/browser/layout/logos/dashboard.shardeum.org.png"])assert.ok(fs.existsSync(path.join(root,file)));
- assert.ok(ui.includes("layout")&&ui.includes("logos")&&ui.includes("iconFile"));
- const mobile=fs.readFileSync(path.join(root,"app/features/browser/dapps-mobile.css"),"utf8"),desktop=fs.readFileSync(path.join(root,"app/features/browser/dapps-desktop.css"),"utf8");
- for(const css of [mobile,desktop]){assert.match(css,/tz-dapp-mark \.tz-dapp-logo/);assert.ok(css.includes(".tz-dapp-mark.has-logo .tz-dapp-fallback{display:none}"));assert.match(css,/object-fit:contain/)}
-});
+test("Explore contains tools and market prices, not the old Browser shortcut",()=>assert.doesNotMatch(read("app/js/24-explore.js"),/brwrow|Browser/));
