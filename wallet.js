@@ -25,9 +25,11 @@ case"eth_call":return await tryP(function(v){return v.call(p[0])});
 case"eth_blockNumber":return"0x"+(await tryP(function(v){return v.getBlockNumber()})).toString(16);
 case"eth_gasPrice":return await tryP(function(v){return v.send("eth_gasPrice",[])});
 case"eth_estimateGas":return"0x"+(await tryP(function(v){return v.estimateGas(p[0])})).toString(16);
-case"eth_requestAccounts":case"eth_accounts":{var ad=window.CPW.address();if(ad)return[ad];break}}
+}
 if(!W)throw{code:4100,message:"Wallet is locked"};
 switch(m){
+/* the address is shown only while the wallet is unlocked; a locked wallet says nothing about which address it holds */
+case"eth_requestAccounts":case"eth_accounts":return[W.address];
 case"eth_sendTransaction":{var t=p[0],pm=SEND_PERMIT;clearSendPermit();if(!pm||pm.until<Date.now()||pm.base!==txKey(t,""))throw{code:4001,message:"Transaction needs a fresh approval in the Tazvera confirmation screen."};var g=await gasFor(t);if(pm.key!==txKey(t,g))throw{code:4001,message:"Gas price or limit changed since approval. Approve the transaction again."};var gs=g.split("|"),r=await W.connect(prov()).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:BigInt(gs[0]),gasLimit:BigInt(gs[1])});return r.hash}
 default:throw{code:-32601,message:"Not supported: "+m}}},
 on:function(){},removeListener:function(){}};
