@@ -19,4 +19,3 @@ var S={lang:ls("lang","en"),net:ls("v2net","shardeum-testnet"),addr:"",mode:"",b
 if(!NETS[S.net]||(NETS[S.net].beta&&!beta()))S.net="shardeum-testnet";
 
 /* WalletConnect Cloud project ID (public identifier, not a secret). Used only by the dApp connection feature. */
-var WC_PROJECT_ID="a92f88efb59902bdb4bec48d752e3f4a";
