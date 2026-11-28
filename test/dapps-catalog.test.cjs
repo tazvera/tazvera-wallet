@@ -10,6 +10,16 @@ const ui = fs.readFileSync(path.join(root, "app/browser/dapps/dapps.js"), "utf8"
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
 
+test("Explore Browser card opens the dApps screen while legacy browser remains separate", () => {
+  const explore = fs.readFileSync(path.join(root, "app/js/24-explore.js"), "utf8");
+  const renderBoot = fs.readFileSync(path.join(root, "app/js/30-render-boot.js"), "utf8");
+  assert.match(explore, /class="brwrow" data-tab="dapps"/);
+  assert.match(renderBoot, /dapps:dappsHTML/);
+  assert.match(renderBoot, /brw:browserHTML/);
+  assert.match(ui, /function dappsHTML\(\)/);
+  assert.match(ui, /data-tab="exp" aria-label="Back to Explore"/);
+});
+
 test("dApps catalogue is limited to BNB Chain and Shardeum", () => {
   assert.equal(catalog.schemaVersion, 1);
   assert.ok(catalog.items.length >= 5);
@@ -59,5 +69,37 @@ test("catalogue JSON and UI are loaded from the same origin and cached offline",
 test("Open and browser toolbar actions remain disabled in this data-only layer", () => {
   assert.match(ui, /class="tz-open-inert"[^>]*disabled/);
   assert.match(ui, /class="tz-browser-toolbar"/);
-  assert.match(ui, /brwOpen=function\(\)\{ toast/);
+  assert.match(ui, /brwOpen=function\(\)\{ toast\("Opening dApps is disabled in this release\."\); \};/);
+});
+
+test("legacy browser opener stays blocked: only a message, no URL, no Android bridge call", () => {
+  const vm = require("node:vm");
+  const browser = fs.readFileSync(path.join(root, "app/browser/browser.js"), "utf8");
+  const calls = { toast: [], bridgeOpen: [], windowOpen: [], render: 0 };
+  const sandbox = {
+    S: { brw: { url: "", hist: [], idx: -1 }, tab: "dapps" },
+    toast: (m) => calls.toast.push(m),
+    render: () => { calls.render++; },
+    t: (k) => k,
+    esc: (v) => String(v),
+    document: { addEventListener() {}, getElementById() { return null; }, querySelector() { return null; } },
+    window: {
+      TazveraBrowser: { open: (u) => calls.bridgeOpen.push(u) },
+      open: (u) => calls.windowOpen.push(u)
+    },
+    console
+  };
+  sandbox.window.window = sandbox.window;
+  vm.createContext(sandbox);
+  vm.runInContext(browser + "\n" + ui, sandbox);
+
+  vm.runInContext('brwOpen("https://pancakeswap.finance")', sandbox);
+  vm.runInContext('brwOpen("javascript:alert(1)")', sandbox);
+
+  assert.deepEqual(calls.toast, ["Opening dApps is disabled in this release.", "Opening dApps is disabled in this release."]);
+  assert.deepEqual(calls.bridgeOpen, []);
+  assert.deepEqual(calls.windowOpen, []);
+  assert.equal(sandbox.S.brw.hist.length, 0);
+  assert.equal(sandbox.S.brw.url, "");
+  assert.equal(calls.render, 0);
 });
