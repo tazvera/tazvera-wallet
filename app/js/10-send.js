@@ -25,9 +25,10 @@ function ffee(f){if(f==null)return"…";if(f>=1)return fmt(f,2);if(f>=0.0001)ret
 function rsOK(){var n=N();return !n.test&&S.inr>0&&S.snd.tok==="native"&&curC()==="inr"}
 function amtInr(){var n=N(),a=parseFloat(S.snd.amt);var px=npx();if(n.test||!px||!a||S.snd.tok!=="native")return"";return (S.snd.cur==="inr"&&rsOK())?"= "+fmt(a,4)+" "+n.sym:"≈ "+money(a*px)}
 function feeTxt(){var n=N();if(S.snd.fee==null)return"…";var f=S.snd.fee;if(!n.test&&npx())return"≈ "+money(f*npx())+" ("+ffee(f)+" "+n.sym+")";return"≈ "+ffee(f)+" "+n.sym}
-async function estFee(){var n=N(),k=curTok();S.snd.feeW=null;try{var gp=BigInt(await rpc(n.rpc,"eth_gasPrice",[]));var gas=BigInt(k.id==="native"?21000:65000);
+async function estFee(){var n=N(),k=curTok(),fq=S.snd.feeSeq=(S.snd.feeSeq||0)+1;S.snd.feeW=null;S.snd.gasP=null;S.snd.gasL=null;try{var gp=BigInt(await rpc(n.rpc,"eth_gasPrice",[]));var gas=BigInt(k.id==="native"?21000:65000);
  try{var to=/^0x[0-9a-fA-F]{40}$/.test(S.snd.to)?S.snd.to:S.addr;var wei=amtWei(S.snd.amt,k.dec||18)||0n;var tx=k.id==="native"?{from:S.addr,to:to,value:"0x"+wei.toString(16)}:{from:S.addr,to:k.addr,data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+wei.toString(16).padStart(64,"0")};var g=BigInt(await rpc(n.rpc,"eth_estimateGas",[tx]));if(g>0n)gas=g*12n/10n}catch(e){}
- S.snd.feeW=gp*gas;S.snd.fee=Number(gp*gas)/1e18}catch(e){S.snd.fee=null;S.snd.feeW=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}
+ if(fq!==S.snd.feeSeq)return; /* a newer estimate replaced this one */
+ S.snd.feeW=gp*gas;S.snd.fee=Number(gp*gas)/1e18;S.snd.gasP=gp.toString();S.snd.gasL=gas.toString()}catch(e){if(fq!==S.snd.feeSeq)return;S.snd.fee=null;S.snd.feeW=null;S.snd.gasP=null;S.snd.gasL=null}var el=$("sFee");if(el)el.textContent=feeTxt();var w=$("sWarn");if(w)w.innerHTML=feeWarn();var cb=document.querySelector("[data-cont]");if(cb)cb.disabled=lowFee()}
 function readSend(){var a=$("sTo"),b=$("sAmt");if(a)S.snd.to=a.value.trim();if(b){var v=b.value.replace(/,/g,"").trim();if(S.snd.cur==="inr"&&rsOK()){S.snd.rs=v;var r=parseFloat(v);S.snd.amt=r>0?String(Math.round(r/S.inr*1e8)/1e8):""}else S.snd.amt=v.charAt(0)==="."?"0"+v:v}}
 function feeHigh(){var a=parseFloat(S.snd.amt);return S.snd.tok==="native"&&S.snd.fee>0&&a>0&&S.snd.fee>a}
 /* amount text -> exact smallest units; null if it is not a clean positive number with at most "dec" decimals */
@@ -75,7 +76,7 @@ async function doSend(amtTxt){var n=N(),k=curTok(),to=S.snd.to,prov=S.mode==="mm
   else{await prov.request({method:"wallet_switchEthereumChain",params:[{chainId:n.chainId}]})}
   if(k.id!=="native"&&!/^0x[0-9a-fA-F]{40}$/.test(k.addr||""))throw new Error(t("eTok"));
   var tx=k.id==="native"?{from:S.addr,to:to,value:toHex(wei)}:{from:S.addr,to:k.addr,value:"0x0",data:"0xa9059cbb"+to.slice(2).toLowerCase().padStart(64,"0")+BigInt(wei).toString(16).padStart(64,"0")};
-  if(S.mode==="inapp"){if(!CPW||typeof CPW.approveTransaction!=="function")throw new Error("Transaction approval is unavailable. Nothing was sent.");CPW.approveTransaction(tx)}
+  if(S.mode==="inapp"){if(!CPW||typeof CPW.approveTransaction!=="function")throw new Error("Transaction approval is unavailable. Nothing was sent.");if(!S.snd.gasP||!S.snd.gasL)throw new Error("Fee is not ready. Nothing was sent.");CPW.approveTransaction(tx,{gasPrice:S.snd.gasP,gasLimit:S.snd.gasL})}
   var hash=await prov.request({method:"eth_sendTransaction",params:[tx]});
   var list=txsAll();list.unshift({type:"out",amt:String(S.snd.amt),symbol:k.sym,hash:hash||"",time:Date.now(),net:S.net,st:"pending"});lss("txs",list.slice(0,300));
   var sl=sentList();if(sl.indexOf(to.toLowerCase())<0){sl.unshift(to.toLowerCase());rawSet("tz_sent_to",JSON.stringify(sl.slice(0,500)))}
