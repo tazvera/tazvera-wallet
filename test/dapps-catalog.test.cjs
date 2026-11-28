@@ -40,5 +40,5 @@ test("dApps reuses repository logos and leaves only unverified official logos as
  for(const file of ["app/browser/layout/logos/venus.io.png","app/browser/layout/logos/dashboard.shardeum.org.png"])assert.ok(fs.existsSync(path.join(root,file)));
  assert.ok(ui.includes("layout")&&ui.includes("logos")&&ui.includes("iconFile"));
  const mobile=fs.readFileSync(path.join(root,"app/features/browser/dapps-mobile.css"),"utf8"),desktop=fs.readFileSync(path.join(root,"app/features/browser/dapps-desktop.css"),"utf8");
- for(const css of [mobile,desktop]){assert.match(css,/tz-dapp-mark \.tz-dapp-logo/);assert.match(css,/tz-dapp-mark\.has-logo \.tz-dapp-fallback\\{display:none\\}/);assert.match(css,/object-fit:contain/)}
+ for(const css of [mobile,desktop]){assert.match(css,/tz-dapp-mark \.tz-dapp-logo/);assert.ok(css.includes(".tz-dapp-mark.has-logo .tz-dapp-fallback{display:none}"));assert.match(css,/object-fit:contain/)}
 });
