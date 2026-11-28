@@ -94,3 +94,12 @@ test("approval without fee details is refused",async()=>{
  assert.throws(()=>ctx.CPW.approveTransaction(tx),hasMessage("Fee details are missing"));
  assert.throws(()=>ctx.CPW.approveTransaction(tx,{gasPrice:"0",gasLimit:"25200"}),hasMessage("Fee details are missing"));
 });
+
+test("a locked wallet does not reveal its address",async()=>{
+ ctx.CPW.lock();
+ for (const method of ["eth_accounts","eth_requestAccounts"]) {
+   await assert.rejects(ctx.tazveraProvider.request({method}),e=>e&&e.code===4100,method+" must fail while locked");
+ }
+ await ctx.CPW.unlockKs("{}", "pw",address);
+ assert.equal(JSON.stringify(await ctx.tazveraProvider.request({method:"eth_accounts"})),JSON.stringify([address]));
+});
