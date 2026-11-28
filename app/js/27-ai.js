@@ -17,7 +17,6 @@ var AI_TX={en:{name:"Tazvera Assistant",hi:"Hello! I am the Tazvera Assistant. A
  listen:"सुनें ▶",stopb:"रोकें ■",eVoice:"आवाज़ उपलब्ध नहीं",copy:"कॉपी",copied:"कॉपी हो गया",share:"शेयर",like:"अच्छा जवाब",dislike:"खराब जवाब",again:"दोबारा",
  q:["पैसे कैसे भेजें?","नेटवर्क फ़ीस क्या है?","12 शब्द क्या हैं?","TZV क्या है?"]}};
 var AI_T={};function aiLang(){var L2=(S.lang==="hi")?"hi":"en";var src=AI_TX[L2];for(var k in src)AI_T[k]=src[k]}aiLang();
-var AI_SVG='<svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 30C14 19 22 10 32 10C42 10 50 19 50 30" stroke="#8C96A8" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="8" y="26" width="6" height="15" rx="3" fill="#4CF07A"/><rect x="50" y="26" width="6" height="15" rx="3" fill="#4CF07A"/><path d="M52 38L44 48H36" stroke="#4CF07A" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="35" cy="48" r="2.5" fill="#4CF07A"/><rect x="16" y="18" width="32" height="28" rx="9" fill="#282828" stroke="#4CF07A" stroke-width="2"/><circle cx="26" cy="28" r="3" fill="#4CF07A"/><circle cx="38" cy="28" r="3" fill="#4CF07A"/><line x1="26" y1="37" x2="38" y2="37" stroke="#5B6370" stroke-width="2" stroke-linecap="round"/></svg>';
 /* same test as the server: 12+ plain words in a row, or 64 hex characters */
 var BIP=Object.create(null);try{var WL=ethers.wordlists.en;for(var bi=0;bi<2048;bi++)BIP[WL.getWord(bi)]=1}catch(e){BIP=null}
 /* true only for 12+ words in a row from the real 12-word list (BIP39), or a 64-character private key; normal long questions in Hinglish pass */
@@ -95,11 +94,8 @@ try{if(window.speechSynthesis){speechSynthesis.getVoices();speechSynthesis.onvoi
 function aiCheck(cb){if(AI.on!==null)return cb(AI.on);fetch("/api/ai",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){AI.on=!!(j&&j.enabled);cb(AI.on)}).catch(function(){cb(false)})}
 var AI_FLOAT=false; /* the bot opens from the Helper button in the Home header; set true to also show a floating button */
 function aiOpen(){if(AI.on===false)helpSheet();else aiSheet()}
-function aiFab(){if(!AI_FLOAT)return;var f=document.getElementById("aiFab"),show=!!document.querySelector("#app .nav")&&AI.on!==false;
- if(!f){if(!show)return;f=document.createElement("button");f.id="aiFab";f.type="button";f.setAttribute("aria-label",AI_T.name);f.title=AI_T.name;f.innerHTML=AI_SVG;
-  f.style.cssText="position:fixed;right:14px;bottom:calc(100px + env(safe-area-inset-bottom,0px));width:40px;height:40px;padding:0;border:0;background:none;z-index:30;cursor:pointer;-webkit-tap-highlight-color:transparent";
-  f.onclick=aiSheet;document.body.appendChild(f);aiCheck(function(on){if(!on)f.style.display="none"})}
- else f.style.display=show&&AI.on!==false?"":"none"}
+/* The floating assistant button is the .aifab in 02-core.js. This older one stays off (AI_FLOAT is false). */
+function aiFab(){}
 function aiAdd(role,text,err){var log=document.getElementById("aiLog");if(!log)return null;var d=document.createElement("div");
  d.style.cssText="max-width:86%;margin:8px 0;padding:10px 13px;border-radius:16px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;"+(role==="user"?"margin-left:auto;background:var(--tx);color:var(--bg)":"background:var(--bg);color:"+(err?"var(--red,#000000)":"var(--tx)"));
  d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}

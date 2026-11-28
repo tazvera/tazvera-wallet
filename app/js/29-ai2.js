@@ -8,7 +8,8 @@
    - Every answer can show one-tap buttons (Send, Receive, Chart, Quiz…). Information, never advice. */
 
 /* ---- a friendlier, polished assistant icon ---- */
-AI_SVG='<svg width="46" height="46" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>'+
+function aiRobot(k){return AI_SVG.replace(/tzaiG/g,"tzaiG"+k)}
+var AI_SVG='<svg width="46" height="46" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>'+
  '<linearGradient id="tzaiG1" x1="12" y1="14" x2="52" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#4CF07A"/><stop offset=".55" stop-color="#4CF07A"/><stop offset="1" stop-color="#18923C"/></linearGradient>'+
  '<linearGradient id="tzaiG2" x1="32" y1="2" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#86F0A8"/><stop offset="1" stop-color="#4CF07A"/></linearGradient>'+
  '<radialGradient id="tzaiG3" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) scale(4)"><stop stop-color="#fff"/><stop offset="1" stop-color="#86F0A8"/></radialGradient></defs>'+
@@ -103,7 +104,7 @@ async function aiLocal2(text){var q=String(text||"").toLowerCase(),n=N(),k,lines
 
 /* ---- chat window ---- */
 function aiBubble(m){var log=document.getElementById("aiLog");if(!log)return null;var row=document.createElement("div");row.className="aim "+(m.role==="user"?"u":"b");
- if(m.role!=="user"){var av=document.createElement("span");av.className="aiav";av.innerHTML=AI_SVG;row.appendChild(av)}
+ if(m.role!=="user"){var av=document.createElement("span");av.className="aiav";av.innerHTML=aiRobot("a");row.appendChild(av)}
  var wrap=document.createElement("div");wrap.className="aiw";var d=document.createElement("div");d.className="aib"+(m.err?" e":"");d.textContent=m.text;wrap.appendChild(d);
  if(m.acts&&m.acts.length){var c=document.createElement("div");c.className="aiacts";m.acts.forEach(function(a){var b=document.createElement("button");b.type="button";b.textContent=aiActLabel(a)+" ›";b.onclick=function(){aiDo(a)};c.appendChild(b)});wrap.appendChild(c)}
  if(m.role==="model"&&!m.err&&!m.local&&typeof aiBtn==="function")aiBtn(wrap,m.text);
