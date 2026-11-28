@@ -35,6 +35,7 @@ function dkAskOnce(){try{if(S.mode!=="inapp"||dkChoice()||sessionStorage.getItem
  setTimeout(dkSheet,5000)}
 
 function dkSheet(){
+ var open=document.getElementById("sheet");if(open&&open.classList.contains("on"))return; /* never replace a sheet the user opened */
  var bk=typeof bkDone==="function"&&bkDone(S.addr);
  var body=bk
   ? '<p class="note2" style="text-align:left;margin:10px 2px 0;line-height:1.55">'+esc(t("dkQ"))+'</p>'+
