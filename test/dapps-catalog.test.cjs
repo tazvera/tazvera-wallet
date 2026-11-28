@@ -14,11 +14,11 @@ test("catalogue icons have 96x96 SVG assets or safe letter fallback",()=>{
  assert.match(ui,/tz-dapp-fallback/);assert.match(ui,/addEventListener\("error"/);
 });
 test("address search offers an Open row and Enter opens the browser",()=>{
- assert.match(ui,/function dappIsAddress/);assert.match(ui,/Open '\+esc\(url\)/);assert.match(ui,/id==="tzDappSearchForm"/);
+ assert.match(ui,/function dappIsAddress/);assert.match(ui,/Open '\+esc\(url\)/);assert.match(ui,/e\.target\.id==="tzDappSearchForm"/);
  assert.match(ui,/S\.tab="brw";S\.dappChainPickerOpen=false;brwOpen\(u\)/);
 });
 test("chain selector persists all, BNB and Shardeum selections",()=>{
- assert.match(ui,/lss\("dappSelectedChain",target\.getAttribute\("data-chain-select"\)\)/);
+ assert.match(ui,/lss\("dappSelectedChain",t\.getAttribute\("data-chain-select"\)\)/);
  assert.match(ui,/data-chain-select=/);assert.match(ui,/role="dialog" aria-modal="true"/);
 });
 test("mobile and desktop dApps styles are independently loaded and motion is accessible",()=>{
@@ -29,5 +29,6 @@ test("mobile and desktop dApps styles are independently loaded and motion is acc
 });
 test("unsafe protocols are rejected by the existing browser URL gate",()=>{
  const browser=fs.readFileSync(path.join(root,"app/browser/browser.js"),"utf8");
- assert.match(browser,/if\(!\^https\?:/);assert.match(browser,/u\.protocol!=="http:"&&u\.protocol!=="https:"/);
+ assert.ok(browser.includes('if(!/^https?:\\/\\//i.test(s))'));
+ assert.match(browser,/u\.protocol!=="http:"/);
 });
