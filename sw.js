@@ -3,7 +3,7 @@
    (and saved for next time); only when offline does it fall back to the saved copy.
    Never stores /api/ answers or anything from other websites. Keys and wallet data are not touched here. */
 "use strict";
-var CACHE = "tazvera-v9-92";
+var CACHE = "tazvera-v9-93";
 var CORE = ["/app/config/shardeum.js", "/", "/index.html", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/ethers.min.js", "/wallet.js", "/qrcode.min.js", "/jsqr.js",
   "/app/fonts/fonts.css", "/app/css/app.css", "/app/features/settings/settings-shared.css",
   "/app/layout/mobile.css", "/app/features/shell/shell-desktop.css", "/app/features/nav/nav-desktop.css", "/app/features/home/home-desktop.css", "/app/features/home/home-mobile.css", "/app/features/send/send-desktop.css", "/app/features/receive/receive-desktop.css", "/app/features/request/request-desktop.css", "/app/features/activity/activity-desktop.css", "/app/features/explore/explore-desktop.css", "/app/features/learn/learn-desktop.css", "/app/features/security/security-desktop.css", "/app/features/browser/browser-desktop.css", "/app/features/browser/browser-mobile.css", "/app/features/browser/dapps-catalog.css", "/app/features/settings/settings-desktop.css", "/app/features/assistant/assistant-desktop.css", "/app/features/assistant/assistant-mobile.css", "/app/features/shell/bg-light.svg", "/app/features/shell/bg-dark.svg", 
@@ -16,7 +16,7 @@ var CORE = ["/app/config/shardeum.js", "/", "/index.html", "/manifest.webmanifes
   "/app/splash/splash.css", "/app/splash/splash.js", "/app/browser/networks/networks.js",
   "/app/js/00-config.js", "/app/js/01-i18n.js", "/app/js/02-core.js", "/app/js/10-send.js", "/app/js/11-scan.js", "/app/js/12-request.js",
   "/app/js/13-lock-onboarding.js", "/app/js/20-faucet-security.js", "/app/js/21-tools.js", "/app/js/22-wallets-help-backup.js",
-  "/app/js/23-back-button.js", "/app/js/24-explore.js", "/app/js/25-settings.js", "/app/js/26-v8-trust.js", "/app/js/features/session-and-copy.js", "/app/js/features/pin-wait.js", "/app/js/features/offline-theme-mainnet.js", "/app/js/features/qr-network-privacy.js", "/app/js/features/bottom-bar-assistant-icon.js", "/app/js/features/backup-check.js", "/app/js/features/idle-lock.js", "/app/js/features/pin-change-wallets.js", "/app/js/features/send-safety.js", "/app/js/features/currency.js", "/app/js/features/chart.js", "/app/js/features/quiz.js", "/app/js/features/strong-lock.js", "/app/js/features/lock-screen-fingerprint.js", "/app/js/features/sounds.js",
+  "/app/js/23-back-button.js", "/app/js/24-explore.js", "/app/js/25-settings.js", "/app/js/26-v8-trust.js", "/app/js/features/session-and-copy.js", "/app/js/features/pin-wait.js", "/app/js/features/offline-theme-mainnet.js", "/app/js/features/qr-network-privacy.js", "/app/js/features/bottom-bar-assistant-icon.js", "/app/js/features/backup-check.js", "/app/js/features/idle-lock.js", "/app/js/features/pin-change-wallets.js", "/app/js/features/send-safety.js", "/app/js/features/currency.js", "/app/js/features/chart.js", "/app/js/features/quiz.js", "/app/js/features/strong-lock.js", "/app/js/features/device-key-consent.js", "/app/js/features/lock-screen-fingerprint.js", "/app/js/features/sounds.js",
   "/app/tokens/add-token.js",
   "/app/browser/browser.js", "/app/browser/dapps/dapps.js", "/app/browser/dapps/catalog.json",
   "/app/walletconnect/config.js",
