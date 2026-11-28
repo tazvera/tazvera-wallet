@@ -24,7 +24,7 @@
   .nav .nv span{ display: block !important; white-space: normal !important; line-height: 1.25; text-align: center; font-size: 11px !important; }
   .nav .nv.on{ color: var(--green) !important; background: var(--pill) !important; }
   .nav .nv-extra{ display: flex !important; }
-  .nav .nv-ai{ margin-top: auto !important; min-height:64px !important; }
+  .nav .nv-ai{ display:flex !important; margin-top:auto !important; min-height:64px !important; }
   /* Keep the assistant mark the same visual size as the phone's floating assistant button. */
   .nav .nv.nv-ai svg{ width:40px !important; height:40px !important; }
 
