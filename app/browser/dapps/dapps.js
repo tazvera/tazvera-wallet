@@ -36,12 +36,12 @@ function dappOpenById(id){
  S.dappChainPickerOpen=false;brwLaunch("https://"+x.domain);
 }
 function dappsHTML(){
- dappsLoad();var raw=String(S.dappQuery||"").trim(),q=raw.toLowerCase(),url=dappAddressUrl(raw),chain=dappSelectedChain();
+ wcStart();dappsLoad();var raw=String(S.dappQuery||"").trim(),q=raw.toLowerCase(),url=dappAddressUrl(raw),chain=dappSelectedChain();
  var items=TAZVERA_DAPPS.filter(function(x){return (chain==="all"||x.networks.indexOf(chain)>=0)&&(!q||url||[x.name,x.description,x.domain,dappNetworkLabel(x)].join(" ").toLowerCase().indexOf(q)>=0)});
  var suggestion=url?'<button type="button" class="tz-address-suggestion" data-dapp-address="'+esc(url)+'"><span aria-hidden="true">↗</span><span><b>Open '+esc(url)+'</b><small>Open website in a new tab</small></span><span>Enter ↵</span></button>':"";
  return '<main class="tz-dapps-shell"><header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back">←</button><h1>dApps</h1></div><button class="tz-chain-trigger" type="button" data-chain-toggle="1" aria-haspopup="dialog" aria-expanded="'+(S.dappChainPickerOpen?'true':'false')+'">'+esc(chain==="all"?"All":chain==="bsc"?"BNB Chain":"Shardeum")+' <span aria-hidden="true">▾</span></button></header>'+
  '<form class="tz-dapps-search-wrap" id="tzDappSearchForm" autocomplete="off"><label class="tz-dapps-search"><span aria-hidden="true">⌕</span><input id="tzDappSearch" type="search" value="'+esc(raw)+'" placeholder="Search dApps or enter a website" autocomplete="off" spellcheck="false" aria-label="Search dApps or enter a website"></label>'+suggestion+'</form>'+
- '<section class="tz-dapps-section tz-all-section"><div class="tz-dapps-section-head"><h2>ALL DAPPS</h2></div><div class="tz-popular-list">'+(items.length?items.map(dappRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>')+'</div></section>'+dappChainPicker()+'</main>';
+ ''+wcStatusHTML()+'<section class="tz-dapps-section tz-all-section"><div class="tz-dapps-section-head"><h2>ALL DAPPS</h2></div><div class="tz-popular-list">'+(items.length?items.map(dappRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>')+'</div></section>'+dappChainPicker()+'</main>';
 }
 document.addEventListener("click",function(e){
  var t=e.target&&e.target.closest?e.target.closest("[data-chain-toggle],[data-chain-select],[data-chain-close],[data-dapp-open],[data-dapp-address]"):null;if(!t)return;
