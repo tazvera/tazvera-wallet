@@ -18,7 +18,9 @@ Object.assign(L.en,{
  dkWS:"This check happens only on this phone. The words are not saved or sent anywhere.",
  dkWGo:"Check",
  dkWBad:"The words did not match. First check your backup, then come back.",
- dkWWait:"Too many wrong tries. Wait 30 seconds and try again."
+ dkWWait:"Too many wrong tries. Wait 30 seconds and try again.",
+ dkShow:"Show",
+ dkHide:"Hide"
 });
 Object.assign(L.hi,{
  dkNavT:"सुरक्षा कुंजी",
@@ -34,7 +36,9 @@ Object.assign(L.hi,{
  dkWS:"यह जाँच सिर्फ़ इसी फ़ोन पर होती है। शब्द कहीं सहेजे या भेजे नहीं जाते।",
  dkWGo:"जाँचें",
  dkWBad:"शब्द मेल नहीं खाए। पहले अपना बैकअप देख लें, फिर दोबारा आएं।",
- dkWWait:"बहुत बार गलत हुआ। 30 सेकंड बाद फिर कोशिश करें।"
+ dkWWait:"बहुत बार गलत हुआ। 30 सेकंड बाद फिर कोशिश करें।",
+ dkShow:"दिखाएँ",
+ dkHide:"छिपाएँ"
 });
 
 /* the answer is kept per wallet address, per browser: "" (not asked), "on" (agreed), "later" (not now) */
@@ -65,11 +69,14 @@ var dkFails=0,dkLockUntil=0;
 function dkWordsSheet(){
  sheet('<div class="grab"></div><div class="sht">'+esc(t("dkWT"))+'</div>'+
   '<p class="note2" style="text-align:left;margin:6px 2px 0;line-height:1.5">'+esc(t("dkWS"))+'</p>'+
-  '<textarea id="dkW" rows="4" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:100%;box-sizing:border-box;margin-top:10px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:15px;line-height:1.5"></textarea>'+
+  '<div style="display:flex;gap:8px;margin-top:10px;align-items:stretch"><input id="dkW" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="12 words" style="flex:1;min-width:0;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:15px"><button type="button" id="dkTog" class="btn sec" style="width:auto;padding:0 14px;white-space:nowrap">'+esc(t("dkShow"))+'</button></div>'+
   '<p id="dkWMsg" class="err" style="min-height:18px;margin:8px 2px 0"></p>'+
   '<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px"><button class="btn" id="dkWGo">'+esc(t("dkWGo"))+'</button><button class="btn sec" data-dkbk="1">'+esc(t("dkBk"))+'</button></div>');
  var go=document.getElementById("dkWGo");if(go)go.onclick=dkCheckWords;
+ var tg=document.getElementById("dkTog");if(tg)tg.onclick=dkToggleWords;
 }
+/* the words are hidden by default; show/hide only changes how the box looks, the check is the same */
+function dkToggleWords(){var box=document.getElementById("dkW"),tg=document.getElementById("dkTog");if(!box||!tg)return;var shown=box.type==="text";box.type=shown?"password":"text";tg.textContent=shown?t("dkShow"):t("dkHide")}
 function dkMsg(m){var e=document.getElementById("dkWMsg");if(e)e.textContent=m}
 function dkCheckWords(){
  var box=document.getElementById("dkW");if(!box)return;
