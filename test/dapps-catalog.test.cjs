@@ -52,3 +52,23 @@ test("the three named dApps are in the catalog as verified, with a domain and a 
     assert.ok(x.networks.length > 0, id + " has a network");
   }
 });
+
+test("the network picker is a small popover: icon-only button, no dialog, no dimmed page, closes on Escape and outside click", () => {
+  const js = fs.readFileSync(path.join(__dirname, "..", "app/browser/dapps/dapps.js"), "utf8");
+  const mob = fs.readFileSync(path.join(__dirname, "..", "app/features/browser/dapps-mobile.css"), "utf8");
+  const desk = fs.readFileSync(path.join(__dirname, "..", "app/features/browser/dapps-desktop.css"), "utf8");
+  assert.ok(!/tz-chain-backdrop|aria-modal="true"/.test(js.slice(js.indexOf("function dappChainPicker"), js.indexOf("function dappChainPicker") + 600)), "no full-screen sheet markup");
+  assert.match(js, /aria-haspopup="listbox"/);
+  assert.match(js, /role="listbox"/);
+  assert.match(js, /aria-label="'\+esc\(chainName\(chain\)\)\+'"/, "trigger has the network name for screen readers");
+  assert.match(js, /chainIcon\(chain,24\)/, "trigger shows the chain icon at 24px");
+  assert.match(js, /chainIcon\(v,20\)/, "list rows show the icon at 20px");
+  assert.match(js, /aria-selected=/);
+  assert.match(js, /app\/browser\/layout\/logos\/chains\/'\+file\+'\.svg/, "chain logos come from logos/chains/");
+  assert.match(js, /e\.key==="Escape"/);
+  assert.match(js, /closest\(["']\.tz-chain-wrap["']\)/, "outside click closes via the wrapper");
+  for (const css of [mob, desk]) {
+    assert.match(css, /\.scr\.tab-brw \.tz-chain-pop\{[^}]*width:200px/);
+    assert.match(css, /\.scr\.tab-brw \.tz-chain-opt\{[^}]*height:40px/);
+  }
+});
