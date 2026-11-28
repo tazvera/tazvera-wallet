@@ -44,7 +44,7 @@ test("the dApps screen starts the connection and shows the status line", () => {
 test("connection step has no signing, request or key code", () => {
   const banned = [
     "eth_sign", "personal_sign", "eth_sendTransaction", "sendTransaction",
-    "approveSession", "respondSessionRequest", "rejectSession", "approveProposal",
+    "respondSessionRequest", "approveProposal",
     "signTypedData", "privateKey", "fromPhrase", "mnemonic", "seed",
   ];
   for (const word of banned) {
@@ -65,4 +65,60 @@ test("the status line has an accessible live region", () => {
 
 test("the CSP does not allow WalletConnect telemetry (pulse)", () => {
   assert.ok(!index.includes("pulse.walletconnect"), "telemetry host must not be in the CSP (privacy: no user data leaves the phone)");
+});
+
+/* ---- step 2: session approval, tested with the real connect.js in a sandbox ---- */
+const vm = require("vm");
+function loadConnect(extra) {
+  const calls = { reject: [], approve: [], sheets: 0, toasts: [] };
+  const store = {};
+  const ctx = Object.assign({
+    console, Promise, Date, Math, JSON, String, Object, Array, Number, Error,
+    localStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v) } },
+    L: { en: {}, hi: {} }, t: k => k, esc: x => String(x),
+    beta: () => false, toast: m => calls.toasts.push(m), sheet: () => { calls.sheets++ }, closeSheet() {},
+    $: () => ({ onclick: null }), document: { getElementById: () => null },
+    CPW: { unlocked: () => true, address: () => "0x1111111111111111111111111111111111111111" },
+  }, extra || {});
+  vm.createContext(ctx);
+  vm.runInContext(connect, ctx);
+  // connect.js declares WC_KIT itself, so the stub is attached after it loads
+  ctx.WC_KIT = {
+    rejectSession: a => { calls.reject.push(a) },
+    approveSession: a => { calls.approve.push(a); return Promise.resolve() },
+  };
+  return { ctx, calls };
+}
+const ADDR = "0x1111111111111111111111111111111111111111";
+test("a BSC proposal gets an approval with only BSC, the address, and no methods", () => {
+  const { ctx } = loadConnect();
+  const ns = ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:56"] } } }, ADDR);
+  assert.equal(JSON.stringify(ns), JSON.stringify({ eip155: { chains: ["eip155:56"], accounts: ["eip155:56:" + ADDR], methods: [], events: [] } }));
+});
+
+test("unknown chains are dropped; if nothing usable is left the result is null", () => {
+  const { ctx } = loadConnect();
+  assert.equal(ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:999"] } } }, ADDR), null);
+});
+
+test("Shardeum Mainnet is offered only when mainnet is switched on", () => {
+  const off = loadConnect({ beta: () => false }).ctx;
+  assert.equal(off.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:8118"] } } }, ADDR), null);
+  const on = loadConnect({ beta: () => true }).ctx;
+  assert.ok(on.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:8118"] } } }, ADDR));
+});
+
+test("a proposal while the wallet is locked is rejected, not shown", () => {
+  const { ctx, calls } = loadConnect({ CPW: { unlocked: () => false, address: () => ADDR } });
+  ctx.wcOnProposal({ id: 7, params: { id: 7, requiredNamespaces: { eip155: { chains: ["eip155:56"] } } } });
+  assert.equal(calls.reject.length, 1);
+  assert.equal(calls.reject[0].id, 7);
+  assert.equal(calls.sheets, 0);
+});
+
+test("a proposal while unlocked opens the approval sheet and rejects on request", () => {
+  const { ctx, calls } = loadConnect();
+  ctx.wcOnProposal({ id: 9, params: { id: 9, proposer: { metadata: { name: "Demo", url: "https://demo.example" } }, requiredNamespaces: { eip155: { chains: ["eip155:56"] } } } });
+  assert.equal(calls.sheets, 1);
+  assert.equal(calls.approve.length, 0, "nothing is approved until the user taps Connect");
 });
