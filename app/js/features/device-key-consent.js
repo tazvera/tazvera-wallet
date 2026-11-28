@@ -17,7 +17,7 @@ Object.assign(L.en,{
  dkWT:"Enter your 12 words",
  dkWS:"This check happens only on this phone. The words are not saved or sent anywhere.",
  dkWGo:"Check",
- dkWBad:"The words did not match. First check your backup, then come back.",
+ dkWBad:"These words do not match this wallet. Nothing was recorded. Enter the correct 12 words, or check your backup and try again.",
  dkWWait:"Too many wrong tries. Wait 30 seconds and try again.",
  dkShow:"Show",
  dkHide:"Hide"
@@ -35,7 +35,7 @@ Object.assign(L.hi,{
  dkWT:"अपने 12 शब्द डालें",
  dkWS:"यह जाँच सिर्फ़ इसी फ़ोन पर होती है। शब्द कहीं सहेजे या भेजे नहीं जाते।",
  dkWGo:"जाँचें",
- dkWBad:"शब्द मेल नहीं खाए। पहले अपना बैकअप देख लें, फिर दोबारा आएं।",
+ dkWBad:"ये शब्द इस वॉलेट के नहीं मिले। कुछ भी दर्ज नहीं हुआ। सही 12 शब्द डालें, या अपना बैकअप देखकर फिर प्रयास करें।",
  dkWWait:"बहुत बार गलत हुआ। 30 सेकंड बाद फिर कोशिश करें।",
  dkShow:"दिखाएँ",
  dkHide:"छिपाएँ"
