@@ -133,3 +133,17 @@ test("legacy browser opener remains separate and rejects invalid URLs", () => {
   assert.equal(sandbox.S.brw.url, "");
   assert.equal(calls.render, 0);
 });
+
+test("dApps chain selector filters all sections and persists selection",()=>{
+  assert.match(ui,/data-chain-toggle="1"/);
+  assert.match(ui,/data-chain-select=/);
+  assert.match(ui,/lss\("dappSelectedChain",target\.getAttribute\("data-chain-select"\)\)/);
+  assert.match(ui,/function dappSelectedChain\(\)/);
+  assert.match(ui,/x\.networks\.indexOf\(selectedChain\)>=0/);
+  assert.match(ui,/function dappChainCount\(chain\)/);
+  assert.match(ui,/dappChainPicker\(\)/);
+  assert.match(ui,/role="dialog" aria-modal="true"/);
+  const css=fs.readFileSync(path.join(root,"app/features/browser/dapps-catalog.css"),"utf8");
+  assert.match(css,/\.tz-chain-backdrop/);
+  assert.match(css,/align-items:flex-end/);
+});
