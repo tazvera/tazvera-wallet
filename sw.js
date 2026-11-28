@@ -31,6 +31,8 @@ var CORE = ["/app/config/shardeum.js", "/", "/index.html", "/manifest.webmanifes
   "/app/browser/layout/logos/app.1inch.io.png",
   "/app/browser/layout/logos/app.uniswap.org.png",
   "/app/browser/layout/logos/pancakeswap.finance.png",
+  "/app/browser/layout/logos/venus.io.png",
+  "/app/browser/layout/logos/dashboard.shardeum.org.png",
   "/app/browser/signing/signing.js",
   "/app/browser/sites/connected-sites.js", "/app/js/27-ai.js", "/app/js/28-backup.js", "/app/js/29-ai2.js", "/app/js/30-render-boot.js"];
 
