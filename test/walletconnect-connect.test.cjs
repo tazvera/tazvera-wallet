@@ -69,43 +69,77 @@ test("the CSP does not allow WalletConnect telemetry (pulse)", () => {
 
 /* ---- step 2: session approval, tested with the real connect.js in a sandbox ---- */
 const vm = require("vm");
+const ADDR = "0x1111111111111111111111111111111111111111";
 function loadConnect(extra) {
-  const calls = { reject: [], approve: [], sheets: 0, toasts: [] };
+  const calls = { reject: [], approve: [], sheets: 0, toasts: [], closes: 0 };
+  const els = {};
   const store = {};
   const ctx = Object.assign({
-    console, Promise, Date, Math, JSON, String, Object, Array, Number, Error,
+    console, Promise, Date, Math, JSON, String, Object, Array, Number, Error, URL,
     localStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v) } },
     L: { en: {}, hi: {} }, t: k => k, esc: x => String(x),
-    beta: () => false, toast: m => calls.toasts.push(m), sheet: () => { calls.sheets++ }, closeSheet() {},
-    $: () => ({ onclick: null }), document: { getElementById: () => null },
-    CPW: { unlocked: () => true, address: () => "0x1111111111111111111111111111111111111111" },
+    beta: () => false, toast: m => calls.toasts.push(m),
+    sheet: () => { calls.sheets++ }, closeSheet: () => { calls.closes++ },
+    $: id => (els[id] = els[id] || { onclick: null }),
+    CPW: { unlocked: () => true, address: () => ADDR },
   }, extra || {});
   vm.createContext(ctx);
   vm.runInContext(connect, ctx);
   // connect.js declares WC_KIT itself, so the stub is attached after it loads
   ctx.WC_KIT = {
     rejectSession: a => { calls.reject.push(a) },
-    approveSession: a => { calls.approve.push(a); return Promise.resolve() },
+    approveSession: a => { calls.approve.push(a); return (ctx.__approveResult || Promise.resolve()) },
   };
-  return { ctx, calls };
+  return { ctx, calls, els };
 }
-const ADDR = "0x1111111111111111111111111111111111111111";
+const tick = () => new Promise(r => setImmediate(r));
+function proposal(over) {
+  return Object.assign({ id: 1, params: undefined }, over || {});
+}
+function bsc(extra) {
+  return Object.assign({
+    id: 1,
+    proposer: { metadata: { name: "Pancake", url: "https://pancake.xyz" } },
+    verifyContext: { verified: { verifyUrl: "https://pancake.xyz", validation: "VALID", origin: "https://pancake.xyz" } },
+    requiredNamespaces: { eip155: { chains: ["eip155:56"], methods: [], events: [] } },
+  }, extra || {});
+}
+
 test("a BSC proposal gets an approval with only BSC, the address, and no methods", () => {
   const { ctx } = loadConnect();
   const ns = ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:56"] } } }, ADDR);
   assert.equal(JSON.stringify(ns), JSON.stringify({ eip155: { chains: ["eip155:56"], accounts: ["eip155:56:" + ADDR], methods: [], events: [] } }));
 });
 
-test("unknown chains are dropped; if nothing usable is left the result is null", () => {
+test("a required chain Tazvera does not have refuses the whole proposal", () => {
   const { ctx } = loadConnect();
-  assert.equal(ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:999"] } } }, ADDR), null);
+  assert.equal(ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:56", "eip155:999"] } } }, ADDR), null);
 });
 
-test("Shardeum Mainnet is offered only when mainnet is switched on", () => {
+test("an optional chain Tazvera does not have is left out, the rest is kept", () => {
+  const { ctx } = loadConnect();
+  const ns = ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:56"] } }, optionalNamespaces: { eip155: { chains: ["eip155:999"] } } }, ADDR);
+  assert.equal(JSON.stringify(ns.eip155.chains), JSON.stringify(["eip155:56"]));
+});
+
+test("Shardeum Mainnet is refused when mainnet is off and offered when on", () => {
   const off = loadConnect({ beta: () => false }).ctx;
   assert.equal(off.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:8118"] } } }, ADDR), null);
   const on = loadConnect({ beta: () => true }).ctx;
   assert.ok(on.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:8118"] } } }, ADDR));
+});
+
+test("a required method or event that Tazvera cannot serve refuses the proposal", () => {
+  const { ctx } = loadConnect();
+  assert.equal(ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:56"], methods: ["eth_sendTransaction"] } } }, ADDR), null);
+  assert.equal(ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:56"], events: ["chainChanged"] } } }, ADDR), null);
+  assert.equal(ctx.wcBuildNamespaces({ requiredNamespaces: { solana: { chains: ["solana:x"] } } }, ADDR), null);
+});
+
+test("optional methods are not claimed either: the session still has none", () => {
+  const { ctx } = loadConnect();
+  const ns = ctx.wcBuildNamespaces({ requiredNamespaces: { eip155: { chains: ["eip155:56"] } }, optionalNamespaces: { eip155: { chains: ["eip155:56"], methods: ["personal_sign"] } } }, ADDR);
+  assert.equal(JSON.stringify(ns.eip155.methods), "[]");
 });
 
 test("a proposal while the wallet is locked is rejected, not shown", () => {
@@ -116,9 +150,71 @@ test("a proposal while the wallet is locked is rejected, not shown", () => {
   assert.equal(calls.sheets, 0);
 });
 
-test("a proposal while unlocked opens the approval sheet and rejects on request", () => {
+test("a proposal with a required chain we lack is rejected at once, with no sheet", () => {
   const { ctx, calls } = loadConnect();
-  ctx.wcOnProposal({ id: 9, params: { id: 9, proposer: { metadata: { name: "Demo", url: "https://demo.example" } }, requiredNamespaces: { eip155: { chains: ["eip155:56"] } } } });
+  ctx.wcOnProposal({ id: 3, params: bsc({ id: 3, requiredNamespaces: { eip155: { chains: ["eip155:56", "eip155:999"] } } }) });
+  assert.equal(calls.reject.length, 1);
+  assert.equal(calls.sheets, 0);
+});
+
+test("verified: the address shown is the one WalletConnect checked, and Connect is offered", () => {
+  const { ctx, calls, els } = loadConnect();
+  ctx.wcOnProposal({ id: 9, params: bsc({ id: 9 }) });
   assert.equal(calls.sheets, 1);
-  assert.equal(calls.approve.length, 0, "nothing is approved until the user taps Connect");
+  assert.ok(els.wcOk, "Connect is offered");
+  assert.equal(ctx.wcVerify(bsc()).state, "verified");
+  assert.equal(ctx.wcVerify(bsc()).host, "pancake.xyz");
+});
+
+test("unverified: the screen says so and does not show the site's claim as checked", () => {
+  const { ctx } = loadConnect();
+  const v = ctx.wcVerify(bsc({ verifyContext: { verified: { validation: "UNKNOWN" } } }));
+  assert.equal(v.state, "unverified");
+  assert.equal(v.host, "");
+  assert.equal(v.claim, "pancake.xyz");
+});
+
+test("verifyUrl and the site's own url differ: refused, nothing approved", () => {
+  const { ctx, calls } = loadConnect();
+  ctx.wcOnProposal({ id: 5, params: bsc({ id: 5, verifyContext: { verified: { verifyUrl: "https://evil.com", validation: "VALID" } } }) });
+  assert.equal(calls.reject.length, 1, "the proposal is rejected");
+  assert.equal(calls.approve.length, 0);
+  assert.equal(ctx.wcVerify(bsc({ verifyContext: { verified: { verifyUrl: "https://evil.com", validation: "UNKNOWN" } } })).state, "mismatch");
+});
+
+test("a scam flag or INVALID validation is refused", () => {
+  const { ctx } = loadConnect();
+  assert.equal(ctx.wcVerify(bsc({ verifyContext: { verified: { verifyUrl: "https://pancake.xyz", validation: "INVALID" } } })).state, "mismatch");
+  assert.equal(ctx.wcVerify(bsc({ verifyContext: { verified: { verifyUrl: "https://pancake.xyz", validation: "VALID", isScam: true } } })).state, "mismatch");
+});
+
+test("Connect sends the approval with the right id and namespaces, and shows success", async () => {
+  const { ctx, calls, els } = loadConnect();
+  ctx.wcOnProposal({ id: 11, params: bsc({ id: 11 }) });
+  els.wcOk.onclick();
+  assert.equal(calls.approve.length, 1);
+  assert.equal(calls.approve[0].id, 11);
+  assert.equal(JSON.stringify(calls.approve[0].namespaces.eip155.accounts), JSON.stringify(["eip155:56:" + ADDR]));
+  await tick();
+  assert.ok(calls.toasts.includes("wcDone"));
+  assert.equal(calls.reject.length, 0);
+});
+
+test("Reject sends the right id and creates no session", () => {
+  const { ctx, calls, els } = loadConnect();
+  ctx.wcOnProposal({ id: 12, params: bsc({ id: 12 }) });
+  els.wcNo.onclick();
+  assert.equal(calls.reject.length, 1);
+  assert.equal(calls.reject[0].id, 12);
+  assert.equal(calls.approve.length, 0);
+});
+
+test("approveSession fails: only a message, and no second reject", async () => {
+  const { ctx, calls, els } = loadConnect({});
+  ctx.__approveResult = Promise.reject(new Error("relay"));
+  ctx.wcOnProposal({ id: 13, params: bsc({ id: 13 }) });
+  els.wcOk.onclick();
+  await tick();
+  assert.ok(calls.toasts.includes("wcFail"));
+  assert.equal(calls.reject.length, 0, "no reject is sent for the same request");
 });
