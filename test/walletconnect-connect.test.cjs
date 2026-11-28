@@ -218,3 +218,41 @@ test("approveSession fails: only a message, and no second reject", async () => {
   assert.ok(calls.toasts.includes("wcFail"));
   assert.equal(calls.reject.length, 0, "no reject is sent for the same request");
 });
+
+/* ---- developer switch by link: ?wc=1 / ?wc=0 ---- */
+function loadWithUrl(search, initial) {
+  const store = Object.assign({}, initial || {});
+  const replaced = [];
+  const href = "https://app.tazvera.com/" + search;
+  const ctx = {
+    console, URLSearchParams, URL,
+    location: { search, href, pathname: "/", replace: u => replaced.push(u) },
+    localStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v) }, removeItem: k => { delete store[k] } },
+    L: { en: {}, hi: {} }, t: k => k, esc: x => String(x), beta: () => false, toast() {}, sheet() {}, closeSheet() {}, $: () => ({}),
+  };
+  vm.createContext(ctx);
+  vm.runInContext(connect, ctx);
+  return { store, replaced };
+}
+test("?wc=1 turns the flag on in this browser and reloads without the parameter", () => {
+  const { store, replaced } = loadWithUrl("?wc=1");
+  assert.equal(store.tz_wc_on, "1");
+  assert.deepEqual(replaced, ["/"]);
+});
+test("?wc=0 removes a flag that was on, and reloads", () => {
+  const { store, replaced } = loadWithUrl("?wc=0", { tz_wc_on: "1" });
+  assert.equal("tz_wc_on" in store, false);
+  assert.deepEqual(replaced, ["/"]);
+});
+test("without ?wc= nothing is stored and nothing reloads (flag stays off by default)", () => {
+  const { store, replaced } = loadWithUrl("");
+  assert.equal("tz_wc_on" in store, false);
+  assert.equal(replaced.length, 0);
+  const other = loadWithUrl("?ref=abc");
+  assert.equal("tz_wc_on" in other.store, false);
+  assert.equal(other.replaced.length, 0);
+});
+test("other parameters are kept when the switch is removed", () => {
+  const { replaced } = loadWithUrl("?wc=1&ref=abc");
+  assert.equal(replaced[0], "/?ref=abc");
+});
