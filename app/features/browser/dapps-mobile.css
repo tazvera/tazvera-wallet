@@ -1,6 +1,6 @@
 /* Tazvera dApps · phone layout */
-.scr.tab-brw:has(.tz-dapps-shell){background:#fff!important;color:#15191b!important}
-.scr.tab-brw .tz-dapps-shell{box-sizing:border-box;width:100%;max-width:560px;margin:0 auto;padding:6px 20px 40px;color:#171b1d;background:#fff;font-family:"Poppins",sans-serif;display:flex;flex-direction:column;gap:8px}
+.scr.tab-brw:has(.tz-dapps-shell){color:#15191b!important}
+.scr.tab-brw .tz-dapps-shell{box-sizing:border-box;width:100%;max-width:560px;margin:0 auto;padding:6px 20px 40px;color:#171b1d;background:transparent;font-family:"Poppins",sans-serif;display:flex;flex-direction:column;gap:8px}
 .scr.tab-brw .tz-dapps-header{height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .scr.tab-brw .tz-dapps-header-left{display:flex;align-items:center;gap:12px}
 .scr.tab-brw .tz-dapps-back{width:34px;height:40px;padding:0;border:0;background:transparent;color:#343a3d;font-size:25px;display:grid;place-items:center}
@@ -13,7 +13,7 @@
 .scr.tab-brw .tz-dapps-search>span{font:400 23px "Space Grotesk",sans-serif}
 .scr.tab-brw .tz-dapps-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#171b1d;font:400 14px "Poppins",sans-serif}
 .scr.tab-brw .tz-dapps-search input::placeholder{color:#92999d}
-.scr.tab-brw .tz-address-suggestion{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:12px 0;border:0;border-bottom:1px solid #e6e9ea;background:#fff;color:#171b1d}
+.scr.tab-brw .tz-address-suggestion{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:12px 0;border:0;border-bottom:1px solid #e6e9ea;background:transparent;color:#171b1d}
 .scr.tab-brw .tz-address-suggestion>span:first-child{font-size:18px;color:#687176}
 .scr.tab-brw .tz-address-suggestion>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .scr.tab-brw .tz-address-suggestion b{font:500 12px "IBM Plex Mono",monospace;overflow-wrap:anywhere}
@@ -88,3 +88,103 @@
 .scr.tab-brw .tz-chain-check{text-align:center}
 
 .scr.tab-brw .tz-chain-trigger .tz-chain-letter,.scr.tab-brw .tz-chain-letter{color:#fff;display:inline-flex;align-items:center;justify-content:center;background-color:#252a2d;color:#fff;font-family:"Space Grotesk",sans-serif;font-weight:600;line-height:1}
+
+/* ---- dark mode (html[data-theme="dark"]): the same layout; colours from the agreed dark palette ---- */
+html[data-theme="dark"] .scr.tab-brw:has(.tz-dapps-shell){background:transparent!important;color:#F2F5F4!important}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-shell{color:#F2F5F4;background:transparent}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-back,html[data-theme="dark"] .scr.tab-brw .tz-dapps-header h1{color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-trigger{color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-trigger span,html[data-theme="dark"] .scr.tab-brw .tz-chain-caret{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-search{border-bottom-color:#26332B;color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-search:focus-within{border-bottom-color:#4CF07A}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-search input{color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-search input::placeholder{color:#7D8C82}
+html[data-theme="dark"] .scr.tab-brw .tz-address-suggestion{background:#0B100D;color:#F2F5F4;border-bottom-color:#26332B}
+html[data-theme="dark"] .scr.tab-brw .tz-address-suggestion>span:first-child,html[data-theme="dark"] .scr.tab-brw .tz-address-suggestion small,html[data-theme="dark"] .scr.tab-brw .tz-address-suggestion>span:last-child{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-section-head h2{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-bookmark{color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-mark{background:#17221B;color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-mark.bookmark-icon,html[data-theme="dark"] .scr.tab-brw .tz-dapp-mark.featured-icon{background:#17221B}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-mark.hero{background:#17221B;box-shadow:none}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature:before{opacity:.5;background:radial-gradient(ellipse at 75% 48%,rgba(76,240,122,.22) 0,rgba(76,240,122,.08) 30%,transparent 68%)}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature.tz-feature-oneinch:before{background:radial-gradient(ellipse at 75% 48%,rgba(76,240,122,.18) 0,rgba(76,240,122,.06) 32%,transparent 68%)}
+html[data-theme="dark"] .scr.tab-brw .tz-feature-meta{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-feature-meta span{color:#7D8C82}
+html[data-theme="dark"] .scr.tab-brw .tz-feature-copy h3{color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-feature-copy p,html[data-theme="dark"] .scr.tab-brw .tz-feature-copy code{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-feature-open{background:#4CF07A;color:#0B100D}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-row{background:transparent;color:#F2F5F4;border-bottom-color:#26332B}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-row-copy small{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-chevron,html[data-theme="dark"] .scr.tab-brw .tz-dapp-empty{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-pop{background:#0B100D;border-color:#26332B;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-opt{color:#F2F5F4;border-bottom-color:#26332B}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-opt[aria-selected=true] .tz-chain-check{color:#4CF07A}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-count{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-ico{background-color:#26332B}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-grid{color:#F2F5F4;background:transparent}
+html[data-theme="dark"] .scr.tab-brw .tz-chain-letter{background-color:#26332B;color:#F2F5F4}
+html[data-theme="dark"] .tz-wc-status{color:#A8B6AC}
+html[data-theme="dark"] .tz-wc-status[data-state="connected"]{color:#4CF07A}
+
+/* ---- phone: same gutter as Home, same blocks as desktop ---- */
+.scr.tab-brw .tz-dapps-shell{max-width:560px;padding:6px 20px 40px;background:transparent}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-shell{max-width:560px;padding:6px 20px 40px}
+
+/* ---- strip, bookmarks, featured, popular (light) ---- */
+.scr.tab-brw .tz-dapps-strip{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #e6e9ea;font:500 12px "IBM Plex Mono",monospace;color:#5b6468}
+.scr.tab-brw .tz-strip-copy{border:1px solid #d7dcde;background:transparent;border-radius:999px;padding:4px 10px;color:#171b1d;font:500 11px "Space Grotesk",sans-serif;cursor:pointer}
+.scr.tab-brw .tz-strip-net{margin-left:auto;color:#16a05d;font:600 11px "Space Grotesk",sans-serif}
+.scr.tab-brw .tz-featured-track{display:block}
+.scr.tab-brw .tz-dapp-feature{display:flex;flex-direction:column;gap:12px;padding:20px 0;border-bottom:1px solid #e6e9ea;min-height:0;background:transparent;border-radius:0;box-sizing:border-box}
+.scr.tab-brw .tz-dapp-feature-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.scr.tab-brw .tz-featured-label{background:#e3f6ea;color:#0d7a43;border-radius:999px;padding:4px 10px;font:600 10px "Space Grotesk",sans-serif;letter-spacing:.08em}
+.scr.tab-brw .tz-network-label{color:#5b6468;font:500 11px "Space Grotesk",sans-serif;text-align:right}
+.scr.tab-brw .tz-dapp-feature-main{display:flex;gap:14px;align-items:center;min-width:0}
+.scr.tab-brw .tz-dapp-feature-copy{min-width:0}
+.scr.tab-brw .tz-dapp-feature-copy h3{margin:0 0 4px;font:600 22px "Space Grotesk",sans-serif;color:#171b1d}
+.scr.tab-brw .tz-dapp-feature-copy p{margin:0 0 6px;color:#616a6f;font:400 13px/1.5 "Poppins",sans-serif}
+.scr.tab-brw .tz-dapp-feature-copy code,.scr.tab-brw .tz-dapp-popular-copy code{color:#858d91;font:400 11px "IBM Plex Mono",monospace;overflow-wrap:anywhere}
+.scr.tab-brw .tz-open-inert{align-self:flex-start;border:0;border-radius:3px;background:#16a05d;color:#fff;padding:10px 16px;font:500 12px "Space Grotesk",sans-serif;cursor:pointer}
+.scr.tab-brw .tz-bookmark{background:transparent;border:0;padding:0;color:#303639;cursor:pointer}
+.scr.tab-brw .tz-bookmark>span:last-child{max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#303639;font:400 11px "Poppins",sans-serif}
+.scr.tab-brw .tz-dapp-popular-row{height:auto;min-height:72px;padding:12px 0;align-items:center}
+.scr.tab-brw .tz-dapp-popular-copy{gap:3px}
+.scr.tab-brw .tz-dapp-popular-copy small{color:#616a6f;font:400 12px "Poppins",sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scr.tab-brw .tz-dapp-chevron{color:#899195;font-size:20px}
+
+/* ---- dark: no boxes, palette from the brief ---- */
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-strip{border-bottom-color:#26332B;color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-strip-copy{border-color:#26332B;color:#F2F5F4;background:transparent}
+html[data-theme="dark"] .scr.tab-brw .tz-strip-net{color:#4CF07A}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-back{background:transparent;border:0;color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-dapps-search{background:transparent;border:0;border-bottom:1px solid #26332B;border-radius:0;padding:10px 0}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature{background:transparent;border:0;border-bottom:1px solid #26332B;border-radius:0;padding:20px 0}
+html[data-theme="dark"] .scr.tab-brw .tz-popular-list{background:transparent;border:0;border-radius:0;padding:0}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-popular-row{border-bottom:1px solid #26332B}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-popular-copy b{color:#F2F5F4}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-popular-copy small{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-popular-copy code{color:#7D8C82}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-chevron{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-featured-label{background:#16332A;color:#4CF07A}
+html[data-theme="dark"] .scr.tab-brw .tz-network-label{color:#A8B6AC}
+html[data-theme="dark"] .scr.tab-brw .tz-open-inert{background:#4CF07A;color:#0B100D}
+html[data-theme="dark"] .scr.tab-brw .tz-bookmark>span:last-child{color:#F2F5F4}
+
+/* ---- fixes: no clipped glow, no clipped button, no clipped first bookmark ---- */
+.scr.tab-brw .tz-featured-track,.scr.tab-brw .tz-bookmark-row{padding:10px 4px}
+html[data-theme="dark"] .scr.tab-brw .tz-featured-track,html[data-theme="dark"] .scr.tab-brw .tz-bookmark-row{padding:10px 4px}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature:before{display:none}
+html[data-theme="dark"] .scr.tab-brw .tz-open-inert{align-self:flex-start;margin-top:0}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature{min-height:0;justify-content:flex-start;gap:12px}
+
+/* ---- round 3: no watermark on this screen, flat featured card, full bookmark names, Shardeum bookmark letter ---- */
+@media(min-width:900px){body:has(.scr.tab-brw){background-image:none!important}}
+.scr.tab-brw .tz-dapp-feature:before{display:none}
+.scr.tab-brw .tz-dapp-feature{background:transparent;border-top:1px solid #e6e9ea;border-bottom:1px solid #e6e9ea}
+.scr.tab-brw .tz-bookmark{width:84px;min-width:84px}
+.scr.tab-brw .tz-bookmark>span:last-child{max-width:84px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25;text-align:center}
+
+html[data-theme="dark"] .scr.tab-brw .tz-bookmark{width:84px;min-width:84px}
+html[data-theme="dark"] .scr.tab-brw .tz-bookmark>span:last-child{max-width:84px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25;text-align:center}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-feature{border-top:1px solid #26332B;border-bottom:1px solid #26332B}
+html[data-theme="dark"] .scr.tab-brw .tz-dapp-mark[style] .tz-dapp-fallback{color:#0B100D}
