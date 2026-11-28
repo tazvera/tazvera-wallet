@@ -332,6 +332,26 @@ try {
   ok("QR: an ethereum: link is understood", !!(qr.parseQR("ethereum:" + A + "@8118?value=2.5e18")));
 } catch (e) { ok("QR tests ran", false, e.message) }
 
+/* --- scanning a QR must replace the amount and token on the send screen --- */
+try {
+  const TZT = "0xc75149e5C95a41b0a4c9E3378D5fc6aAAc2CC5F0";
+  const A = "0x1234567890abcdef1234567890abcdef12345678";
+  const mk = () => ({ snd: { to: "", amt: "500", tok: "tzt" } });
+  const st = mk();
+  const q = runAlone([grabFn("app/js/11-scan.js", "useQR")],
+    { S: st, N: () => ({ tzt: TZT, tzv: "0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73" }), toast() {}, render() {}, estFee() {} });
+  q.useQR({ to: A, tok: "", token: "", amt: "" });
+  eq("QR without amount clears the old amount", st.snd.amt, "");
+  eq("QR without token goes back to native, not the old token", st.snd.tok, "native");
+  eq("QR destination is set", st.snd.to, A);
+
+  const st2 = mk();
+  const q2 = runAlone([grabFn("app/js/11-scan.js", "useQR")],
+    { S: st2, N: () => ({ tzt: TZT, tzv: "0x4cC2d29b65E6a2cd788a144a81e5e99bd892dE73" }), toast() {}, render() {}, estFee() {} });
+  q2.useQR({ to: A, tok: "", token: "", amt: "2.5" });
+  eq("QR with an amount sets it", st2.snd.amt, "2.5");
+} catch (e) { ok("QR send-screen tests ran", false, e.message) }
+
 /* --- the assistant must refuse anything that looks like a secret --- */
 try {
   const twelve = "abandon ability able about above absent absorb abstract absurd abuse access accident";
