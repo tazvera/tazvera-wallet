@@ -25,14 +25,10 @@ function brwState(){ if(!S.brw||typeof S.brw!=="object")S.brw={url:"",hist:[],id
 /* a URL is only accepted as http(s); anything else (javascript:, data:) is refused outright */
 function brwClean(v){
   var s=String(v||"").trim();
-  if(!s)return "";
-  if(/^[a-z][a-z0-9+.-]*:/i.test(s)){
-    if(!/^https?:\/\//i.test(s)) return "";
-    /* refuse user:pass@host tricks: the address the user sees must be the address opened */
-    try{ var u=new URL(s); if(u.username||u.password||!u.hostname) return ""; return u.href }catch(e){ return "" }
-  }
-  if(!/^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(s)) return "";
-  return "https://" + s;
+  if(!s || /[\u0000-\u0020]/.test(s)) return "";
+  if(!/^[a-z][a-z0-9+.-]*:/i.test(s)) s="https://"+s;
+  if(!/^https?:\/\//i.test(s)) return "";
+  try{var u=new URL(s);if((u.protocol!=="http:"&&u.protocol!=="https:")||!u.hostname||u.username||u.password)return "";return u.href}catch(e){return ""}
 }
 /* Which sites do we know? Only the ones on the verified list, plus any the user has already opened
    once. Anything else is "new" and says so, because a wrong address is the whole attack. */
@@ -70,18 +66,16 @@ function brwTrust(host){
   return "new";
 }
 function brwHost(u){ try{ return String(u).replace(/^https?:\/\//i,"").split("/")[0] }catch(e){ return u } }
-function brwOpen(u){
-  var url=brwClean(u); if(!url){ toast(t("brwBad")); return }
-  var b=brwState();
-  b.hist=b.hist.slice(0,b.idx+1); b.hist.push(url); b.idx=b.hist.length-1; b.url=url;
-  /* if an Android shell bridge exists, open the site there. No wallet is injected into it yet. */
-  if(window.TazveraBrowser&&typeof window.TazveraBrowser.open==="function"){
-    try{ window.TazveraBrowser.open(url); render(); return }catch(e){}
-  }
-  try{ window.open(url,"_blank","noopener") }catch(e){}
-  render();
+function brwLaunch(url){
+  if(window.TazveraBrowser&&typeof window.TazveraBrowser.open==="function"){try{window.TazveraBrowser.open(url);return}catch(e){}}
+  try{window.open(url,"_blank","noopener")}catch(e){}
 }
-function brwBack(){ var b=brwState(); if(b.idx>0){ b.idx--; b.url=b.hist[b.idx]; render() } }
+function brwOpen(u){
+  var url=brwClean(u);if(!url){toast(t("brwBad"));return}
+  var b=brwState();b.hist=b.hist.slice(0,b.idx+1);b.hist.push(url);b.idx=b.hist.length-1;b.url=url;brwLaunch(url);render();
+}
+function brwBack(){var b=brwState();if(b.idx>0){b.idx--;b.url=b.hist[b.idx];brwLaunch(b.url);render()}}
+function brwForward(){var b=brwState();if(b.idx>=0&&b.idx<b.hist.length-1){b.idx++;b.url=b.hist[b.idx];brwLaunch(b.url);render()}}
 function brwHome(){ var b=brwState(); b.url=""; render() }
 function browserHTML(){
   var b=brwState(), n=N();

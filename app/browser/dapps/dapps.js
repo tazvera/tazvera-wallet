@@ -67,15 +67,18 @@ function dappsHTML(){
   var bookmarkHtml=bookmarks.map(function(x){return '<button type="button" class="tz-bookmark" data-dapp-open="'+esc(x.id)+'" aria-label="Open '+esc(x.name)+' in phone browser">'+dappIcon(x)+'<span>'+esc(x.name)+'</span></button>'}).join("");
   return '<main class="tz-dapps-shell">'+
     '<header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1></div><span class="tz-dapps-header-spacer"></span></header>'+
-    '<div class="tz-browser-address" aria-label="Tazvera local dApps catalogue"><span class="tz-lock" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="tz-address-text">Tazvera dApps</span><span class="tz-address-network">BNB · SHARDEUM</span></div>'+
+    '<form class="tz-browser-address" id="tzDappAddressForm" aria-label="Website address"><span class="tz-lock" id="tzDappScheme" aria-hidden="true">'+(brwState().url&&/^http:\/\//i.test(brwState().url)?"HTTP":"HTTPS")+'</span><input id="tzDappAddress" class="tz-address-text" type="text" inputmode="url" autocomplete="url" spellcheck="false" value="'+esc(brwState().url||"")+'" placeholder="Enter website address" aria-label="Website address"><button class="tz-address-go" type="submit" aria-label="Open website">Go</button></form>'+
     '<label class="tz-dapps-search"><span aria-hidden="true">⌕</span><input id="tzDappSearch" type="search" value="'+esc(S.dappQuery||"")+'" placeholder="Search dApps" autocomplete="off" spellcheck="false" aria-label="Search local dApps"></label>'+
     '<div class="tz-dapps-columns"><section class="tz-dapps-left">'+
       '<section class="tz-dapps-bookmarks"><div class="tz-dapps-section-head"><h2>BOOKMARKS</h2><span class="tz-see-all">See All</span></div><div class="tz-bookmark-row">'+bookmarkHtml+'</div></section>'+
       '<section class="tz-dapps-featured"><div class="tz-dapps-section-head"><h2>FEATURED</h2></div><div class="tz-featured-track">'+featuredHtml+'</div></section>'+
     '</section><section class="tz-dapps-popular"><div class="tz-dapps-section-head"><h2>POPULAR</h2></div><div class="tz-popular-list">'+popularHtml+'</div></section></div>'+
     '<footer class="tz-browser-toolbar" aria-label="Browser toolbar">'+
-      '<button type="button" disabled aria-label="Back">‹</button><button type="button" disabled aria-label="Forward">›</button>'+
-      '<button type="button" disabled aria-label="Tabs">▢</button><button type="button" disabled aria-label="Bookmarks">♡</button><button type="button" disabled aria-label="Menu">☰</button>'+
+      '<button type="button" data-dapp-back="1" aria-label="Back" '+(brwState().idx>0?"":"disabled")+'>‹</button>'+
+      '<button type="button" data-dapp-forward="1" aria-label="Forward" '+(brwState().idx<brwState().hist.length-1?"":"disabled")+'>›</button>'+
+      '<button type="button" data-dapp-tabs="1" aria-label="Open current site in a new tab">▢</button>'+
+      '<button type="button" data-dapp-bookmark="1" aria-label="Bookmark current site">♡</button>'+
+      '<button type="button" data-dapp-menu="1" aria-label="Enter website address">☰</button>'+
     '</footer></main>';
 }
 
@@ -89,10 +92,21 @@ function dappOpenById(id){
 }
 
 document.addEventListener("click",function(e){
-  var target=e.target && e.target.closest ? e.target.closest("[data-dapp-open]") : null;
-  if(!target) return;
-  dappOpenById(target.getAttribute("data-dapp-open"));
+  var target=e.target&&e.target.closest?e.target.closest("[data-dapp-open],[data-dapp-back],[data-dapp-forward],[data-dapp-tabs],[data-dapp-bookmark],[data-dapp-menu]"):null;
+  if(!target)return;
+  if(target.hasAttribute("data-dapp-open")){dappOpenById(target.getAttribute("data-dapp-open"));return}
+  if(target.hasAttribute("data-dapp-back")){brwBack();return}
+  if(target.hasAttribute("data-dapp-forward")){brwForward();return}
+  if(target.hasAttribute("data-dapp-tabs")){var current=brwState().url;if(current)brwLaunch(current);else toast("Open a website first.");return}
+  if(target.hasAttribute("data-dapp-bookmark")){var current=brwState().url;if(!current){toast("Open a website first.");return}var saved=ls("dappBrowserBookmarks",[]);if(!Array.isArray(saved))saved=[];if(saved.indexOf(current)<0)saved.push(current);lss("dappBrowserBookmarks",saved.slice(-50));toast("Bookmark saved.");return}
+  if(target.hasAttribute("data-dapp-menu")){var entry=prompt("Enter website address",brwState().url||"");if(entry)brwOpen(entry);return}
 });
+document.addEventListener("submit",function(e){
+  if(!e.target||e.target.id!=="tzDappAddressForm")return;e.preventDefault();
+  var field=document.getElementById("tzDappAddress");
+  if(field&&field.value.trim()){var value=field.value.trim();var shortcut=BRW_SHORTCUTS.find(function(x){return x.name.toLowerCase()===value.toLowerCase()});brwOpen(shortcut?shortcut.url:value)}
+});
+document.addEventListener("input",function(e){if(!e.target||e.target.id!=="tzDappAddress")return;var scheme=document.getElementById("tzDappScheme");if(scheme)scheme.textContent=/^http:\/\//i.test(e.target.value.trim())?"HTTP":"HTTPS"});
 
 document.addEventListener("input",function(e){
   if(!e.target || e.target.id!=="tzDappSearch") return;

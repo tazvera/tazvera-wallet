@@ -88,6 +88,21 @@ test("dApp entries, Open buttons and bookmarks open the catalog domain without w
   assert.deepEqual(messages,["Invalid dApp URL.","Invalid dApp URL."]);
 });
 
+test("dApps address and toolbar controls are wired",()=>{
+  assert.match(ui,/id="tzDappAddressForm"/);assert.match(ui,/id="tzDappAddress"/);
+  for(const attr of ["back","forward","tabs","bookmark","menu"])assert.match(ui,new RegExp("data-dapp-"+attr+"="));
+  assert.match(ui,/brwBack\(\)/);assert.match(ui,/brwForward\(\)/);assert.match(ui,/brwOpen\(shortcut\?shortcut\.url:value\)/);
+  assert.doesNotMatch(ui,/WalletConnectProvider|WalletConnectModal|signSheet/i);
+});
+test("browser URL normalization and app history",()=>{
+  const vm=require("node:vm"),opened=[],messages=[],browser=fs.readFileSync(path.join(root,"app/browser/browser.js"),"utf8");
+  const sandbox={S:{brw:{url:"",hist:[],idx:-1}},URL,toast:m=>messages.push(m),t:k=>k,render:()=>{},window:{TazveraBrowser:{open:u=>opened.push(u)},open:u=>opened.push(u)},console};
+  sandbox.window.window=sandbox.window;vm.createContext(sandbox);vm.runInContext(browser,sandbox);
+  vm.runInContext('brwOpen("pancakeswap.finance/swap?foo=1")',sandbox);vm.runInContext('brwOpen("trx.forsage.io")',sandbox);
+  vm.runInContext('brwBack()',sandbox);vm.runInContext('brwForward()',sandbox);vm.runInContext('brwOpen("javascript:alert(1)")',sandbox);
+  assert.deepEqual(opened,["https://pancakeswap.finance/swap?foo=1","https://trx.forsage.io","https://pancakeswap.finance/swap?foo=1","https://trx.forsage.io"]);
+  assert.deepEqual(messages,["brwBad"]);assert.equal(sandbox.S.brw.url,"https://trx.forsage.io");
+});
 test("legacy browser opener remains separate and rejects invalid URLs", () => {
   const vm = require("node:vm");
   const browser = fs.readFileSync(path.join(root, "app/browser/browser.js"), "utf8");

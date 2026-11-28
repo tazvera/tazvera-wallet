@@ -14,10 +14,11 @@
 }
 .scr.tab-brw .tz-dapps-header h1{margin:0;font:700 1.45rem/1.2 "Space Grotesk",sans-serif;letter-spacing:-.02em}
 .scr.tab-brw .tz-dapps-header-spacer{flex:1}
-.scr.tab-brw .tz-browser-address{
-  border-radius:999px;padding:12px 16px;background:#0B100D;border:1px solid #26332B;
-  display:flex;align-items:center;gap:12px;
-}
+.scr.tab-brw .tz-browser-address{border-radius:999px;padding:8px 10px;background:#0B100D;border:1px solid #26332B;display:flex;align-items:center;gap:10px;min-width:0}
+.scr.tab-brw .tz-browser-address input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#F2F5F4;font:400 13px "IBM Plex Mono",monospace}
+.scr.tab-brw .tz-address-go{border:0;border-radius:999px;background:#4CF27E;color:#050806;padding:8px 13px;font:700 12px "Space Grotesk",sans-serif}
+.scr.tab-brw .tz-browser-address .tz-lock{font:700 10px "Space Grotesk",sans-serif;letter-spacing:.04em}
+.scr.tab-brw .tz-browser-address .tz-address-text{flex:1;min-width:0;color:#D7E0D9;font:400 13px "IBM Plex Mono",monospace}
 .scr.tab-brw .tz-lock{font-size:18px;color:#4CF27E}
 .scr.tab-brw .tz-address-text{flex:1;min-width:0;color:#D7E0D9;font:400 13px "IBM Plex Mono",monospace}
 .scr.tab-brw .tz-address-network{background:#016B57;color:#E9FFF1;border-radius:999px;padding:7px 11px;font:700 10px "Space Grotesk",sans-serif;letter-spacing:.04em}
@@ -81,10 +82,9 @@
 .scr.tab-brw .tz-dapp-chevron{color:#87958B;font:400 24px "Space Grotesk",sans-serif}
 .scr.tab-brw .tz-dapp-empty{color:#9EAEA3;font:400 13px "Mukta",sans-serif;padding:14px 0}
 .scr.tab-brw .tz-browser-toolbar{display:flex;align-items:center;justify-content:space-around;gap:12px;padding:12px 0 0;border-top:1px solid #26332B}
-.scr.tab-brw .tz-browser-toolbar button{
-  width:44px;height:44px;min-width:44px;border-radius:12px;border:1px solid #26332B;
-  background:#0B100D;color:#87958B;font:400 22px "Space Grotesk",sans-serif;opacity:.55;cursor:not-allowed;
-}
+.scr.tab-brw .tz-browser-toolbar button{width:44px;height:44px;min-width:44px;border-radius:12px;border:1px solid #26332B;background:#0B100D;color:#4CF27E;font:400 22px "Space Grotesk",sans-serif;opacity:1;cursor:pointer}
+.scr.tab-brw .tz-browser-toolbar button:disabled{color:#87958B;opacity:.4;cursor:not-allowed}
+.scr.tab-brw .tz-browser-address,.scr.tab-brw .tz-address-go,.scr.tab-brw .tz-browser-toolbar button{-webkit-user-select:none;user-select:none}
 @media(max-width:899px){
   .scr.tab-brw .tz-dapps-columns{grid-template-columns:minmax(0,1fr);gap:24px}
 }
