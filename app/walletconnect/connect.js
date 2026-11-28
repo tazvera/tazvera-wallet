@@ -1,5 +1,14 @@
 /* Tazvera wallet · app/walletconnect/connect.js · MIT License · https://github.com/tazvera/tazvera-wallet */
 "use strict";
+/* Developer switch by link only: ?wc=1 turns the WalletConnect flag on in this browser, ?wc=0 turns it off.
+   Stored only in this browser's localStorage. Without ?wc= nothing changes. The address is then cleaned and the page reloads. */
+(function(){
+ if(typeof location==="undefined"||typeof localStorage==="undefined")return;
+ var m=null;try{m=new URLSearchParams(location.search).get("wc")}catch(e){return}
+ if(m!=="1"&&m!=="0")return;
+ try{if(m==="1")localStorage.setItem("tz_wc_on","1");else localStorage.removeItem("tz_wc_on")}catch(e){}
+ try{var u=new URL(location.href);u.searchParams.delete("wc");location.replace(u.pathname+u.search+u.hash)}catch(e){}
+})();
 /* WalletConnect, step 2 (sessions only): a site may ask to connect; the user approves or rejects on a Tazvera screen.
    Approving shares the address and the chain list. There are still no requests, no signing and no keys.
    Off unless this browser has the flag tz_wc_on = "1" (developer test). The bundle loads only when
