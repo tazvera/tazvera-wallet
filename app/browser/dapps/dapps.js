@@ -20,7 +20,7 @@ function dappChainPicker(){
 }
 function dappNetworkLabel(x){return x.networks.map(function(n){return n==="bsc"?"BNB Chain":"Shardeum"}).join(" · ")}
 function dappIcon(x,kind){
- var file=""; /* Use letters until an original official logo asset is verified. */
+ var file=typeof x.iconFile==="string"&&/^app\/browser\/layout\/logos\/[a-z0-9._-]+\.png$/i.test(x.iconFile)?"/"+x.iconFile:"";
  return '<span class="tz-dapp-mark '+(kind||"")+'" aria-hidden="true"><span class="tz-dapp-fallback">'+esc((x.icon&&x.icon.mark)||x.name.slice(0,1))+'</span>'+(file?'<img class="tz-dapp-logo" src="'+esc(file)+'" alt="" loading="lazy">':"")+'</span>';
 }
 function dappDomainStatus(x){return x.domainVerified===true?"":'<small class="tz-domain-unverified">Domain not verified</small>'}

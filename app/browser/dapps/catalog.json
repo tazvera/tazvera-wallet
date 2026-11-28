@@ -34,7 +34,7 @@
       "domainVerified": true,
       "domainVerifiedAt": "2026-11-28",
       "domainVerificationSource": "Pancake official website and rebrand announcement",
-      "iconFile": "app/browser/dapps/icons/pancake.svg"
+      "iconFile": "app/browser/layout/logos/pancakeswap.finance.png"
     },
     {
       "id": "sikka",
@@ -201,7 +201,7 @@
       "domainVerified": true,
       "domainVerifiedAt": "2026-11-28",
       "domainVerificationSource": "1inch official rebranding FAQ, blog, and website",
-      "iconFile": "app/browser/dapps/icons/oneinch.svg"
+      "iconFile": "app/browser/layout/logos/app.1inch.io.png"
     }
   ]
 }
