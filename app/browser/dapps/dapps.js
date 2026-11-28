@@ -29,6 +29,26 @@ function dappsLoad(){
     .catch(function(){ TAZVERA_DAPPS=[]; TAZVERA_DAPPS_READY=true; if(S.tab==="dapps") render(); })
     .finally(function(){ TAZVERA_DAPPS_LOADING=false; });
 }
+function dappSelectedChain(){
+  var selected=ls("dappSelectedChain","all");
+  return ["all","bsc","shardeum"].indexOf(selected)>=0?selected:"all";
+}
+function dappChainName(chain){
+  return chain==="bsc"?"BNB Chain":chain==="shardeum"?"Shardeum":"All chains";
+}
+function dappChainCount(chain){
+  return TAZVERA_DAPPS.filter(function(x){return chain==="all"||x.networks.indexOf(chain)>=0;}).length;
+}
+function dappChainPicker(){
+  if(!S.dappChainPickerOpen)return "";
+  var selected=dappSelectedChain();
+  return '<div class="tz-chain-backdrop" data-chain-close="1">'+
+    '<section class="tz-chain-sheet" role="dialog" aria-modal="true" aria-label="Choose chain">'+
+    '<div class="tz-chain-sheet-handle" aria-hidden="true"></div>'+
+    '<div class="tz-chain-sheet-heading"><h2>Choose chain</h2><button type="button" data-chain-close="1" aria-label="Close chain selector">×</button></div>'+
+    ["all","bsc","shardeum"].map(function(chain){return '<button type="button" class="tz-chain-option" data-chain-select="'+chain+'" aria-pressed="'+(selected===chain?'true':'false')+'"><span>'+dappChainName(chain)+'</span><span class="tz-chain-count">'+dappChainCount(chain)+'</span><span class="tz-chain-check" aria-hidden="true">'+(selected===chain?'✓':'')+'</span></button>';}).join("")+
+    '</section></div>';
+}
 function dappNetworkLabel(x){
   return x.networks.map(function(n){return n==="bsc"?"BNB Chain":"Shardeum"}).join(" · ");
 }
@@ -56,8 +76,10 @@ function dappPopularRow(x){
 function dappsHTML(){
   dappsLoad();
   var q=String(S.dappQuery||"").trim().toLowerCase();
+  var selectedChain=dappSelectedChain();
   var items=TAZVERA_DAPPS.filter(function(x){
-    return !q || [x.name,x.description,x.domain,dappNetworkLabel(x)].join(" ").toLowerCase().indexOf(q)>=0;
+    return (selectedChain==="all"||x.networks.indexOf(selectedChain)>=0) &&
+      (!q || [x.name,x.description,x.domain,dappNetworkLabel(x)].join(" ").toLowerCase().indexOf(q)>=0);
   });
   var bookmarks=items.filter(function(x){return x.bookmark}).slice(0,5);
   var featured=items.filter(function(x){return x.featured});
@@ -66,13 +88,14 @@ function dappsHTML(){
   var popularHtml=popular.length?popular.map(dappPopularRow).join(""):'<p class="tz-dapp-empty">No dApps match your search.</p>';
   var bookmarkHtml=bookmarks.map(function(x){return '<button type="button" class="tz-bookmark" data-dapp-open="'+esc(x.id)+'" aria-label="Open '+esc(x.name)+' in phone browser">'+dappIcon(x)+'<span>'+esc(x.name)+'</span></button>'}).join("");
   return '<main class="tz-dapps-shell">'+
-    '<header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1></div><span class="tz-dapps-header-spacer"></span></header>'+
+    '<header class="tz-dapps-header"><div class="tz-dapps-header-left"><button class="tz-dapps-back" type="button" data-tab="exp" aria-label="Back to Explore">‹</button><h1>dApps</h1></div><button class="tz-chain-trigger" type="button" data-chain-toggle="1" aria-haspopup="dialog" aria-expanded="'+(S.dappChainPickerOpen?'true':'false')+'">'+esc(dappChainName(selectedChain))+' <span aria-hidden="true">▾</span></button></header>'+
     '<form class="tz-browser-address" id="tzDappAddressForm" aria-label="Website address"><span class="tz-lock" id="tzDappScheme" aria-hidden="true">'+(brwState().url&&/^http:\/\//i.test(brwState().url)?"HTTP":"HTTPS")+'</span><input id="tzDappAddress" class="tz-address-text" type="text" inputmode="url" autocomplete="url" spellcheck="false" value="'+esc(brwState().url||"")+'" placeholder="Enter website address" aria-label="Website address"><button class="tz-address-go" type="submit" aria-label="Open website">Go</button></form>'+
     '<label class="tz-dapps-search"><span aria-hidden="true">⌕</span><input id="tzDappSearch" type="search" value="'+esc(S.dappQuery||"")+'" placeholder="Search dApps" autocomplete="off" spellcheck="false" aria-label="Search local dApps"></label>'+
     '<div class="tz-dapps-columns"><section class="tz-dapps-left">'+
       '<section class="tz-dapps-bookmarks"><div class="tz-dapps-section-head"><h2>BOOKMARKS</h2><span class="tz-see-all">See All</span></div><div class="tz-bookmark-row">'+bookmarkHtml+'</div></section>'+
       '<section class="tz-dapps-featured"><div class="tz-dapps-section-head"><h2>FEATURED</h2></div><div class="tz-featured-track">'+featuredHtml+'</div></section>'+
     '</section><section class="tz-dapps-popular"><div class="tz-dapps-section-head"><h2>POPULAR</h2></div><div class="tz-popular-list">'+popularHtml+'</div></section></div>'+
+    dappChainPicker()+
     '<footer class="tz-browser-toolbar" aria-label="Browser toolbar">'+
       '<button type="button" data-dapp-back="1" aria-label="Back" '+(brwState().idx>0?"":"disabled")+'>‹</button>'+
       '<button type="button" data-dapp-forward="1" aria-label="Forward" '+(brwState().idx<brwState().hist.length-1?"":"disabled")+'>›</button>'+
@@ -92,8 +115,11 @@ function dappOpenById(id){
 }
 
 document.addEventListener("click",function(e){
-  var target=e.target&&e.target.closest?e.target.closest("[data-dapp-open],[data-dapp-back],[data-dapp-forward],[data-dapp-tabs],[data-dapp-bookmark],[data-dapp-menu]"):null;
+  var target=e.target&&e.target.closest?e.target.closest("[data-chain-toggle],[data-chain-select],[data-chain-close],[data-dapp-open],[data-dapp-back],[data-dapp-forward],[data-dapp-tabs],[data-dapp-bookmark],[data-dapp-menu]"):null;
   if(!target)return;
+  if(target.hasAttribute("data-chain-toggle")){S.dappChainPickerOpen=!S.dappChainPickerOpen;render();return}
+  if(target.hasAttribute("data-chain-select")){lss("dappSelectedChain",target.getAttribute("data-chain-select"));S.dappChainPickerOpen=false;render();return}
+  if(target.hasAttribute("data-chain-close")){if(target.classList.contains("tz-chain-backdrop")||target.closest(".tz-chain-sheet-heading")){S.dappChainPickerOpen=false;render();return}}
   if(target.hasAttribute("data-dapp-open")){dappOpenById(target.getAttribute("data-dapp-open"));return}
   if(target.hasAttribute("data-dapp-back")){brwBack();return}
   if(target.hasAttribute("data-dapp-forward")){brwForward();return}
