@@ -9,7 +9,7 @@
 .scr.tab-brw .tz-chain-trigger span{color:#747c80;font-size:15px}
 .scr.tab-brw .tz-dapps-search-wrap{margin:0;display:flex;flex-direction:column}
 .scr.tab-brw .tz-dapps-search{height:42px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #d9dddf;color:#7a8286;transition:border-color 150ms ease-out}
-.scr.tab-brw .tz-dapps-search:focus-within{border-bottom:2px solid #16a05d}
+.scr.tab-brw .tz-dapps-search:focus-within{border-bottom:2px solid #596267}
 .scr.tab-brw .tz-dapps-search>span{font:400 23px "Space Grotesk",sans-serif}
 .scr.tab-brw .tz-dapps-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#171b1d;font:400 14px "Poppins",sans-serif}
 .scr.tab-brw .tz-dapps-search input::placeholder{color:#92999d}

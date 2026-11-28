@@ -10,7 +10,7 @@
 .scr.tab-brw .tz-chain-trigger span{color:#747c80}
 .scr.tab-brw .tz-dapps-search-wrap{width:100%;max-width:620px;margin:0 auto;display:flex;flex-direction:column}
 .scr.tab-brw .tz-dapps-search{height:48px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #d9dddf;color:#7a8286;transition:border-color 150ms ease-out}
-.scr.tab-brw .tz-dapps-search:focus-within{border-bottom:2px solid #16a05d}
+.scr.tab-brw .tz-dapps-search:focus-within{border-bottom:2px solid #596267}
 .scr.tab-brw .tz-dapps-search>span{font-size:25px}
 .scr.tab-brw .tz-dapps-search input{width:100%;border:0;outline:0;background:transparent;color:#171b1d;font:400 15px "Poppins",sans-serif}
 .scr.tab-brw .tz-dapps-search input::placeholder{color:#92999d}
