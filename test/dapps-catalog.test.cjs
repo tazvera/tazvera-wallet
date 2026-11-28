@@ -11,7 +11,7 @@ test("catalogue icons have 96x96 SVG assets or safe letter fallback",()=>{
  assert.equal(catalog.items.find(x=>x.id==="oneinch").iconFile,"app/browser/dapps/icons/oneinch.svg");
  for(const x of catalog.items)assert.ok(x.icon&&x.icon.mark.length>0);
  for(const f of ["pancake.svg","oneinch.svg"]){const svg=fs.readFileSync(path.join(root,"app/browser/dapps/icons",f),"utf8");assert.match(svg,/width="96" height="96"/)}
- assert.match(ui,/tz-dapp-fallback/);assert.match(ui,/addEventListener\("error"/);
+ assert.match(ui,/tz-dapp-fallback/);assert.match(ui,/addEventListener\("load"/);assert.match(ui,/addEventListener\("error"/);
 });
 test("address search offers an Open row and Enter opens the browser",()=>{
  assert.match(ui,/function dappIsAddress/);assert.match(ui,/Open '\+esc\(url\)/);assert.match(ui,/e\.target\.id!=="tzDappSearchForm"/);
@@ -25,7 +25,7 @@ test("mobile and desktop dApps styles are independently loaded and motion is acc
  const index=fs.readFileSync(path.join(root,"index.html"),"utf8"),sw=fs.readFileSync(path.join(root,"sw.js"),"utf8");
  assert.match(index,/dapps-mobile\.css/);assert.match(index,/dapps-desktop\.css/);assert.doesNotMatch(index,/dapps-catalog\.css/);
  for(const f of ["dapps-mobile.css","dapps-desktop.css"]){const css=fs.readFileSync(path.join(root,"app/features/browser",f),"utf8");assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/translateY\(8px\)/);assert.match(css,/scale\(\.97\)/)}
- assert.match(sw,/dapps\/icons\/pancake\.svg/);assert.match(sw,/dapps-desktop\.css/);
+ assert.match(sw,/dapps\/icons\/pancake\.svg/);assert.match(sw,/dapps-desktop\.css/);\n for(const f of ["dapps-mobile.css","dapps-desktop.css"]){const css=fs.readFileSync(path.join(root,"app/features/browser",f),"utf8");assert.match(css,/tz-dapp-mark \.tz-dapp-logo/);assert.match(css,/object-fit:contain/);assert.match(css,/tz-dapp-mark\.has-logo \.tz-dapp-fallback\{display:none\}/);assert.match(css,/tz-dapp-row-icon \.tz-dapp-mark\{width:40px/);assert.match(css,/tz-dapp-mark\.bookmark-icon\{width:56px/)}
 });
 test("unsafe protocols are rejected by the existing browser URL gate",()=>{
  const browser=fs.readFileSync(path.join(root,"app/browser/browser.js"),"utf8");
