@@ -25,7 +25,8 @@ test("mobile and desktop dApps styles are independently loaded and motion is acc
  const index=fs.readFileSync(path.join(root,"index.html"),"utf8"),sw=fs.readFileSync(path.join(root,"sw.js"),"utf8");
  assert.match(index,/dapps-mobile\.css/);assert.match(index,/dapps-desktop\.css/);assert.doesNotMatch(index,/dapps-catalog\.css/);
  for(const f of ["dapps-mobile.css","dapps-desktop.css"]){const css=fs.readFileSync(path.join(root,"app/features/browser",f),"utf8");assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/translateY\(8px\)/);assert.match(css,/scale\(\.97\)/)}
- assert.match(sw,/dapps\/icons\/pancake\.svg/);assert.match(sw,/dapps-desktop\.css/);\n for(const f of ["dapps-mobile.css","dapps-desktop.css"]){const css=fs.readFileSync(path.join(root,"app/features/browser",f),"utf8");assert.match(css,/tz-dapp-mark \.tz-dapp-logo/);assert.match(css,/object-fit:contain/);assert.match(css,/tz-dapp-mark\.has-logo \.tz-dapp-fallback\{display:none\}/);assert.match(css,/tz-dapp-row-icon \.tz-dapp-mark\{width:40px/);assert.match(css,/tz-dapp-mark\.bookmark-icon\{width:56px/)}
+ assert.match(sw,/dapps\/icons\/pancake\.svg/);assert.match(sw,/dapps-desktop\.css/);
+ for(const f of ["dapps-mobile.css","dapps-desktop.css"]){const css=fs.readFileSync(path.join(root,"app/features/browser",f),"utf8");assert.match(css,/tz-dapp-mark \.tz-dapp-logo/);assert.match(css,/object-fit:contain/);assert.match(css,/tz-dapp-mark\.has-logo \.tz-dapp-fallback\{display:none\}/);assert.match(css,/tz-dapp-row-icon \.tz-dapp-mark\{width:40px/);assert.match(css,/tz-dapp-mark\.bookmark-icon\{width:56px/)}
 });
 test("unsafe protocols are rejected by the existing browser URL gate",()=>{
  const browser=fs.readFileSync(path.join(root,"app/browser/browser.js"),"utf8");
