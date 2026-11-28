@@ -100,7 +100,8 @@
       "walletConnectSupport": "confirmed",
       "domainVerified": true,
       "domainVerifiedAt": "2026-11-28",
-      "domainVerificationSource": "Venus Protocol official risk documentation and app"
+      "domainVerificationSource": "Venus Protocol official risk documentation and app",
+      "iconFile": "app/browser/layout/logos/venus.io.png"
     },
     {
       "id": "nfts2me",
@@ -167,7 +168,8 @@
       "walletConnectSupport": "unconfirmed",
       "domainVerified": true,
       "domainVerifiedAt": "2026-11-28",
-      "domainVerificationSource": "Shardeum official dashboard and main site"
+      "domainVerificationSource": "Shardeum official dashboard and main site",
+      "iconFile": "app/browser/layout/logos/dashboard.shardeum.org.png"
     },
     {
       "id": "oneinch",
