@@ -28,7 +28,7 @@ case"eth_estimateGas":return"0x"+(await tryP(function(v){return v.estimateGas(p[
 case"eth_requestAccounts":case"eth_accounts":{var ad=window.CPW.address();if(ad)return[ad];break}}
 if(!W)throw{code:4100,message:"Wallet is locked"};
 switch(m){
-case"eth_sendTransaction":{var t=p[0],pm=SEND_PERMIT;clearSendPermit();if(!pm||pm.until<Date.now()||pm.base!==txKey(t,""))throw{code:4001,message:"Transaction needs a fresh approval in the Tazvera confirmation screen."};var g=await gasFor(t),ak=await pm.keyP;if(!ak||ak!==txKey(t,g))throw{code:4001,message:"Gas price or limit changed since approval. Approve the transaction again."};var gs=g.split("|"),r=await W.connect(prov()).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:BigInt(gs[0]),gasLimit:BigInt(gs[1])});return r.hash}
+case"eth_sendTransaction":{var t=p[0],pm=SEND_PERMIT;clearSendPermit();if(!pm||pm.until<Date.now()||pm.base!==txKey(t,""))throw{code:4001,message:"Transaction needs a fresh approval in the Tazvera confirmation screen."};var g=await gasFor(t);if(pm.key!==txKey(t,g))throw{code:4001,message:"Gas price or limit changed since approval. Approve the transaction again."};var gs=g.split("|"),r=await W.connect(prov()).sendTransaction({to:t.to,data:t.data,value:t.value,type:0,gasPrice:BigInt(gs[0]),gasLimit:BigInt(gs[1])});return r.hash}
 default:throw{code:-32601,message:"Not supported: "+m}}},
 on:function(){},removeListener:function(){}};
 function ks(){return localStorage.getItem(KS)}
@@ -39,7 +39,7 @@ imp:async function(phrase,pin){var w=E.Wallet.fromPhrase(String(phrase).trim().t
 unlock:async function(pin){W=await E.Wallet.fromEncryptedJson(ks(),pin)},
 phrase:async function(pin){var w=await E.Wallet.fromEncryptedJson(ks(),pin);return w.mnemonic?w.mnemonic.phrase:""},
 unlockKs:async function(js,pw,expect){var x=await E.Wallet.fromEncryptedJson(js,pw);if(expect&&x.address.toLowerCase()!==String(expect).toLowerCase())throw new Error("wrong wallet");W=x;clearSendPermit()},
-approveTransaction:function(tx){if(!W)throw{code:4100,message:"Wallet is locked"};if(!tx||String(tx.from||"").toLowerCase()!==W.address.toLowerCase()||!/^0x[0-9a-fA-F]{40}$/.test(String(tx.to||""))||!/^0x[0-9a-fA-F]*$/.test(String(tx.value||"0x0"))||!/^0x[0-9a-fA-F]*$/.test(String(tx.data||"0x")))throw new Error("Invalid transaction approval details");var gasP=gasFor(tx).catch(function(){return null});SEND_PERMIT={base:txKey(tx,""),keyP:gasP.then(function(g){return g?txKey(tx,g):null}),until:Date.now()+30000};return true},
+approveTransaction:function(tx,fee){if(!W)throw{code:4100,message:"Wallet is locked"};if(!tx||String(tx.from||"").toLowerCase()!==W.address.toLowerCase()||!/^0x[0-9a-fA-F]{40}$/.test(String(tx.to||""))||!/^0x[0-9a-fA-F]*$/.test(String(tx.value||"0x0"))||!/^0x[0-9a-fA-F]*$/.test(String(tx.data||"0x")))throw new Error("Invalid transaction approval details");var gp=String(fee&&fee.gasPrice||""),gl=String(fee&&fee.gasLimit||"");if(!/^[1-9]\d*$/.test(gp)||!/^[1-9]\d*$/.test(gl))throw new Error("Fee details are missing. Nothing was approved.");SEND_PERMIT={base:txKey(tx,""),key:txKey(tx,gp+"|"+gl),until:Date.now()+30000};return true},
 lock:function(){W=null;clearSendPermit()},remove:function(){localStorage.removeItem(KS);W=null;clearSendPermit()}};
 window.tazveraProvider=P; /* used only by the Tazvera app itself; it is not exposed as window.ethereum */
 })();

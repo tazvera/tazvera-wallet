@@ -16,27 +16,29 @@ const ctx={console,Date,Promise,Math,JSON,String,Object,Array,RegExp,Error,BigIn
 ctx.window=ctx;vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(require("node:path").join(__dirname,"..","wallet.js"),"utf8"),ctx);
 const tx={from:address,to:recipient,value:"0x01",data:"0x"};
+// The fee the confirmation screen showed: gas price 1, limit 21000 + 20% (what the fake RPC quotes below).
+const screenGas={gasPrice:"1",gasLimit:"25200"};
 async function send(payload=tx){return ctx.tazveraProvider.request({method:"eth_sendTransaction",params:[payload]})}
 function hasMessage(s){return e=>String(e&&e.message||e).includes(s)}
 test("unapproved direct transaction is rejected",async()=>{await ctx.CPW.unlockKs("{}", "pw",address);await assert.rejects(send(),hasMessage("fresh approval"));assert.equal(sends,0)});
 test("approval is bound to exact transaction and consumed once",async()=>{
- ctx.CPW.approveTransaction(tx);
+ ctx.CPW.approveTransaction(tx,screenGas);
  await assert.rejects(send({...tx,value:"0x02"}),hasMessage("fresh approval"));
  assert.equal(sends,0);
- ctx.CPW.approveTransaction(tx);
+ ctx.CPW.approveTransaction(tx,screenGas);
  assert.equal(await send(),"0xabc");
  assert.equal(sends,1);
  await assert.rejects(send(),hasMessage("fresh approval"));
  assert.equal(sends,1);
 });
 test("approval cannot survive wallet lock",async()=>{
- ctx.CPW.approveTransaction(tx);
+ ctx.CPW.approveTransaction(tx,screenGas);
  const permit=ctx.CPW; // expiry is checked against the real clock
  // Locking the wallet clears any outstanding approval before another request.
  ctx.CPW.lock();
  await assert.rejects(send(),hasMessage("Wallet is locked"));
  await ctx.CPW.unlockKs("{}", "pw",address);
- ctx.CPW.approveTransaction(tx);
+ ctx.CPW.approveTransaction(tx,screenGas);
  ctx.CPW.lock();
  await ctx.CPW.unlockKs("{}", "pw",address);
  await assert.rejects(send(),hasMessage("fresh approval"));
@@ -44,13 +46,13 @@ test("approval cannot survive wallet lock",async()=>{
 });
 test("approval details reject mismatched sender and malformed destination",async()=>{
  await ctx.CPW.unlockKs("{}", "pw",address);
- await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,from:recipient})),hasMessage("Invalid transaction"));
- await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,to:"not-an-address"})),hasMessage("Invalid transaction"));
+ await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,from:recipient},screenGas)),hasMessage("Invalid transaction"));
+ await assert.rejects(Promise.resolve().then(()=>ctx.CPW.approveTransaction({...tx,to:"not-an-address"},screenGas)),hasMessage("Invalid transaction"));
 });
 
 test("approval expires after its short validity window",async()=>{
  await ctx.CPW.unlockKs("{}", "pw",address);
- ctx.CPW.approveTransaction(tx);
+ ctx.CPW.approveTransaction(tx,screenGas);
  const now=Date.now;
  try {
    Date.now=()=>now()+31000;
@@ -59,31 +61,36 @@ test("approval expires after its short validity window",async()=>{
  assert.equal(sends,1);
 });
 
-test("a changed gas price after approval needs a new approval",async()=>{
+test("the approved fee is the one on screen: a different price at send time is refused",async()=>{
  await ctx.CPW.unlockKs("{}", "pw",address);
- gasNow={gp:1n,est:21000n};
- ctx.CPW.approveTransaction(tx);
- await new Promise(r=>setTimeout(r,0)); // let the approval record the gas it sees
- gasNow={gp:2n,est:21000n}; // RPC now quotes a higher price
+ // The RPC already quotes 2 while the screen still shows 1. Approval must use the screen's 1, not fetch its own.
+ gasNow={gp:2n,est:21000n};
+ ctx.CPW.approveTransaction(tx,screenGas);
  const before=sends;
  try {
    await assert.rejects(send(),hasMessage("Approve the transaction again"));
    assert.equal(sends,before);
-   ctx.CPW.approveTransaction(tx); // approve the new price
+   // the screen now shows the new price; approving that sends
+   ctx.CPW.approveTransaction(tx,{gasPrice:"2",gasLimit:"25200"});
    assert.equal(await send(),"0xabc");
    assert.equal(sends,before+1);
  } finally { gasNow={gp:1n,est:21000n}; }
 });
 
-test("a changed gas limit after approval needs a new approval",async()=>{
+test("a different gas limit at send time is refused",async()=>{
  await ctx.CPW.unlockKs("{}", "pw",address);
  gasNow={gp:1n,est:21000n};
- ctx.CPW.approveTransaction(tx);
- await new Promise(r=>setTimeout(r,0));
- gasNow={gp:1n,est:30000n}; // estimate went up
+ ctx.CPW.approveTransaction(tx,screenGas);
+ gasNow={gp:1n,est:30000n}; // estimate went up after the screen showed 25200
  const before=sends;
  try {
    await assert.rejects(send(),hasMessage("Approve the transaction again"));
    assert.equal(sends,before);
  } finally { gasNow={gp:1n,est:21000n}; }
+});
+
+test("approval without fee details is refused",async()=>{
+ await ctx.CPW.unlockKs("{}", "pw",address);
+ assert.throws(()=>ctx.CPW.approveTransaction(tx),hasMessage("Fee details are missing"));
+ assert.throws(()=>ctx.CPW.approveTransaction(tx,{gasPrice:"0",gasLimit:"25200"}),hasMessage("Fee details are missing"));
 });
