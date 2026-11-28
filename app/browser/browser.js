@@ -8,7 +8,7 @@
    Trust Wallet's public assets collection (the same source Trust Wallet itself uses). */
 var BRW_LOGOS = "app/browser/layout/logos/";
 var BRW_SHORTCUTS = [
-  { name: "PancakeSwap", url: "https://pancakeswap.finance", tag: "BNB Chain", cat: "swap", logo: BRW_LOGOS + "pancakeswap.finance.png" },
+  { name: "PancakeSwap", url: "https://pancake.xyz", tag: "BNB Chain", cat: "swap", logo: BRW_LOGOS + "pancakeswap.finance.png" },
   { name: "Uniswap", url: "https://app.uniswap.org", tag: "Ethereum", cat: "swap", logo: BRW_LOGOS + "app.uniswap.org.png" },
   { name: "1inch", url: "https://app.1inch.io", tag: "Both chains", cat: "swap", logo: BRW_LOGOS + "app.1inch.io.png" },
   { name: "Curve", url: "https://curve.fi", tag: "Ethereum", cat: "swap", logo: BRW_LOGOS + "curve.fi.png" },
@@ -85,9 +85,9 @@ function browserHTML(){
       '<input id="burl" class="binput" type="text" inputmode="url" autocomplete="off" spellcheck="false" '+
       'value="'+esc(b.url?brwHost(b.url):(S.bq||""))+'" placeholder="'+esc(t("brwPh"))+'" aria-label="'+esc(t("brwPh"))+'">'+
     '</div>'+
-    '<button class="ib" data-brwsites="1" aria-label="'+esc(t("brwSites"))+'">'+ic("shield",18)+'</button>'+
+    
     '<button class="ib" data-brwgo="1" aria-label="open">'+ic("globe",18)+'</button></div>'+
-    '<div class="bstrip"><i></i>'+esc(t("brwConn"))+' · '+esc(n.name)+'</div>';
+    '<div class="bstrip">Wallet not connected. Sites open in a new tab and cannot use your wallet.<small>वॉलेट किसी site से जुड़ा नहीं है। Site नए tab में खुलती है और आपके वॉलेट का इस्तेमाल नहीं कर सकती।</small></div>';
   var q=(S.bq||"").trim().toLowerCase();
   var list=BRW_SHORTCUTS.filter(function(x){return !q||(x.name+" "+x.url).toLowerCase().indexOf(q)>=0});
   var pinnedIdx = brwPins();
