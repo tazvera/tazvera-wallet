@@ -62,3 +62,7 @@ test("the status labels are the agreed three Hindi lines", () => {
 test("the status line has an accessible live region", () => {
   assert.ok(connect.includes('role="status"') && connect.includes('aria-live="polite"'));
 });
+
+test("the CSP does not allow WalletConnect telemetry (pulse)", () => {
+  assert.ok(!index.includes("pulse.walletconnect"), "telemetry host must not be in the CSP (privacy: no user data leaves the phone)");
+});
