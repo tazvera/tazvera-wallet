@@ -8,7 +8,7 @@
    Trust Wallet's public assets collection (the same source Trust Wallet itself uses). */
 var BRW_LOGOS = "app/browser/layout/logos/";
 var BRW_SHORTCUTS = [
-  { name: "PancakeSwap", url: "https://pancake.xyz", tag: "BNB Chain", cat: "swap", logo: BRW_LOGOS + "pancakeswap.finance.png" },
+  { name: "PancakeSwap", url: "https://pancake.xyz", tag: "BNB Chain", cat: "swap", logo: "" },
   { name: "Uniswap", url: "https://app.uniswap.org", tag: "Ethereum", cat: "swap", logo: BRW_LOGOS + "app.uniswap.org.png" },
   { name: "1inch", url: "https://app.1inch.io", tag: "Both chains", cat: "swap", logo: BRW_LOGOS + "app.1inch.io.png" },
   { name: "Curve", url: "https://curve.fi", tag: "Ethereum", cat: "swap", logo: BRW_LOGOS + "curve.fi.png" },
@@ -94,7 +94,7 @@ function browserHTML(){
   var rest = list.filter(function(x){ return pinnedIdx.indexOf(BRW_SHORTCUTS.indexOf(x)) < 0 });
   function card(x){ var i=BRW_SHORTCUTS.indexOf(x);
     return '<button class="brwli" data-brwopen="'+i+'">'+
-      '<span class="blg"><img src="'+esc(x.logo)+'" alt="" loading="lazy"></span>'+
+      '<span class="blg">'+(x.logo?'<img src="'+esc(x.logo)+'" alt="" loading="lazy">':esc(x.name.slice(0,1)))+'</span>'+
       '<span class="bm"><b>'+esc(x.name)+'</b><small>'+esc(x.url.replace(/^https?:\/\//,"").replace(/\/$/,""))+'</small></span>'+
       ic("right",16)+'</button>' }
   var groups=[["swap",t("brwSwap")],["exp",t("brwExp")],["nft","NFT"],["defi","DeFi"],["game","Games"]];
@@ -111,18 +111,11 @@ function browserHTML(){
       '<p>'+esc(t("brwNote"))+'</p>'+
       '<button class="btn" data-brwtab="1">'+esc(t("brwTab"))+'</button>'+
       '<button class="btnw" data-brwhome="1">'+esc(t("brwHome"))+'</button>'+
-      '<div class="brwtb">'+
-        '<button class="tbb" data-brwback="1" aria-label="back">'+ic("back",21)+'</button>'+
-        '<button class="tbb" data-brwhome="1" aria-label="'+esc(t("brwHome"))+'">'+ic("grid",21)+'</button>'+
-        '<button class="tbb" data-brwpin="1" aria-label="'+esc(t("brwPinAdd"))+'">'+
-          '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
-          '<path d="M12 20s-7-4.4-7-9.2A4 4 0 0 1 12 8a4 4 0 0 1 7 2.8C19 15.6 12 20 12 20z"/></svg></button>'+
-        '<button class="tbb" data-brwtab="1" aria-label="'+esc(t("brwTab"))+'">'+ic("globe",21)+'</button>'+
-      '</div></div>';
+      '</div>'+
   }else{
     var fe=BRW_SHORTCUTS[0];
     body='<div class="brwstart">'+
-      (q?'':'<button class="brwfeat" data-brwopen="0"><img src="'+esc(fe.logo)+'" alt=""><span class="ft"><b>'+esc(fe.name)+'</b><small>'+esc(fe.tag)+' · '+esc(fe.url.replace(/^https?:\/\//,""))+'</small></span>'+ic("right",16)+'</button>')+
+      (q?'':'<button class="brwfeat" data-brwopen="0"><span class="blg">'+(fe.logo?'<img src="'+esc(fe.logo)+'" alt="">':esc(fe.name.slice(0,1)))+'</span><span class="ft"><b>'+esc(fe.name)+'</b><small>'+esc(fe.tag)+' · '+esc(fe.url.replace(/^https?:\/\//,""))+'</small></span>'+ic("right",16)+'</button>')+
       '<div class="lb3">'+esc(t("brwPinned"))+'</div><div class="brwpin">'+
         (q?'':brwPins().map(function(i){var x=BRW_SHORTCUTS[i];return '<button class="brwpin2" data-brwopen="'+i+'"><img src="'+esc(x.logo)+'" alt="">'+esc(x.name)+'</button>'}).join(""))+
         '<button class="brwpin2 add" data-brwpin="1">'+ic("plus",14)+' '+esc(t("brwPinAdd"))+'</button>'+
