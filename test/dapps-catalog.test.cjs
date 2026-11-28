@@ -69,5 +69,37 @@ test("catalogue JSON and UI are loaded from the same origin and cached offline",
 test("Open and browser toolbar actions remain disabled in this data-only layer", () => {
   assert.match(ui, /class="tz-open-inert"[^>]*disabled/);
   assert.match(ui, /class="tz-browser-toolbar"/);
-  assert.doesNotMatch(ui, /brwOpen=function/);
+  assert.match(ui, /brwOpen=function\(\)\{ toast\("Opening dApps is disabled in this release\."\); \};/);
+});
+
+test("legacy browser opener stays blocked: only a message, no URL, no Android bridge call", () => {
+  const vm = require("node:vm");
+  const browser = fs.readFileSync(path.join(root, "app/browser/browser.js"), "utf8");
+  const calls = { toast: [], bridgeOpen: [], windowOpen: [], render: 0 };
+  const sandbox = {
+    S: { brw: { url: "", hist: [], idx: -1 }, tab: "dapps" },
+    toast: (m) => calls.toast.push(m),
+    render: () => { calls.render++; },
+    t: (k) => k,
+    esc: (v) => String(v),
+    document: { addEventListener() {}, getElementById() { return null; }, querySelector() { return null; } },
+    window: {
+      TazveraBrowser: { open: (u) => calls.bridgeOpen.push(u) },
+      open: (u) => calls.windowOpen.push(u)
+    },
+    console
+  };
+  sandbox.window.window = sandbox.window;
+  vm.createContext(sandbox);
+  vm.runInContext(browser + "\n" + ui, sandbox);
+
+  vm.runInContext('brwOpen("https://pancakeswap.finance")', sandbox);
+  vm.runInContext('brwOpen("javascript:alert(1)")', sandbox);
+
+  assert.deepEqual(calls.toast, ["Opening dApps is disabled in this release.", "Opening dApps is disabled in this release."]);
+  assert.deepEqual(calls.bridgeOpen, []);
+  assert.deepEqual(calls.windowOpen, []);
+  assert.equal(sandbox.S.brw.hist.length, 0);
+  assert.equal(sandbox.S.brw.url, "");
+  assert.equal(calls.render, 0);
 });

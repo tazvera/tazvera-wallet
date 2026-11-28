@@ -79,6 +79,9 @@ function dappsHTML(){
     '</footer></main>';
 }
 
+/* The legacy browser opener is intentionally blocked while this first, data-only layer is shipped. */
+brwOpen=function(){ toast("Opening dApps is disabled in this release."); };
+
 
 document.addEventListener("input",function(e){
   if(!e.target || e.target.id!=="tzDappSearch") return;
