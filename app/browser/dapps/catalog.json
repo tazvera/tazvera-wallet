@@ -33,7 +33,8 @@
       "walletConnectSupport": "confirmed",
       "domainVerified": true,
       "domainVerifiedAt": "2026-11-28",
-      "domainVerificationSource": "Pancake official website and rebrand announcement"
+      "domainVerificationSource": "Pancake official website and rebrand announcement",
+      "iconFile": "app/browser/dapps/icons/pancake.svg"
     },
     {
       "id": "sikka",
@@ -199,7 +200,8 @@
       "riskNote": "Check the token, network, quote and approvals before confirming.",
       "domainVerified": true,
       "domainVerifiedAt": "2026-11-28",
-      "domainVerificationSource": "1inch official rebranding FAQ, blog, and website"
+      "domainVerificationSource": "1inch official rebranding FAQ, blog, and website",
+      "iconFile": "app/browser/dapps/icons/oneinch.svg"
     }
   ]
 }
