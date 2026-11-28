@@ -470,6 +470,15 @@ svg{-webkit-touch-callout:none;user-select:none}
 /* long press on text must not start a text selection either (except where the user may copy) */
 .btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.it,.m,.sht,.lb,.lb2,.lb3,.note2,.err,.kv span,.kv b{-webkit-user-select:none;user-select:none}
 .cpbox,.addr,input,textarea{-webkit-user-select:text;user-select:text}
+/* Buttons and dApp rows are controls, not text: they must not select (blue highlight) anywhere in the app.
+   Addresses and inputs above stay selectable so they can be copied. */
+button,[role="button"],[data-dapp-open],.tz-dapp-row{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+/* WalletConnect status line on the dApps screen: small, grey by default, colour per state */
+.tz-wc-status{display:flex;align-items:center;gap:6px;margin:6px 16px 4px;font-family:inherit;font-size:12px;font-weight:500;line-height:1.3;color:#7d848c;-webkit-user-select:none;user-select:none}
+.tz-wc-status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.tz-wc-status[data-state="connecting"]{color:#7d848c}
+.tz-wc-status[data-state="connected"]{color:#1f9d55}
+.tz-wc-status[data-state="failed"]{color:#d64545}
 
 /* real press feedback: the button sinks a little, so a tap feels answered even with vibration off */
 .btn,.btnw,.b2,.opt,.srow,.chip2,.max,.ib,.k,.tab{transition:transform .09s ease,filter .09s ease}
